@@ -1,6 +1,6 @@
-package com.goat.server.revision.domain;
+package com.goat.server.review.domain;
 
-import com.goat.server.revision.domain.type.Date;
+import com.goat.server.review.domain.type.Date;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

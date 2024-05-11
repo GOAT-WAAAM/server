@@ -1,4 +1,4 @@
-package com.goat.server.revision.domain;
+package com.goat.server.review.domain;
 
 import com.goat.server.global.domain.BaseTimeEntity;
 import com.goat.server.mypage.domain.User;

@@ -29,6 +29,15 @@ dependencies {
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	//swagger
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
+
+	//테스트 코드 작성시 사용할 DB(H2)
+	runtimeOnly 'com.h2database:h2'
+	//테스트 코드 lombok 사용
+	testAnnotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.projectlombok:lombok'
 }
 
 tasks.named('test') {

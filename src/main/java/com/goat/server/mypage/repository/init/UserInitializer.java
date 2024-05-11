@@ -11,13 +11,23 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.annotation.Order;
 
 @Slf4j
 @RequiredArgsConstructor
 @LocalDummyDataInit
+@Order(1)
 public class UserInitializer implements ApplicationRunner {
 
     private final UserRepository userRepository;
+
+    public static final User DUMMY_GUEST = User.builder()
+            .email("guestImail")
+            .role(Role.GUEST)
+            .nickname("guest")
+            .goal("guest go home")
+            .provider(OauthProvider.KAKAO)
+            .build();
 
     public static final User DUMMY_USER = User.builder()
             .email("userImail")
@@ -43,6 +53,7 @@ public class UserInitializer implements ApplicationRunner {
         } else {
             List<User> memberList = new ArrayList<>();
 
+            memberList.add(DUMMY_GUEST);
             memberList.add(DUMMY_USER);
             memberList.add(DUMMY_ADMIN);
 
