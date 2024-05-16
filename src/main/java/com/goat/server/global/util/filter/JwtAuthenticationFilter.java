@@ -27,29 +27,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        try {
-            final String token = getJwtFromRequest(request);
 
-            if (jwtTokenProvider.validateToken(token) == VALID_JWT) {
-                Long userId = jwtTokenProvider.getUserFromJwt(token);
+        final String token = getJwtFromRequest(request);
 
-                UserAuthentication authentication = new UserAuthentication(userId.toString(), null, null);
+        if (token != null && jwtTokenProvider.validateToken(token) == VALID_JWT) {
+            Long userId = jwtTokenProvider.getUserFromJwt(token);
 
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            UserAuthentication authentication = new UserAuthentication(userId.toString(), null, null);
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-        } catch (Exception exception) {
-
-            try {
-                throw new Exception();
-
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-
-            }
-
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
         filterChain.doFilter(request, response);
