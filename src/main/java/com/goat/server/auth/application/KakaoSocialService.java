@@ -49,7 +49,9 @@ public class KakaoSocialService {
 
     private KakaoUserResponse getUserInformationFromKakao(String kakaoAccessToken) {
         try {
-            return kakaoApiClient.getUserInformation("Bearer " + kakaoAccessToken);
+            KakaoUserResponse userResponse = kakaoApiClient.getUserInformation("Bearer " + kakaoAccessToken);
+            log.info("[KakaoSocialService.getUserInformationFromKakao] kakaoAccessToken: {}, userResponse: {}",kakaoAccessToken, userResponse);
+            return userResponse;
         } catch (FeignException e) {
             throw new CustomFeignException(FEIGN_FAILED, "Failed to get user information from Kakao: " + e.contentUTF8());
         }
