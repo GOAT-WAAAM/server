@@ -1,7 +1,7 @@
 package com.goat.server.auth.application;
 
 import com.goat.server.auth.dto.response.ReIssueSuccessResponse;
-import com.goat.server.global.domain.type.AccessToken;
+import com.goat.server.global.domain.type.Tokens;
 import com.goat.server.global.util.JwtTokenProvider;
 import com.goat.server.global.util.filter.UserAuthentication;
 import org.junit.jupiter.api.DisplayName;
@@ -27,9 +27,9 @@ class AuthServiceTest {
     @DisplayName("토큰 재발급 테스트")
     void reIssueToken() {
         // given
-        given(jwtTokenProvider.getUserFromJwt("refreshToken")).willReturn(1L);
+        given(jwtTokenProvider.getUserIdFromJwt("refreshToken")).willReturn(1L);
         given(jwtTokenProvider.generateToken(new UserAuthentication(1L,null, null)))
-                .willReturn(new AccessToken("reIssuedAccessToken", "reIssuedRefreshToken"));
+                .willReturn(new Tokens("reIssuedAccessToken", "reIssuedRefreshToken"));
 
         // when
         ReIssueSuccessResponse reIssueSuccessResponse = authService.reIssueToken("refreshToken");

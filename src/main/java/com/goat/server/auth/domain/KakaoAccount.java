@@ -9,4 +9,7 @@ import lombok.Builder;
 public record KakaoAccount(
         KakaoUserProfile profile
 ) {
+    public String getNickname() {
+        return profile.nickname();
+    }
 }

@@ -5,19 +5,15 @@ import com.goat.server.auth.application.KakaoSocialService;
 import com.goat.server.auth.dto.response.ReIssueSuccessResponse;
 import com.goat.server.auth.dto.response.SignUpSuccessResponse;
 import com.goat.server.global.CommonControllerTest;
-import com.goat.server.global.domain.type.AccessToken;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
+import com.goat.server.global.domain.type.Tokens;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 
 import static org.mockito.BDDMockito.given;
@@ -25,25 +21,17 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Slf4j
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(AuthController.class)
 class AuthControllerTest extends CommonControllerTest {
 
-    @InjectMocks
-    private AuthController authController;
-
-    @Mock
-    private AuthService authService;
-
-    @Mock
+    @MockBean
     private KakaoSocialService kakaoSocialService;
 
-    private MockMvc mockMvc;
+    @MockBean
+    private AuthService authService;
 
-    @BeforeEach
-    public void init() {
-        mockMvc = MockMvcBuilders.standaloneSetup(authController).build();
-    }
+    @Autowired
+    private MockMvc mockMvc;
 
     @Test
     @DisplayName("소셜 로그인 테스트")
@@ -52,7 +40,7 @@ class AuthControllerTest extends CommonControllerTest {
         final String kakaoAccessToken = "thisIsmockAccessToken";
 
         given(kakaoSocialService.socialLogin(kakaoAccessToken))
-                .willReturn(SignUpSuccessResponse.From(AccessToken.builder()
+                .willReturn(SignUpSuccessResponse.From(Tokens.builder()
                         .accessToken("accessToken")
                         .refreshToken("refreshToken")
                         .build()));
@@ -61,8 +49,6 @@ class AuthControllerTest extends CommonControllerTest {
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/goat/auth/login/{provider}", "KAKAO")
                 .header("Authorization", kakaoAccessToken));
 
-
-        log.info("resultActions: {}", resultActions.andReturn().getResponse().getContentAsString());
 
         //then
         resultActions
@@ -78,7 +64,7 @@ class AuthControllerTest extends CommonControllerTest {
         final String refreshToken = "thisIsRefreshToken";
 
         given(authService.reIssueToken(refreshToken))
-                .willReturn(ReIssueSuccessResponse.From(AccessToken.builder()
+                .willReturn(ReIssueSuccessResponse.From(Tokens.builder()
                         .accessToken("accessToken")
                         .refreshToken("refreshToken")
                         .build()));

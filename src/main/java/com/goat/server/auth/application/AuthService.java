@@ -16,7 +16,7 @@ public class AuthService {
 
     public ReIssueSuccessResponse reIssueToken(String refreshToken) {
 
-        Long userId = jwtTokenProvider.getUserFromJwt(refreshToken);
+        Long userId = jwtTokenProvider.getUserIdFromJwt(refreshToken);
 
         UserAuthentication userAuthentication = new UserAuthentication(userId, null, null);
 

@@ -5,7 +5,7 @@ import com.goat.server.global.util.JwtTokenProvider;
 import com.goat.server.global.util.filter.UserAuthentication;
 import com.goat.server.mypage.domain.User;
 import com.goat.server.mypage.repository.UserRepository;
-import com.goat.server.mypage.service.UserService;
+import com.goat.server.mypage.application.UserService;
 import com.goat.server.auth.dto.response.SignUpSuccessResponse;
 import com.goat.server.auth.presentation.KakaoApiClient;
 import feign.FeignException;

@@ -6,8 +6,10 @@ import com.goat.server.global.util.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,22 +26,27 @@ public class SecurityConfig {
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     private static final String[] AUTH_WHITELIST = {
+            "/error",
             "/swagger-ui/**",
+            "/swagger-resources/*",
+            "/webjars/",
             "/v3/api-docs/**",
             "/goat/auth/login/**",
     };
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers(AUTH_WHITELIST);
+    }
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable) //csrf 토큰 disable 하기
                 .formLogin(AbstractHttpConfigurer::disable) //form login 비활성화
                 .httpBasic(AbstractHttpConfigurer::disable)//http 기본 인증 비활성화
+                .cors(Customizer.withDefaults())
                 .sessionManagement(session -> {
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-                })
-                .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(AUTH_WHITELIST).permitAll();
-                    auth.anyRequest().authenticated();
                 })
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exception ->

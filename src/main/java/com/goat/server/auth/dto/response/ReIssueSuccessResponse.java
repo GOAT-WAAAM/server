@@ -1,18 +1,17 @@
 package com.goat.server.auth.dto.response;
 
-import com.goat.server.global.domain.type.AccessToken;
+import com.goat.server.global.domain.type.Tokens;
 import lombok.Builder;
-import org.springframework.context.annotation.Bean;
 
 @Builder
 public record ReIssueSuccessResponse(
         String accessToken,
         String refreshToken
 ) {
-    public static ReIssueSuccessResponse From(AccessToken token) {
+    public static ReIssueSuccessResponse From(Tokens token) {
         return ReIssueSuccessResponse.builder()
-                .accessToken(token.getAccessToken())
-                .refreshToken(token.getRefreshToken())
+                .accessToken(token.accessToken())
+                .refreshToken(token.refreshToken())
                 .build();
     }
 }

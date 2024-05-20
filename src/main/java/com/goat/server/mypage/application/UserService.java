@@ -1,4 +1,4 @@
-package com.goat.server.mypage.service;
+package com.goat.server.mypage.application;
 
 import com.goat.server.auth.dto.response.KakaoUserResponse;
 import com.goat.server.mypage.domain.User;
@@ -23,7 +23,7 @@ public class UserService {
     public User createUser(final KakaoUserResponse userResponse) {
         User user = User.builder()
                 .socialId(userResponse.id().toString())
-                .nickname(userResponse.kakaoAccount().profile().nickname())
+                .nickname(userResponse.getNickname())
                 .role(Role.GUEST)
                 .build();
 

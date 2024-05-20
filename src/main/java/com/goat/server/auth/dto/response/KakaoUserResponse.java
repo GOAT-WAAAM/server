@@ -11,4 +11,7 @@ public record KakaoUserResponse(
         Long id,
         KakaoAccount kakaoAccount
 ) {
+    public String getNickname() {
+        return kakaoAccount.getNickname();
+    }
 }
