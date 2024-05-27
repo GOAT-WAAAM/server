@@ -1,8 +1,8 @@
-package com.goat.server.subject.presentation;
+package com.goat.server.directory.presentation;
 
+import com.goat.server.directory.dto.response.DirectoryResponseList;
 import com.goat.server.global.dto.ResponseTemplate;
-import com.goat.server.subject.application.SubjectService;
-import com.goat.server.subject.dto.response.SubjectResponseList;
+import com.goat.server.directory.application.DirectoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -14,23 +14,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "SubjectController", description = "SubjectController 관련 API")
+@Tag(name = "DirectoryController", description = "DirectoryController 관련 API")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/subject")
-public class SubjectController {
+@RequestMapping("/directory")
+public class DirectoryController {
 
-    private final SubjectService subjectService;
+    private final DirectoryService directoryService;
 
     @Operation(summary = "과목, 폴더 정보 가져 오기", description = "과목, 폴더 정보 가져 오기")
-    @GetMapping("/{userId}")
-    public ResponseEntity<ResponseTemplate<Object>> getSubjectsAndDirectories(@PathVariable Long userId) {
+    @GetMapping("/{directoryId}/{userId}")
+    public ResponseEntity<ResponseTemplate<Object>> getDirectoryList(
+            @PathVariable Long directoryId,
+            @PathVariable Long userId) {
 
-        SubjectResponseList subjectsAndDirectories = subjectService.getSubjectsAndDirectories(userId);
+        DirectoryResponseList directoryList = directoryService.getDirectoryList(userId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(ResponseTemplate.from(subjectsAndDirectories));
+                .body(ResponseTemplate.from(directoryList));
     }
 }

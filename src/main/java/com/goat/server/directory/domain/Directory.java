@@ -1,4 +1,4 @@
-package com.goat.server.subject.domain;
+package com.goat.server.directory.domain;
 
 import com.goat.server.global.domain.BaseTimeEntity;
 import com.goat.server.mypage.domain.User;
@@ -22,31 +22,35 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Subject extends BaseTimeEntity {
+public class Directory extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "subject_id")
-    private Long subjectId;
+    @Column(name = "directory_id")
+    private Long directoryId;
 
-    @Column(name = "subject_name", length = 50)
-    private String subjectName;
+    @Column(name = "directory_name", length = 100)
+    private String directoryName;
 
-    @Column(name = "subject_color", length = 100)
-    private String subjectColor;
+    @Column(name = "directory_color", length = 50)
+    private String directoryColor;
 
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @OneToMany(mappedBy = "subject", cascade = CascadeType.REMOVE)
-    private List<Directory> directoryList = new ArrayList<>();
+    @JoinColumn(name = "parent_directory_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Directory parentDirectory;
+
+    @OneToMany(mappedBy = "parentDirectory", cascade = CascadeType.REMOVE)
+    private List<Directory> childDirectoryList = new ArrayList<>();
 
     @Builder
-    public Subject(String subjectName, String subjectColor, User user, List<Directory> directoryList) {
-        this.subjectName = subjectName;
-        this.subjectColor = subjectColor;
+    public Directory(String directoryName, String directoryColor, User user, Directory parentDirectory) {
+        this.directoryName = directoryName;
+        this.directoryColor = directoryColor;
         this.user = user;
-        this.directoryList = directoryList;
+        this.parentDirectory = parentDirectory;
     }
 }
