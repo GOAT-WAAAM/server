@@ -6,6 +6,13 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 public class DirectoryFixture {
 
+    public static final Directory DUMMY_TRASH_DIRECTORY = Directory.builder()
+            .directoryName("trash")
+            .directoryColor("#FF00FF")
+            .parentDirectory(null)
+            .user(UserFixture.USER_USER)
+            .build();
+
     public static final Directory PARENT_DIRECTORY1 = Directory.builder()
             .directoryName("directory1")
             .directoryColor("#FF00FF")

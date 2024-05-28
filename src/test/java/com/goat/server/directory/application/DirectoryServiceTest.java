@@ -1,6 +1,7 @@
 package com.goat.server.directory.application;
 
 
+import static com.goat.server.directory.fixture.DirectoryFixture.DUMMY_TRASH_DIRECTORY;
 import static com.goat.server.directory.fixture.DirectoryFixture.PARENT_DIRECTORY1;
 import static com.goat.server.directory.fixture.DirectoryFixture.PARENT_DIRECTORY2;
 import static com.goat.server.mypage.fixture.UserFixture.USER_USER;
@@ -47,5 +48,21 @@ class DirectoryServiceTest {
         assertThat(directoryList.directoryResponseList())
                 .extracting(DirectoryResponse::directoryId)
                 .containsExactly(PARENT_DIRECTORY1.getDirectoryId(), PARENT_DIRECTORY2.getDirectoryId());
+    }
+
+    @Test
+    @DisplayName("폴더 삭제 테스트")
+    void deleteDirectoryTest() {
+        //given
+        given(userRepository.findById(USER_USER.getUserId())).willReturn(Optional.of(USER_USER));
+        given(directoryRepository.findById(PARENT_DIRECTORY1.getDirectoryId()))
+                .willReturn(Optional.of(PARENT_DIRECTORY1));
+        given(directoryRepository.findTrashDirectoryByUser(USER_USER)).willReturn(Optional.of(DUMMY_TRASH_DIRECTORY));
+
+        //when
+        directoryService.deleteDirectory(USER_USER.getUserId(), PARENT_DIRECTORY1.getDirectoryId());
+
+        //then
+        assertThat(PARENT_DIRECTORY1.getParentDirectory()).isEqualTo(DUMMY_TRASH_DIRECTORY);
     }
 }

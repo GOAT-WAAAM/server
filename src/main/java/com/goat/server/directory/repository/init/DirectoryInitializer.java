@@ -3,7 +3,10 @@ package com.goat.server.directory.repository.init;
 import com.goat.server.global.util.LocalDummyDataInit;
 import com.goat.server.directory.domain.Directory;
 import com.goat.server.directory.repository.DirectoryRepository;
-import com.goat.server.mypage.repository.init.UserInitializer;
+import com.goat.server.mypage.domain.User;
+import com.goat.server.mypage.exception.UserNotFoundException;
+import com.goat.server.mypage.exception.errorcode.MypageErrorCode;
+import com.goat.server.mypage.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -15,66 +18,11 @@ import org.springframework.core.annotation.Order;
 @Slf4j
 @RequiredArgsConstructor
 @LocalDummyDataInit
-@Order(3)
+@Order(2)
 public class DirectoryInitializer implements ApplicationRunner {
 
     private final DirectoryRepository directoryRepository;
-
-    public static final Directory DUMMY_TRASH_DIRECTORY1 = Directory.builder()
-            .directoryName("trash")
-            .directoryColor("#FF00FF")
-            .parentDirectory(null)
-            .user(UserInitializer.DUMMY_USER)
-            .build();
-
-    public static final Directory DUMMY_TRASH_DIRECTORY2 = Directory.builder()
-            .directoryName("trash")
-            .directoryColor("#FF00FF")
-            .parentDirectory(null)
-            .user(UserInitializer.DUMMY_GUEST)
-            .build();
-
-    public static final Directory DUMMY_TRASH_DIRECTORY3 = Directory.builder()
-            .directoryName("trash")
-            .directoryColor("#FF00FF")
-            .parentDirectory(null)
-            .user(UserInitializer.DUMMY_ADMIN)
-            .build();
-
-    public static final Directory DUMMY_PARENT_DIRECTORY1 = Directory.builder()
-            .directoryName("dummyDirectory1")
-            .directoryColor("#FF00FF")
-            .parentDirectory(null)
-            .user(UserInitializer.DUMMY_USER)
-            .build();
-
-    public static final Directory DUMMY_PARENT_DIRECTORY2 = Directory.builder()
-            .directoryName("dummyDirectory2")
-            .directoryColor("#FF00FF")
-            .parentDirectory(null)
-            .user(UserInitializer.DUMMY_USER)
-            .build();
-
-    public static final Directory DUMMY_PARENT_DIRECTORY3 = Directory.builder()
-            .directoryName("dummyDirectory3")
-            .directoryColor("#FF000F")
-            .parentDirectory(null)
-            .user(UserInitializer.DUMMY_ADMIN)
-            .build();
-
-    public static final Directory DUMMY_CHILD_DIRECTORY1 = Directory.builder()
-            .directoryName("dummyDirectory4")
-            .directoryColor("#FF00FF")
-            .parentDirectory(DUMMY_PARENT_DIRECTORY1)
-            .user(UserInitializer.DUMMY_USER)
-            .build();
-
-    public static final Directory DUMMY_CHILD_DIRECTORY2 = Directory.builder()
-            .directoryName("dummyDirectory5")
-            .directoryColor("#FF00FF")
-            .parentDirectory(DUMMY_PARENT_DIRECTORY1)
-            .user(UserInitializer.DUMMY_USER)
-            .build();
+    private final UserRepository userRepository;
 
     @Override
     public void run(ApplicationArguments args) {
@@ -82,7 +30,75 @@ public class DirectoryInitializer implements ApplicationRunner {
         if (directoryRepository.count() > 0) {
             log.info("[Directory]더미 데이터 존재");
         } else {
+            User admin = userRepository.findByEmail("adminEmail")
+                    .orElseThrow(() -> new UserNotFoundException(MypageErrorCode.USER_NOT_FOUND));
+            User user = userRepository.findByEmail("userEmail")
+                    .orElseThrow(() -> new UserNotFoundException(MypageErrorCode.USER_NOT_FOUND));
+
             List<Directory> directoryList = new ArrayList<>();
+
+            Directory DUMMY_TRASH_DIRECTORY1 = Directory.builder()
+                    .directoryName("trash")
+                    .directoryColor("#FF00FF")
+                    .parentDirectory(null)
+                    .user(user)
+                    .build();
+
+            Directory DUMMY_TRASH_DIRECTORY2 = Directory.builder()
+                    .directoryName("trash")
+                    .directoryColor("#FF00FF")
+                    .parentDirectory(null)
+                    .user(user)
+                    .build();
+
+            Directory DUMMY_TRASH_DIRECTORY3 = Directory.builder()
+                    .directoryName("trash")
+                    .directoryColor("#FF00FF")
+                    .parentDirectory(null)
+                    .user(admin)
+                    .build();
+
+            Directory DUMMY_PARENT_DIRECTORY1 = Directory.builder()
+                    .directoryName("dummyDirectory1")
+                    .directoryColor("#FF00FF")
+                    .parentDirectory(null)
+                    .user(user)
+                    .build();
+
+            Directory DUMMY_PARENT_DIRECTORY2 = Directory.builder()
+                    .directoryName("dummyDirectory2")
+                    .directoryColor("#FF00FF")
+                    .parentDirectory(null)
+                    .user(user)
+                    .build();
+
+            Directory DUMMY_PARENT_DIRECTORY3 = Directory.builder()
+                    .directoryName("dummyDirectory3")
+                    .directoryColor("#FF000F")
+                    .parentDirectory(null)
+                    .user(admin)
+                    .build();
+
+            Directory DUMMY_CHILD_DIRECTORY1 = Directory.builder()
+                    .directoryName("dummyDirectory4")
+                    .directoryColor("#FF00FF")
+                    .parentDirectory(DUMMY_PARENT_DIRECTORY1)
+                    .user(user)
+                    .build();
+
+            Directory DUMMY_CHILD_DIRECTORY2 = Directory.builder()
+                    .directoryName("dummyDirectory5")
+                    .directoryColor("#FF00FF")
+                    .parentDirectory(DUMMY_PARENT_DIRECTORY1)
+                    .user(user)
+                    .build();
+
+            Directory DUMMY_CHILD_DIRECTORY3 = Directory.builder()
+                    .directoryName("dummyDirectory5")
+                    .directoryColor("#FF00FF")
+                    .parentDirectory(DUMMY_CHILD_DIRECTORY2)
+                    .user(user)
+                    .build();
 
             directoryList.add(DUMMY_TRASH_DIRECTORY1);
             directoryList.add(DUMMY_TRASH_DIRECTORY2);
@@ -92,6 +108,7 @@ public class DirectoryInitializer implements ApplicationRunner {
             directoryList.add(DUMMY_PARENT_DIRECTORY3);
             directoryList.add(DUMMY_CHILD_DIRECTORY1);
             directoryList.add(DUMMY_CHILD_DIRECTORY2);
+            directoryList.add(DUMMY_CHILD_DIRECTORY3);
 
             directoryRepository.saveAll(directoryList);
         }

@@ -21,30 +21,6 @@ public class UserInitializer implements ApplicationRunner {
 
     private final UserRepository userRepository;
 
-    public static final User DUMMY_GUEST = User.builder()
-            .email("guestImail")
-            .role(Role.GUEST)
-            .nickname("guest")
-            .goal("guest go home")
-            .provider(OauthProvider.KAKAO)
-            .build();
-
-    public static final User DUMMY_USER = User.builder()
-            .email("userImail")
-            .role(Role.USER)
-            .nickname("user")
-            .goal("user go home")
-            .provider(OauthProvider.KAKAO)
-            .build();
-
-    public static final User DUMMY_ADMIN = User.builder()
-            .email("adminImail")
-            .role(Role.ADMIN)
-            .nickname("admin")
-            .goal("admin go home")
-            .provider(OauthProvider.KAKAO)
-            .build();
-
     @Override
     public void run(ApplicationArguments args) {
 
@@ -52,6 +28,30 @@ public class UserInitializer implements ApplicationRunner {
             log.info("[User]더미 데이터 존재");
         } else {
             List<User> memberList = new ArrayList<>();
+
+            User DUMMY_GUEST = User.builder()
+                    .email("guestEmail")
+                    .role(Role.GUEST)
+                    .nickname("guest")
+                    .goal("guest go home")
+                    .provider(OauthProvider.KAKAO)
+                    .build();
+
+            User DUMMY_USER = User.builder()
+                    .email("userEmail")
+                    .role(Role.USER)
+                    .nickname("user")
+                    .goal("user go home")
+                    .provider(OauthProvider.KAKAO)
+                    .build();
+
+            User DUMMY_ADMIN = User.builder()
+                    .email("adminEmail")
+                    .role(Role.ADMIN)
+                    .nickname("admin")
+                    .goal("admin go home")
+                    .provider(OauthProvider.KAKAO)
+                    .build();
 
             memberList.add(DUMMY_GUEST);
             memberList.add(DUMMY_USER);
