@@ -8,7 +8,7 @@ public record ReIssueSuccessResponse(
         String accessToken,
         String refreshToken
 ) {
-    public static ReIssueSuccessResponse From(Tokens token) {
+    public static ReIssueSuccessResponse from(Tokens token) {
         return ReIssueSuccessResponse.builder()
                 .accessToken(token.accessToken())
                 .refreshToken(token.refreshToken())

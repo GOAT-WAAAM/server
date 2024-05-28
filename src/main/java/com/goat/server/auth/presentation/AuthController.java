@@ -50,4 +50,17 @@ public class AuthController {
                 .status(HttpStatus.OK)
                 .body(ResponseTemplate.from(response));
     }
+
+    @Operation(summary = "테스트용 토큰발급", description = "테스트용 토큰발급")
+    @GetMapping("/testToken")
+    public ResponseEntity<ResponseTemplate<Object>> testToken() {
+
+        log.info("[AuthController.testToken]");
+
+        SignUpSuccessResponse response = authService.getTestToken();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ResponseTemplate.from(response));
+    }
 }
