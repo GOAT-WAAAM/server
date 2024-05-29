@@ -8,7 +8,7 @@ public record SignUpSuccessResponse(
         String accessToken,
         String refreshToken
 ) {
-    public static SignUpSuccessResponse From(Tokens token) {
+    public static SignUpSuccessResponse from(Tokens token) {
         return SignUpSuccessResponse.builder()
                 .accessToken(token.accessToken())
                 .refreshToken(token.refreshToken())
