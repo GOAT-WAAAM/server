@@ -3,6 +3,7 @@ package com.goat.server.global;
 
 import com.goat.server.global.util.JwtTokenProvider;
 import com.goat.server.global.util.filter.UserAuthentication;
+import com.goat.server.mypage.domain.type.Role;
 import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -21,7 +22,7 @@ public class CommonControllerTest {
 
     @BeforeEach
     public void setUp() throws ServletException, IOException {
-        UserAuthentication userAuthentication = new UserAuthentication("testUser", null, null);
+        UserAuthentication userAuthentication = new UserAuthentication(123, null, Role.USER.getAuthority());
         SecurityContextHolder.getContext().setAuthentication(userAuthentication);
     }
 }

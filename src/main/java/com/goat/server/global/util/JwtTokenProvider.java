@@ -1,15 +1,16 @@
 package com.goat.server.global.util;
 
+import com.goat.server.global.domain.JwtUserDetails;
 import com.goat.server.global.domain.type.JwtProperties;
 import com.goat.server.global.domain.type.Tokens;
 import com.goat.server.global.domain.type.JwtValidationType;
+import com.goat.server.mypage.domain.type.Role;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -31,19 +32,21 @@ public class JwtTokenProvider {
     }
 
     // JWT 토큰 생성
-    public Tokens generateToken(Authentication authentication) {
-        return new Tokens(createToken(authentication, jwtProperties.getTokenExpirationTime()),
-                createToken(authentication, jwtProperties.getRefreshTokenExpirationTime()));
+    public Tokens generateToken(JwtUserDetails jwtUserDetails) {
+        return new Tokens(createToken(jwtUserDetails, jwtProperties.getTokenExpirationTime()),
+                createToken(jwtUserDetails, jwtProperties.getRefreshTokenExpirationTime()));
     }
 
-    private String createToken(Authentication authentication, Long expirationTime) {
+    private String createToken(JwtUserDetails jwtUserDetails, Long expirationTime) {
         final Date now = new Date();
 
         final Claims claims = Jwts.claims()
-                .setSubject(authentication.getPrincipal().toString())
+                .setSubject(jwtUserDetails.userId().toString())
                 .setIssuer(jwtProperties.getIssuer())
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + expirationTime));  // 만료 시간 설정
+
+        claims.put("role", jwtUserDetails.role().toString());
 
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE) // Header
@@ -78,15 +81,18 @@ public class JwtTokenProvider {
         }
 
         return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey(token))
+                .setSigningKey(secretKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
 
-    public Long getUserIdFromJwt(String token) {
+    public JwtUserDetails getJwtUserDetails(String token) {
         Claims claims = getBody(token);
-        return Long.valueOf(claims.getSubject());
+        return JwtUserDetails.builder()
+                .userId(Long.valueOf(claims.getSubject()))
+                .role(Role.valueOf(claims.get("role").toString()))
+                .build();
     }
 
 }

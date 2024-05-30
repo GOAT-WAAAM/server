@@ -40,7 +40,7 @@ class AuthControllerTest extends CommonControllerTest {
         final String kakaoAccessToken = "thisIsmockAccessToken";
 
         given(kakaoSocialService.socialLogin(kakaoAccessToken))
-                .willReturn(SignUpSuccessResponse.From(Tokens.builder()
+                .willReturn(SignUpSuccessResponse.from(Tokens.builder()
                         .accessToken("accessToken")
                         .refreshToken("refreshToken")
                         .build()));
@@ -64,7 +64,7 @@ class AuthControllerTest extends CommonControllerTest {
         final String refreshToken = "thisIsRefreshToken";
 
         given(authService.reIssueToken(refreshToken))
-                .willReturn(ReIssueSuccessResponse.From(Tokens.builder()
+                .willReturn(ReIssueSuccessResponse.from(Tokens.builder()
                         .accessToken("accessToken")
                         .refreshToken("refreshToken")
                         .build()));
