@@ -70,7 +70,7 @@ class AuthControllerTest extends CommonControllerTest {
                         .build()));
 
         //when
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/goat/auth/refreshToken")
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/goat/auth/refresh-token")
                 .header("Authorization", refreshToken));
 
         //then

@@ -1,4 +1,4 @@
-package com.goat.server.auth.domain;
+package com.goat.server.auth.dto.response;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
