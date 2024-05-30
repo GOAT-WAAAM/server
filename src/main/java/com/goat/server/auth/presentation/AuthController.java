@@ -39,7 +39,7 @@ public class AuthController {
     }
 
     @Operation(summary = "토큰 재발급", description = "토큰 재발급")
-    @GetMapping("/refreshToken")
+    @GetMapping("/refresh-token")
     public ResponseEntity<ResponseTemplate<Object>> reIssueToken(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String refreshToken) {
 
         log.info("[AuthController.reIssueToken] refreshToken: {}", refreshToken);
@@ -52,12 +52,12 @@ public class AuthController {
     }
 
     @Operation(summary = "테스트용 토큰발급", description = "테스트용 토큰발급")
-    @GetMapping("/testToken")
-    public ResponseEntity<ResponseTemplate<Object>> testToken() {
+    @GetMapping("/test-token")
+    public ResponseEntity<ResponseTemplate<Object>> testToken(@RequestParam Long userId) {
 
         log.info("[AuthController.testToken]");
 
-        SignUpSuccessResponse response = authService.getTestToken();
+        SignUpSuccessResponse response = authService.getTestToken(userId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

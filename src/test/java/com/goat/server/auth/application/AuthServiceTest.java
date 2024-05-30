@@ -6,6 +6,7 @@ import com.goat.server.global.domain.type.Tokens;
 import com.goat.server.global.util.JwtTokenProvider;
 import static com.goat.server.mypage.fixture.UserFixture.USER_USER;
 import com.goat.server.mypage.domain.type.Role;
+import com.goat.server.mypage.repository.JwtUserDetailProjection;
 import com.goat.server.mypage.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,17 @@ class AuthServiceTest {
     @DisplayName("토큰 재발급 테스트")
     void reIssueToken() {
         // given
-        given(userRepository.findById(1L)).willReturn(Optional.ofNullable(USER_USER));
+        given(userRepository.findJwtUserDetailsById(1L)).willReturn(new JwtUserDetailProjection() {
+            @Override
+            public Long getUserId() {
+                return 1L;
+            }
+
+            @Override
+            public String getRole() {
+                return Role.USER.toString();
+            }
+        });
         given(jwtTokenProvider.getJwtUserDetails("refreshToken")).willReturn(new JwtUserDetails(1L, Role.USER));
         given(jwtTokenProvider.generateToken(new JwtUserDetails(1L, Role.USER)))
                 .willReturn(new Tokens("reIssuedAccessToken", "reIssuedRefreshToken"));

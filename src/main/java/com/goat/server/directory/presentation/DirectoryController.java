@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,10 +26,10 @@ public class DirectoryController {
     private final DirectoryService directoryService;
 
     @Operation(summary = "과목, 폴더 정보 가져 오기", description = "과목, 폴더 정보 가져 오기")
-    @GetMapping("/{directoryId}/{userId}")
+    @GetMapping("/{directoryId}")
     public ResponseEntity<ResponseTemplate<Object>> getDirectoryList(
             @PathVariable Long directoryId,
-            @PathVariable Long userId) {
+            @AuthenticationPrincipal Long userId) {
 
         DirectoryResponseList directoryList = directoryService.getDirectoryList(userId);
 
@@ -38,10 +39,12 @@ public class DirectoryController {
     }
 
     @Operation(summary = "폴더 삭제", description = "폴더 삭제")
-    @DeleteMapping("/delete-directory/{directoryId}/{userId}")
+    @DeleteMapping("/temporal/{directoryId}")
     public ResponseEntity<ResponseTemplate<Object>> deleteDirectory(
-            @PathVariable Long directoryId,
-            @PathVariable Long userId) {
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long directoryId) {
+
+        log.info("userId: {}", userId);
 
         directoryService.deleteDirectory(userId, directoryId);
 

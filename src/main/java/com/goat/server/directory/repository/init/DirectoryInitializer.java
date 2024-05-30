@@ -34,6 +34,8 @@ public class DirectoryInitializer implements ApplicationRunner {
                     .orElseThrow(() -> new UserNotFoundException(MypageErrorCode.USER_NOT_FOUND));
             User user = userRepository.findByEmail("userEmail")
                     .orElseThrow(() -> new UserNotFoundException(MypageErrorCode.USER_NOT_FOUND));
+            User guest = userRepository.findByEmail("guestEmail")
+                    .orElseThrow(() -> new UserNotFoundException(MypageErrorCode.USER_NOT_FOUND));
 
             List<Directory> directoryList = new ArrayList<>();
 
@@ -41,21 +43,19 @@ public class DirectoryInitializer implements ApplicationRunner {
                     .directoryName("trash")
                     .directoryColor("#FF00FF")
                     .parentDirectory(null)
-                    .user(user)
+                    .user(admin)
                     .build();
-
             Directory DUMMY_TRASH_DIRECTORY2 = Directory.builder()
                     .directoryName("trash")
                     .directoryColor("#FF00FF")
                     .parentDirectory(null)
                     .user(user)
                     .build();
-
             Directory DUMMY_TRASH_DIRECTORY3 = Directory.builder()
                     .directoryName("trash")
                     .directoryColor("#FF00FF")
                     .parentDirectory(null)
-                    .user(admin)
+                    .user(guest)
                     .build();
 
             Directory DUMMY_PARENT_DIRECTORY1 = Directory.builder()
@@ -64,14 +64,12 @@ public class DirectoryInitializer implements ApplicationRunner {
                     .parentDirectory(null)
                     .user(user)
                     .build();
-
             Directory DUMMY_PARENT_DIRECTORY2 = Directory.builder()
                     .directoryName("dummyDirectory2")
                     .directoryColor("#FF00FF")
                     .parentDirectory(null)
                     .user(user)
                     .build();
-
             Directory DUMMY_PARENT_DIRECTORY3 = Directory.builder()
                     .directoryName("dummyDirectory3")
                     .directoryColor("#FF000F")
@@ -85,14 +83,12 @@ public class DirectoryInitializer implements ApplicationRunner {
                     .parentDirectory(DUMMY_PARENT_DIRECTORY1)
                     .user(user)
                     .build();
-
             Directory DUMMY_CHILD_DIRECTORY2 = Directory.builder()
                     .directoryName("dummyDirectory5")
                     .directoryColor("#FF00FF")
                     .parentDirectory(DUMMY_PARENT_DIRECTORY1)
                     .user(user)
                     .build();
-
             Directory DUMMY_CHILD_DIRECTORY3 = Directory.builder()
                     .directoryName("dummyDirectory5")
                     .directoryColor("#FF00FF")
