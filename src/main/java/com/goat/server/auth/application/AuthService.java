@@ -2,11 +2,11 @@ package com.goat.server.auth.application;
 
 import com.goat.server.auth.dto.response.ReIssueSuccessResponse;
 import com.goat.server.auth.dto.response.SignUpSuccessResponse;
-import com.goat.server.global.domain.JwtUserDetails;
-import com.goat.server.global.util.JwtTokenProvider;
+import com.goat.server.global.util.jwt.JwtUserDetails;
+import com.goat.server.global.util.jwt.JwtTokenProvider;
 import com.goat.server.mypage.domain.type.Role;
 import com.goat.server.mypage.exception.UserNotFoundException;
-import com.goat.server.mypage.repository.JwtUserDetailProjection;
+import com.goat.server.mypage.dto.JwtUserDetailProjection;
 import com.goat.server.mypage.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

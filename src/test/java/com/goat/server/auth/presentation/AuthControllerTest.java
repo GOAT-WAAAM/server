@@ -5,7 +5,7 @@ import com.goat.server.auth.application.KakaoSocialService;
 import com.goat.server.auth.dto.response.ReIssueSuccessResponse;
 import com.goat.server.auth.dto.response.SignUpSuccessResponse;
 import com.goat.server.global.CommonControllerTest;
-import com.goat.server.global.domain.type.Tokens;
+import com.goat.server.global.util.Tokens;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

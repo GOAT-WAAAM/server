@@ -1,7 +1,7 @@
 package com.goat.server.global;
 
 
-import com.goat.server.global.util.JwtTokenProvider;
+import com.goat.server.global.util.jwt.JwtTokenProvider;
 import com.goat.server.global.util.filter.UserAuthentication;
 import com.goat.server.mypage.domain.type.Role;
 import jakarta.servlet.ServletException;

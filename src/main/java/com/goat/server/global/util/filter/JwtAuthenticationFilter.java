@@ -1,6 +1,6 @@
 package com.goat.server.global.util.filter;
 
-import com.goat.server.global.util.JwtTokenProvider;
+import com.goat.server.global.util.jwt.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

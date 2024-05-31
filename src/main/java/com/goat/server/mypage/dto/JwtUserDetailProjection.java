@@ -1,4 +1,4 @@
-package com.goat.server.mypage.repository;
+package com.goat.server.mypage.dto;
 
 public interface JwtUserDetailProjection {
     Long getUserId();

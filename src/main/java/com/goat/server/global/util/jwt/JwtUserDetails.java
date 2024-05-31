@@ -1,4 +1,4 @@
-package com.goat.server.global.domain;
+package com.goat.server.global.util.jwt;
 
 import com.goat.server.mypage.domain.type.Role;
 import lombok.Builder;

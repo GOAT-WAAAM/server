@@ -1,9 +1,7 @@
-package com.goat.server.global.util;
+package com.goat.server.global.util.jwt;
 
-import com.goat.server.global.domain.JwtUserDetails;
-import com.goat.server.global.domain.type.JwtProperties;
-import com.goat.server.global.domain.type.Tokens;
 import com.goat.server.global.domain.type.JwtValidationType;
+import com.goat.server.global.util.Tokens;
 import com.goat.server.mypage.domain.type.Role;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;

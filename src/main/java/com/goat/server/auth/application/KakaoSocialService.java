@@ -1,8 +1,8 @@
 package com.goat.server.auth.application;
 
-import com.goat.server.global.domain.JwtUserDetails;
+import com.goat.server.global.util.jwt.JwtUserDetails;
 import com.goat.server.global.exception.CustomFeignException;
-import com.goat.server.global.util.JwtTokenProvider;
+import com.goat.server.global.util.jwt.JwtTokenProvider;
 import com.goat.server.mypage.domain.User;
 import com.goat.server.mypage.repository.UserRepository;
 import com.goat.server.mypage.application.UserService;

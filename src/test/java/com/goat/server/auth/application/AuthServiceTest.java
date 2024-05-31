@@ -1,12 +1,11 @@
 package com.goat.server.auth.application;
 
 import com.goat.server.auth.dto.response.ReIssueSuccessResponse;
-import com.goat.server.global.domain.JwtUserDetails;
-import com.goat.server.global.domain.type.Tokens;
-import com.goat.server.global.util.JwtTokenProvider;
-import static com.goat.server.mypage.fixture.UserFixture.USER_USER;
+import com.goat.server.global.util.jwt.JwtUserDetails;
+import com.goat.server.global.util.Tokens;
+import com.goat.server.global.util.jwt.JwtTokenProvider;
 import com.goat.server.mypage.domain.type.Role;
-import com.goat.server.mypage.repository.JwtUserDetailProjection;
+import com.goat.server.mypage.dto.JwtUserDetailProjection;
 import com.goat.server.mypage.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,8 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
