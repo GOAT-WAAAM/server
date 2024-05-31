@@ -1,14 +1,12 @@
 package com.goat.server.global.domain.type;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
 @ConfigurationProperties(prefix = "jwt")
 @Getter
-@Setter
+@AllArgsConstructor
 public class JwtProperties {
 
     private String issuer;
