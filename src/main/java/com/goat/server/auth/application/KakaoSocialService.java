@@ -50,7 +50,7 @@ public class KakaoSocialService {
     }
 
     private User findOrCreateUser(KakaoUserResponse userResponse) {
-        User user = userRepository.findBySocialId(userResponse.id().toString());
-        return (user != null) ? user : userService.createUser(userResponse);
+        return userRepository.findBySocialId(userResponse.id().toString())
+                .orElseGet(() -> userService.createUser(userResponse));
     }
 }

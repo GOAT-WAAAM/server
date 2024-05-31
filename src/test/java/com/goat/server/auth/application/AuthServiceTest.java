@@ -14,6 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
@@ -33,7 +35,7 @@ class AuthServiceTest {
     @DisplayName("토큰 재발급 테스트")
     void reIssueToken() {
         // given
-        given(userRepository.findJwtUserDetailsById(1L)).willReturn(new JwtUserDetailProjection() {
+        given(userRepository.findJwtUserDetailsById(1L)).willReturn(Optional.of(new JwtUserDetailProjection() {
             @Override
             public Long getUserId() {
                 return 1L;
@@ -43,7 +45,7 @@ class AuthServiceTest {
             public String getRole() {
                 return Role.USER.toString();
             }
-        });
+        }));
         given(jwtTokenProvider.getJwtUserDetails("refreshToken")).willReturn(new JwtUserDetails(1L, Role.USER));
         given(jwtTokenProvider.generateToken(new JwtUserDetails(1L, Role.USER)))
                 .willReturn(new Tokens("reIssuedAccessToken", "reIssuedRefreshToken"));
