@@ -2,7 +2,7 @@ package com.goat.server.auth.application;
 
 import com.goat.server.auth.dto.response.ReIssueSuccessResponse;
 import com.goat.server.global.util.jwt.JwtUserDetails;
-import com.goat.server.global.util.Tokens;
+import com.goat.server.global.util.jwt.Tokens;
 import com.goat.server.global.util.jwt.JwtTokenProvider;
 import com.goat.server.mypage.domain.type.Role;
 import com.goat.server.mypage.dto.JwtUserDetailProjection;

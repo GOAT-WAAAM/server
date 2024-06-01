@@ -1,4 +1,4 @@
-package com.goat.server.global.util;
+package com.goat.server.global.util.jwt;
 
 import lombok.Builder;
 

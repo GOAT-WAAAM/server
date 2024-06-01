@@ -1,6 +1,7 @@
 package com.goat.server.global;
 
 
+import com.goat.server.global.util.AuthenticationUtil;
 import com.goat.server.global.util.jwt.JwtTokenProvider;
 import com.goat.server.global.util.filter.UserAuthentication;
 import com.goat.server.mypage.domain.type.Role;
@@ -19,6 +20,9 @@ public class CommonControllerTest {
 
     @MockBean
     private JwtTokenProvider jwtTokenProvider;
+
+    @MockBean
+    private AuthenticationUtil authenticationUtil;
 
     @BeforeEach
     public void setUp() throws ServletException, IOException {
