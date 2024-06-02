@@ -35,6 +35,9 @@ public class Directory extends BaseTimeEntity {
     @Column(name = "directory_color", length = 50)
     private String directoryColor;
 
+    @Column(name = "depth")
+    private Long depth;
+
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
@@ -47,9 +50,10 @@ public class Directory extends BaseTimeEntity {
     private List<Directory> childDirectoryList = new ArrayList<>();
 
     @Builder
-    public Directory(String directoryName, String directoryColor, User user, Directory parentDirectory) {
+    public Directory(String directoryName, String directoryColor, Long depth, User user, Directory parentDirectory) {
         this.directoryName = directoryName;
         this.directoryColor = directoryColor;
+        this.depth = depth;
         this.user = user;
         this.parentDirectory = parentDirectory;
     }

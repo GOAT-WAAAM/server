@@ -1,6 +1,6 @@
 package com.goat.server.directory.presentation;
 
-import com.goat.server.directory.dto.response.DirectoryResponseList;
+import com.goat.server.directory.dto.response.DirectoryTotalShowResponse;
 import com.goat.server.global.dto.ResponseTemplate;
 import com.goat.server.directory.application.DirectoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "DirectoryController", description = "DirectoryController 관련 API")
@@ -26,27 +27,30 @@ public class DirectoryController {
     private final DirectoryService directoryService;
 
     @Operation(summary = "과목, 폴더 정보 가져 오기", description = "과목, 폴더 정보 가져 오기")
-    @GetMapping("/{directoryId}")
-    public ResponseEntity<ResponseTemplate<Object>> getDirectoryList(
-            @PathVariable Long directoryId,
+    @GetMapping
+    public ResponseEntity<ResponseTemplate<Object>> getDirectorySubList(
+            @RequestParam(defaultValue = "0") Long directoryId,
             @AuthenticationPrincipal Long userId) {
 
-        DirectoryResponseList directoryList = directoryService.getDirectoryList(userId);
+        DirectoryTotalShowResponse directorySubList = directoryService.getDirectorySubList(userId, directoryId);
+
+        log.info("directorySubList: {}", directorySubList);
+        log.info("userId: {}", userId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(ResponseTemplate.from(directoryList));
+                .body(ResponseTemplate.from(directorySubList));
     }
 
     @Operation(summary = "폴더 삭제", description = "폴더 삭제")
     @DeleteMapping("/temporal/{directoryId}")
-    public ResponseEntity<ResponseTemplate<Object>> deleteDirectory(
+    public ResponseEntity<ResponseTemplate<Object>> deleteDirectoryTemporal(
             @AuthenticationPrincipal Long userId,
             @PathVariable Long directoryId) {
 
         log.info("userId: {}", userId);
 
-        directoryService.deleteDirectory(userId, directoryId);
+        directoryService.deleteDirectoryTemporal(userId, directoryId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

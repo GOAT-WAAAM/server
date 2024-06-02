@@ -1,9 +1,13 @@
 package com.goat.server.directory.presentation;
 
 
+import static com.goat.server.directory.fixture.DirectoryFixture.CHILD_DIRECTORY1;
+import static com.goat.server.directory.fixture.DirectoryFixture.CHILD_DIRECTORY2;
 import static com.goat.server.directory.fixture.DirectoryFixture.PARENT_DIRECTORY1;
-import static com.goat.server.directory.fixture.DirectoryFixture.PARENT_DIRECTORY2;
-import static com.goat.server.mypage.fixture.UserFixture.USER_USER;
+import static com.goat.server.review.fixture.ReviewFixture.DUMMY_REVIEW1;
+import static com.goat.server.review.fixture.ReviewFixture.DUMMY_REVIEW2;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -11,10 +15,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.goat.server.directory.dto.response.DirectoryResponse;
-import com.goat.server.directory.dto.response.DirectoryResponseList;
+import com.goat.server.directory.dto.response.DirectoryTotalShowResponse;
 import com.goat.server.global.CommonControllerTest;
 import com.goat.server.directory.application.DirectoryService;
+import com.goat.server.review.dto.response.ReviewSimpleResponse;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +29,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+@Slf4j
 @WebMvcTest(DirectoryController.class)
 class DirectoryControllerTest extends CommonControllerTest {
 
@@ -36,21 +43,33 @@ class DirectoryControllerTest extends CommonControllerTest {
     @DisplayName("과목, 폴더 정보 가져 오기")
     void getDirectoryListTest() throws Exception {
         //given
-        DirectoryResponseList subjectResponseList =
-                DirectoryResponseList.from(
-                        List.of(DirectoryResponse.from(PARENT_DIRECTORY1), DirectoryResponse.from(PARENT_DIRECTORY2)));
+        List<DirectoryResponse> directoryResponseList =
+                List.of(DirectoryResponse.from(CHILD_DIRECTORY1), DirectoryResponse.from(CHILD_DIRECTORY2));
+        List<ReviewSimpleResponse> reviewSimpleResponseList =
+                List.of(ReviewSimpleResponse.from(DUMMY_REVIEW1), ReviewSimpleResponse.from(DUMMY_REVIEW2));
+        DirectoryTotalShowResponse directoryTotalShowResponse =
+                DirectoryTotalShowResponse.of(directoryResponseList, reviewSimpleResponseList);
 
-        given(directoryService.getDirectoryList(USER_USER.getUserId()))
-                .willReturn(subjectResponseList);
+        given(directoryService.getDirectorySubList(anyLong(), eq(PARENT_DIRECTORY1.getDirectoryId())))
+                .willReturn(directoryTotalShowResponse);
+
+        log.info("directoryTotalShowResponse: {}", directoryTotalShowResponse);
 
         //when
-        ResultActions resultActions = mockMvc.perform(get("/subject/{userId}", USER_USER.getUserId()))
-                .andDo(print());
+        ResultActions resultActions =
+                mockMvc.perform(get("/directory?directoryId=" + PARENT_DIRECTORY1.getDirectoryId()))
+                        .andDo(print());
 
         //then
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.results.directoryResponseList[0].directoryId").value(PARENT_DIRECTORY1.getDirectoryId()))
-                .andExpect(jsonPath("$.results.directoryResponseList[1].directoryId").value(PARENT_DIRECTORY2.getDirectoryId()));
+                .andExpect(jsonPath("$.results.directoryResponseList[0].directoryId")
+                        .value(CHILD_DIRECTORY1.getDirectoryId()))
+                .andExpect(jsonPath("$.results.directoryResponseList[1].directoryId")
+                        .value(CHILD_DIRECTORY2.getDirectoryId()))
+                .andExpect(jsonPath("$.results.reviewSimpleResponseList[0].reviewId")
+                        .value(DUMMY_REVIEW1.getReviewId()))
+                .andExpect(jsonPath("$.results.reviewSimpleResponseList[1].reviewId")
+                        .value(DUMMY_REVIEW2.getReviewId()));
     }
 }

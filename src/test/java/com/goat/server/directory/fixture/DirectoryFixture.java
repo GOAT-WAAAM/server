@@ -6,7 +6,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 public class DirectoryFixture {
 
-    public static final Directory DUMMY_TRASH_DIRECTORY = Directory.builder()
+    public static final Directory TRASH_DIRECTORY = Directory.builder()
             .directoryName("trash")
             .directoryColor("#FF00FF")
             .parentDirectory(null)
@@ -19,7 +19,6 @@ public class DirectoryFixture {
             .parentDirectory(null)
             .user(UserFixture.USER_USER)
             .build();
-
     public static final Directory PARENT_DIRECTORY2 = Directory.builder()
             .directoryName("directory2")
             .directoryColor("#FF00FF")
@@ -33,10 +32,17 @@ public class DirectoryFixture {
             .parentDirectory(PARENT_DIRECTORY1)
             .user(UserFixture.USER_USER)
             .build();
+    public static final Directory CHILD_DIRECTORY2 = Directory.builder()
+            .directoryName("directory3")
+            .directoryColor("#FF00FF")
+            .parentDirectory(PARENT_DIRECTORY1)
+            .user(UserFixture.USER_USER)
+            .build();
 
     static {
         ReflectionTestUtils.setField(PARENT_DIRECTORY1, "directoryId", 1L);
         ReflectionTestUtils.setField(PARENT_DIRECTORY2, "directoryId", 2L);
         ReflectionTestUtils.setField(CHILD_DIRECTORY1, "directoryId", 3L);
+        ReflectionTestUtils.setField(CHILD_DIRECTORY2, "directoryId", 4L);
     }
 }
