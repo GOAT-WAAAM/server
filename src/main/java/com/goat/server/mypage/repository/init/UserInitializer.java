@@ -3,7 +3,9 @@ package com.goat.server.mypage.repository.init;
 import com.goat.server.global.domain.type.OauthProvider;
 import com.goat.server.global.util.LocalDummyDataInit;
 import com.goat.server.mypage.domain.User;
+import com.goat.server.mypage.domain.type.Grade;
 import com.goat.server.mypage.domain.type.Role;
+import com.goat.server.mypage.domain.type.School;
 import com.goat.server.mypage.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,15 @@ public class UserInitializer implements ApplicationRunner {
             .goal("admin go home")
             .provider(OauthProvider.KAKAO)
             .build();
+    public static final User DUMMY_MYPAGEUSER = User.builder()
+            .email("mypagetestImail")
+            .role(Role.USER)
+            .nickname("mypagetestuser")
+            .grade(Grade.FIRST)
+            .school(School.ELEMENTARY)
+            .goal("this is mypage test")
+            .provider(OauthProvider.KAKAO)
+            .build();
 
     @Override
     public void run(ApplicationArguments args) {
@@ -56,6 +67,7 @@ public class UserInitializer implements ApplicationRunner {
             memberList.add(DUMMY_GUEST);
             memberList.add(DUMMY_USER);
             memberList.add(DUMMY_ADMIN);
+            memberList.add(DUMMY_MYPAGEUSER);
 
             userRepository.saveAll(memberList);
         }
