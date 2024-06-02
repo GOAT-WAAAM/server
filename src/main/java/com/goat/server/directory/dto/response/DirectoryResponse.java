@@ -12,7 +12,7 @@ public record DirectoryResponse(
 
     public static DirectoryResponse from(Directory directory) {
         return DirectoryResponse.builder()
-                .directoryId(directory.getDirectoryId())
+                .directoryId(directory.getId())
                 .directoryName(directory.getDirectoryName())
                 .directoryColor(directory.getDirectoryColor())
                 .build();

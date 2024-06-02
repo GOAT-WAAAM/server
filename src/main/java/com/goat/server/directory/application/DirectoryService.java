@@ -53,7 +53,7 @@ public class DirectoryService {
     private List<DirectoryResponse> getDirectoryResponseList(Long userId, Long parentDirectoryId) {
         List<Directory> directoryList =
                 parentDirectoryId == 0 ? directoryRepository.findAllByUserIdAndParentDirectoryIsNull(userId)
-                        : directoryRepository.findByParentDirectory_DirectoryId(parentDirectoryId);
+                        : directoryRepository.findByParentDirectoryId(parentDirectoryId);
 
         log.info("directoryList: {}", directoryList.size());
 

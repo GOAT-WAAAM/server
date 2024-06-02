@@ -40,9 +40,9 @@ public class DirectoryFixture {
             .build();
 
     static {
-        ReflectionTestUtils.setField(PARENT_DIRECTORY1, "directoryId", 1L);
-        ReflectionTestUtils.setField(PARENT_DIRECTORY2, "directoryId", 2L);
-        ReflectionTestUtils.setField(CHILD_DIRECTORY1, "directoryId", 3L);
-        ReflectionTestUtils.setField(CHILD_DIRECTORY2, "directoryId", 4L);
+        ReflectionTestUtils.setField(PARENT_DIRECTORY1, "id", 1L);
+        ReflectionTestUtils.setField(PARENT_DIRECTORY2, "id", 2L);
+        ReflectionTestUtils.setField(CHILD_DIRECTORY1, "id", 3L);
+        ReflectionTestUtils.setField(CHILD_DIRECTORY2, "id", 4L);
     }
 }

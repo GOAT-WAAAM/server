@@ -50,23 +50,23 @@ class DirectoryControllerTest extends CommonControllerTest {
         DirectoryTotalShowResponse directoryTotalShowResponse =
                 DirectoryTotalShowResponse.of(directoryResponseList, reviewSimpleResponseList);
 
-        given(directoryService.getDirectorySubList(anyLong(), eq(PARENT_DIRECTORY1.getDirectoryId())))
+        given(directoryService.getDirectorySubList(anyLong(), eq(PARENT_DIRECTORY1.getId())))
                 .willReturn(directoryTotalShowResponse);
 
         log.info("directoryTotalShowResponse: {}", directoryTotalShowResponse);
 
         //when
         ResultActions resultActions =
-                mockMvc.perform(get("/directory?directoryId=" + PARENT_DIRECTORY1.getDirectoryId()))
+                mockMvc.perform(get("/directory?directoryId=" + PARENT_DIRECTORY1.getId()))
                         .andDo(print());
 
         //then
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.results.directoryResponseList[0].directoryId")
-                        .value(CHILD_DIRECTORY1.getDirectoryId()))
+                        .value(CHILD_DIRECTORY1.getId()))
                 .andExpect(jsonPath("$.results.directoryResponseList[1].directoryId")
-                        .value(CHILD_DIRECTORY2.getDirectoryId()))
+                        .value(CHILD_DIRECTORY2.getId()))
                 .andExpect(jsonPath("$.results.reviewSimpleResponseList[0].reviewId")
                         .value(DUMMY_REVIEW1.getReviewId()))
                 .andExpect(jsonPath("$.results.reviewSimpleResponseList[1].reviewId")

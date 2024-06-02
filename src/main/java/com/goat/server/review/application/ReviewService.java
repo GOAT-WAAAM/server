@@ -20,7 +20,7 @@ public class ReviewService {
      * 폴더에 속한 리뷰 목록 조회
      */
     public List<ReviewSimpleResponse> getReviewSimpleResponseList(Long directoryId) {
-        return reviewRepository.findByDirectory_DirectoryId(directoryId).stream()
+        return reviewRepository.findByDirectoryId(directoryId).stream()
                 .map(ReviewSimpleResponse::from)
                 .toList();
     }

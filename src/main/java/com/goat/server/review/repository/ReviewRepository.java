@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    List<Review> findByDirectory_DirectoryId(Long directoryId);
+    List<Review> findByDirectoryId(Long directoryId);
 }

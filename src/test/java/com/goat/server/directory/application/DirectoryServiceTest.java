@@ -15,7 +15,6 @@ import static org.mockito.BDDMockito.given;
 import com.goat.server.directory.dto.response.DirectoryResponse;
 import com.goat.server.directory.dto.response.DirectoryTotalShowResponse;
 import com.goat.server.directory.repository.DirectoryRepository;
-import com.goat.server.mypage.repository.UserRepository;
 import com.goat.server.review.application.ReviewService;
 import com.goat.server.review.dto.response.ReviewSimpleResponse;
 import java.util.List;
@@ -43,19 +42,19 @@ class DirectoryServiceTest {
     @DisplayName("과목과 폴더 가져 오기 테스트 - 루트 폴더")
     void getDirectoryListTest() {
         //given
-        given(directoryRepository.findByParentDirectory_DirectoryId(PARENT_DIRECTORY1.getDirectoryId()))
+        given(directoryRepository.findByParentDirectoryId(PARENT_DIRECTORY1.getId()))
                 .willReturn(List.of(CHILD_DIRECTORY1, CHILD_DIRECTORY2));
-        given(reviewService.getReviewSimpleResponseList(PARENT_DIRECTORY1.getDirectoryId())).willReturn(
+        given(reviewService.getReviewSimpleResponseList(PARENT_DIRECTORY1.getId())).willReturn(
                 List.of(ReviewSimpleResponse.from(DUMMY_REVIEW1), ReviewSimpleResponse.from(DUMMY_REVIEW2)));
 
         //when
         DirectoryTotalShowResponse directorySubList =
-                directoryService.getDirectorySubList(USER_USER.getUserId(), PARENT_DIRECTORY1.getDirectoryId());
+                directoryService.getDirectorySubList(USER_USER.getUserId(), PARENT_DIRECTORY1.getId());
 
         //then
         assertThat(directorySubList.directoryResponseList())
                 .extracting(DirectoryResponse::directoryId)
-                .containsExactly(CHILD_DIRECTORY1.getDirectoryId(), CHILD_DIRECTORY2.getDirectoryId());
+                .containsExactly(CHILD_DIRECTORY1.getId(), CHILD_DIRECTORY2.getId());
 
         assertThat(directorySubList.reviewSimpleResponseList())
                 .extracting(ReviewSimpleResponse::reviewId)
@@ -76,7 +75,7 @@ class DirectoryServiceTest {
         //then
         assertThat(directorySubList.directoryResponseList())
                 .extracting(DirectoryResponse::directoryId)
-                .containsExactly(PARENT_DIRECTORY1.getDirectoryId(), PARENT_DIRECTORY2.getDirectoryId());
+                .containsExactly(PARENT_DIRECTORY1.getId(), PARENT_DIRECTORY2.getId());
 
         assertThat(directorySubList.reviewSimpleResponseList()).isEmpty();
     }
@@ -85,13 +84,13 @@ class DirectoryServiceTest {
     @DisplayName("폴더 임시 삭제 테스트")
     void deleteDirectoryTemporalTest() {
         //given
-        given(directoryRepository.findById(PARENT_DIRECTORY1.getDirectoryId()))
+        given(directoryRepository.findById(PARENT_DIRECTORY1.getId()))
                 .willReturn(Optional.of(PARENT_DIRECTORY1));
         given(directoryRepository.findTrashDirectoryByUser(USER_USER.getUserId()))
                 .willReturn(Optional.of(TRASH_DIRECTORY));
 
         //when
-        directoryService.deleteDirectoryTemporal(USER_USER.getUserId(), PARENT_DIRECTORY1.getDirectoryId());
+        directoryService.deleteDirectoryTemporal(USER_USER.getUserId(), PARENT_DIRECTORY1.getId());
 
         //then
         assertThat(PARENT_DIRECTORY1.getParentDirectory()).isEqualTo(TRASH_DIRECTORY);

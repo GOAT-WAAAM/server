@@ -13,7 +13,7 @@ public interface DirectoryRepository extends JpaRepository<Directory, Long> {
     @Query("SELECT d FROM Directory d WHERE d.user.userId = :userId AND d.parentDirectory IS NULL")
     List<Directory> findAllByUserIdAndParentDirectoryIsNull(Long userId);
 
-    List<Directory> findByParentDirectory_DirectoryId(Long parentDirectoryId);
+    List<Directory> findByParentDirectoryId(Long parentDirectoryId);
 
     @Query("SELECT d FROM Directory d WHERE d.user.userId = :userId AND d.directoryName = 'trash'")
     Optional<Directory> findTrashDirectoryByUser(Long userId);

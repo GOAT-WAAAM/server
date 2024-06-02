@@ -26,8 +26,8 @@ public class Directory extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "directory_id")
-    private Long directoryId;
+    @Column(name = "id")
+    private Long id;
 
     @Column(name = "directory_name", length = 100)
     private String directoryName;
