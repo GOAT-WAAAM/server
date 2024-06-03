@@ -61,4 +61,8 @@ public class Directory extends BaseTimeEntity {
     public void updateParentDirectory(Directory parentDirectory) {
         this.parentDirectory = parentDirectory;
     }
+
+    public void updateModifiedDate() {
+        super.updateModifiedDate();
+    }
 }

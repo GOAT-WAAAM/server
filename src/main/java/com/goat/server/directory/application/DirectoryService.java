@@ -41,6 +41,8 @@ public class DirectoryService {
         Directory directory = directoryRepository.findById(directoryId)
                 .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
+        touchParentDirectories(directory);
+
         directoryRepository.findTrashDirectoryByUser(userId)
                 .ifPresentOrElse(
                         directory::updateParentDirectory,
@@ -60,5 +62,12 @@ public class DirectoryService {
         return directoryList.stream()
                 .map(DirectoryResponse::from)
                 .toList();
+    }
+
+    private void touchParentDirectories(Directory directory) {
+        while (directory.getParentDirectory() != null) {
+            directory = directory.getParentDirectory();
+            directory.updateModifiedDate();
+        }
     }
 }
