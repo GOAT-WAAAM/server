@@ -7,7 +7,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 public class DirectoryFixture {
 
     public static final Directory TRASH_DIRECTORY = Directory.builder()
-            .directoryName("trash")
+            .directoryName("trash_directory")
             .directoryColor("#FF00FF")
             .parentDirectory(null)
             .user(UserFixture.USER_USER)

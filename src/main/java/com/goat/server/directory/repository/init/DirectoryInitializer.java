@@ -40,21 +40,21 @@ public class DirectoryInitializer implements ApplicationRunner {
             List<Directory> directoryList = new ArrayList<>();
 
             Directory DUMMY_TRASH_DIRECTORY1 = Directory.builder()
-                    .directoryName("trash")
+                    .directoryName("trash_directory")
                     .directoryColor("#FF00FF")
                     .depth(1L)
                     .parentDirectory(null)
                     .user(admin)
                     .build();
             Directory DUMMY_TRASH_DIRECTORY2 = Directory.builder()
-                    .directoryName("trash")
+                    .directoryName("trash_directory")
                     .directoryColor("#FF00FF")
                     .depth(1L)
                     .parentDirectory(null)
                     .user(user)
                     .build();
             Directory DUMMY_TRASH_DIRECTORY3 = Directory.builder()
-                    .directoryName("trash")
+                    .directoryName("trash_directory")
                     .directoryColor("#FF00FF")
                     .depth(1L)
                     .parentDirectory(null)

@@ -15,6 +15,6 @@ public interface DirectoryRepository extends JpaRepository<Directory, Long> {
 
     List<Directory> findByParentDirectoryId(Long parentDirectoryId);
 
-    @Query("SELECT d FROM Directory d WHERE d.user.userId = :userId AND d.directoryName = 'trash'")
+    @Query("SELECT d FROM Directory d WHERE d.user.userId = :userId AND d.directoryName = 'trash_directory'")
     Optional<Directory> findTrashDirectoryByUser(Long userId);
 }

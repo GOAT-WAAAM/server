@@ -1,6 +1,5 @@
 package com.goat.server.directory.presentation;
 
-
 import static com.goat.server.directory.fixture.DirectoryFixture.CHILD_DIRECTORY1;
 import static com.goat.server.directory.fixture.DirectoryFixture.CHILD_DIRECTORY2;
 import static com.goat.server.directory.fixture.DirectoryFixture.PARENT_DIRECTORY1;
