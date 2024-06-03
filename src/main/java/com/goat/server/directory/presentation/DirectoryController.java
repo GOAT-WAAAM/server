@@ -1,5 +1,6 @@
 package com.goat.server.directory.presentation;
 
+import com.goat.server.directory.dto.request.DirectoryInitRequest;
 import com.goat.server.directory.dto.response.DirectoryTotalShowResponse;
 import com.goat.server.global.dto.ResponseTemplate;
 import com.goat.server.directory.application.DirectoryService;
@@ -13,6 +14,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,6 +43,19 @@ public class DirectoryController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ResponseTemplate.from(directorySubList));
+    }
+
+    @Operation(summary = "폴더 생성", description = "폴더 생성")
+    @PostMapping
+    public ResponseEntity<ResponseTemplate<Object>> initDirectory(
+            @AuthenticationPrincipal Long userId,
+            @RequestBody DirectoryInitRequest directoryInitRequest) {
+
+        directoryService.initDirectory(userId, directoryInitRequest);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ResponseTemplate.EMPTY_RESPONSE);
     }
 
     @Operation(summary = "폴더 삭제", description = "폴더 삭제")
