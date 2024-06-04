@@ -27,6 +27,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -45,6 +46,9 @@ class DirectoryServiceTest {
 
     @Mock
     private UserService userService;
+
+    @Captor
+    ArgumentCaptor<Directory> directoryCaptor;
 
     @Test
     @DisplayName("과목과 폴더 가져 오기 테스트 - 루트 폴더 X")
@@ -112,7 +116,6 @@ class DirectoryServiceTest {
         //given
         DirectoryInitRequest directoryInitRequest =
                 new DirectoryInitRequest("폴더", 0L, "#FF0000");
-        ArgumentCaptor<Directory> directoryCaptor = ArgumentCaptor.forClass(Directory.class);
 
         given(userService.findUser(USER_USER.getUserId())).willReturn(USER_USER);
 
@@ -134,7 +137,6 @@ class DirectoryServiceTest {
         //given
         DirectoryInitRequest directoryInitRequest =
                 new DirectoryInitRequest("폴더", PARENT_DIRECTORY1.getId(), "#FF0000");
-        ArgumentCaptor<Directory> directoryCaptor = ArgumentCaptor.forClass(Directory.class);
 
         given(userService.findUser(USER_USER.getUserId())).willReturn(USER_USER);
         given(directoryRepository.findById(PARENT_DIRECTORY1.getId()))
