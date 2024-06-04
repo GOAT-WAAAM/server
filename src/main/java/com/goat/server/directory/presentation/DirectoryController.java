@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/directory")
+@RequestMapping("/goat/directory")
 public class DirectoryController {
 
     private final DirectoryService directoryService;
