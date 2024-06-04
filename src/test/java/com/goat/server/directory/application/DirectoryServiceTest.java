@@ -47,10 +47,12 @@ class DirectoryServiceTest {
     private UserService userService;
 
     @Test
-    @DisplayName("과목과 폴더 가져 오기 테스트 - 루트 폴더")
+    @DisplayName("과목과 폴더 가져 오기 테스트 - 루트 폴더 X")
     void getDirectoryListTest() {
         //given
-        given(directoryRepository.findByParentDirectoryId(PARENT_DIRECTORY1.getId()))
+        given(directoryRepository.existsById(PARENT_DIRECTORY1.getId()))
+                .willReturn(true);
+        given(directoryRepository.findAllByParentDirectoryId(PARENT_DIRECTORY1.getId()))
                 .willReturn(List.of(CHILD_DIRECTORY1, CHILD_DIRECTORY2));
         given(reviewService.getReviewSimpleResponseList(PARENT_DIRECTORY1.getId())).willReturn(
                 List.of(ReviewSimpleResponse.from(DUMMY_REVIEW1), ReviewSimpleResponse.from(DUMMY_REVIEW2)));
@@ -70,10 +72,10 @@ class DirectoryServiceTest {
     }
 
     @Test
-    @DisplayName("과목과 폴더 가져 오기 테스트 - 루트 폴더 X")
+    @DisplayName("과목과 폴더 가져 오기 테스트 - 루트 폴더")
     void getDirectoryListTest2() {
         //given
-        given(directoryRepository.findAllByUserIdAndParentDirectoryIsNull(USER_USER.getUserId()))
+        given(directoryRepository.findAllByUserUserIdAndParentDirectoryIsNull(USER_USER.getUserId()))
                 .willReturn(List.of(PARENT_DIRECTORY1, PARENT_DIRECTORY2));
 
         //when

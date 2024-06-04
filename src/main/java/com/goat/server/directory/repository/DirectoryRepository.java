@@ -10,10 +10,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DirectoryRepository extends JpaRepository<Directory, Long> {
 
-    @Query("SELECT d FROM Directory d WHERE d.user.userId = :userId AND d.parentDirectory IS NULL")
-    List<Directory> findAllByUserIdAndParentDirectoryIsNull(Long userId);
+    List<Directory> findAllByUserUserIdAndParentDirectoryIsNull(Long userId);
 
-    List<Directory> findByParentDirectoryId(Long parentDirectoryId);
+    List<Directory> findAllByParentDirectoryId(Long parentDirectoryId);
 
     @Query("SELECT d FROM Directory d WHERE d.user.userId = :userId AND d.directoryName = 'trash_directory'")
     Optional<Directory> findTrashDirectoryByUser(Long userId);

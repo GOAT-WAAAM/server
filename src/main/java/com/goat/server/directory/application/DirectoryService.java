@@ -32,6 +32,8 @@ public class DirectoryService {
      */
     public DirectoryTotalShowResponse getDirectorySubList(Long userId, Long directoryId) {
 
+        validateDirectory(directoryId);
+
         List<DirectoryResponse> directoryResponseList = getDirectoryResponseList(userId, directoryId);
         List<ReviewSimpleResponse> reviewSimpleResponseList = reviewService.getReviewSimpleResponseList(directoryId);
 
@@ -40,13 +42,16 @@ public class DirectoryService {
         return DirectoryTotalShowResponse.of(directoryResponseList, reviewSimpleResponseList);
     }
 
+    /**
+     * 폴더 임시 삭제
+     */
     @Transactional
     public void deleteDirectoryTemporal(Long userId, Long directoryId) {
 
         Directory directory = directoryRepository.findById(directoryId)
                 .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
-        touchParentDirectories(directory);
+        directory.touchParentDirectories();
 
         directoryRepository.findTrashDirectoryByUser(userId)
                 .ifPresentOrElse(
@@ -57,13 +62,18 @@ public class DirectoryService {
                         });
     }
 
+    /**
+     * 폴더 생성
+     */
     @Transactional
     public void initDirectory(Long userId, DirectoryInitRequest directoryInitRequest) {
 
         User user = userService.findUser(userId);
         Directory parentDirectory = getDirectory(directoryInitRequest);
 
-        touchParentDirectories(parentDirectory);
+        if (parentDirectory != null) {
+            parentDirectory.touchParentDirectories();
+        }
 
         directoryRepository.save(directoryInitRequest.toEntity(user, parentDirectory));
     }
@@ -81,22 +91,21 @@ public class DirectoryService {
         return parentDirectory;
     }
 
+    private void validateDirectory(Long directoryId) {
+        if (directoryId != 0 && !directoryRepository.existsById(directoryId)) {
+            throw new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND);
+        }
+    }
+
     private List<DirectoryResponse> getDirectoryResponseList(Long userId, Long parentDirectoryId) {
         List<Directory> directoryList =
-                parentDirectoryId == 0 ? directoryRepository.findAllByUserIdAndParentDirectoryIsNull(userId)
-                        : directoryRepository.findByParentDirectoryId(parentDirectoryId);
+                parentDirectoryId == 0 ? directoryRepository.findAllByUserUserIdAndParentDirectoryIsNull(userId)
+                        : directoryRepository.findAllByParentDirectoryId(parentDirectoryId);
         //해당 메서드 없는 폴더 보려고 하면 exception 처리하기
         log.info("directoryList: {}", directoryList.size());
 
         return directoryList.stream()
                 .map(DirectoryResponse::from)
                 .toList();
-    }
-
-    private void touchParentDirectories(Directory directory) {
-        while (directory != null) {
-            directory.updateModifiedDate();
-            directory = directory.getParentDirectory();
-        }
     }
 }

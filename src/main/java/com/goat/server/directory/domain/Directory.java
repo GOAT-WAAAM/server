@@ -65,4 +65,12 @@ public class Directory extends BaseTimeEntity {
     public void updateModifiedDate() {
         super.updateModifiedDate();
     }
+
+    public void touchParentDirectories() {
+        updateModifiedDate();
+
+        if (this.parentDirectory != null) {
+            this.parentDirectory.touchParentDirectories();
+        }
+    }
 }
