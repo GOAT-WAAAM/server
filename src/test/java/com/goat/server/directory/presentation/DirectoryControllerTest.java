@@ -7,7 +7,6 @@ import static com.goat.server.review.fixture.ReviewFixture.DUMMY_REVIEW1;
 import static com.goat.server.review.fixture.ReviewFixture.DUMMY_REVIEW2;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.mockito.BDDMockito.given;
@@ -65,7 +64,7 @@ class DirectoryControllerTest extends CommonControllerTest {
 
         //when
         ResultActions resultActions =
-                mockMvc.perform(get("/directory?directoryId=" + PARENT_DIRECTORY1.getId()))
+                mockMvc.perform(get("/goat/directory?directoryId=" + PARENT_DIRECTORY1.getId()))
                         .andDo(print());
 
         //then
@@ -90,10 +89,9 @@ class DirectoryControllerTest extends CommonControllerTest {
 
         //when
         ResultActions resultActions =
-                mockMvc.perform(post("/directory")
+                mockMvc.perform(post("/goat/directory")
                                 .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .with(csrf()))
+                                .contentType(MediaType.APPLICATION_JSON))
                         .andDo(print());
 
         //then
@@ -108,8 +106,7 @@ class DirectoryControllerTest extends CommonControllerTest {
 
         //when
         ResultActions resultActions =
-                mockMvc.perform(delete("/directory/temporal/" + PARENT_DIRECTORY1.getId())
-                                .with(csrf()))
+                mockMvc.perform(delete("/goat/directory/temporal/" + PARENT_DIRECTORY1.getId()))
                         .andDo(print());
 
         //then
