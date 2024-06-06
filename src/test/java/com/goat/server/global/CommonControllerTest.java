@@ -2,6 +2,7 @@ package com.goat.server.global;
 
 import static com.goat.server.mypage.fixture.UserFixture.USER_USER;
 
+import com.goat.server.global.config.TestSecurityConfig;
 import com.goat.server.global.util.JwtTokenProvider;
 import com.goat.server.global.util.filter.UserAuthentication;
 import com.goat.server.mypage.domain.type.Role;

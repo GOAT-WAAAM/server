@@ -1,13 +1,12 @@
-package com.goat.server.global;
+package com.goat.server.global.config;
 
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
-@Configuration
+@TestConfiguration
 public class TestSecurityConfig {
 
     @Bean
@@ -15,14 +14,8 @@ public class TestSecurityConfig {
         return http.csrf(AbstractHttpConfigurer::disable) //csrf 토큰 disable 하기
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .build();
-    }
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/**");
     }
 }
