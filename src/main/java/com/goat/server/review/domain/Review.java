@@ -2,7 +2,7 @@ package com.goat.server.review.domain;
 
 import com.goat.server.global.domain.BaseTimeEntity;
 import com.goat.server.global.domain.ImageInfo;
-import com.goat.server.subject.domain.Directory;
+import com.goat.server.directory.domain.Directory;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;

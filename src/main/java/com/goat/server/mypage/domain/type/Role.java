@@ -1,5 +1,15 @@
 package com.goat.server.mypage.domain.type;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.Collection;
+import java.util.Collections;
+
 public enum Role {
-    ADMIN, USER, GUEST
+    ADMIN, USER, GUEST;
+
+    public Collection<? extends GrantedAuthority> getAuthority() {
+        return Collections.singletonList(new SimpleGrantedAuthority(this.name()));
+    }
 }

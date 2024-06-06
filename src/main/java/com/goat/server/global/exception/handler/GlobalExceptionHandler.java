@@ -1,7 +1,10 @@
 package com.goat.server.global.exception.handler;
 
+import com.goat.server.directory.exception.DirectoryNotFoundException;
 import com.goat.server.mypage.exception.UserNotFoundException;
 import java.util.List;
+
+import com.goat.server.global.exception.CustomFeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -33,6 +36,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         final ErrorCode errorCode = e.getErrorCode();
         return handleExceptionInternal(errorCode);
     }
+
+    @ExceptionHandler(DirectoryNotFoundException.class)
+    public ResponseEntity<Object> handleDirectoryNotFound(final DirectoryNotFoundException e) {
+        final ErrorCode errorCode = e.getErrorCode();
+        return handleExceptionInternal(errorCode);
+    }
+
+    /**
+     * Feign 관련 exception 처리
+     */
+    @ExceptionHandler(CustomFeignException.class)
+    public ErrorResponse handleTokenNotExist(final CustomFeignException e) {
+        final ErrorCode errorCode = e.getErrorCode();
+        return makeErrorResponse(errorCode, e.getMessage());
+    }
+
 
     /**
      * DTO @Valid 관련 exception 처리
