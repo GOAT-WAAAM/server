@@ -14,4 +14,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u.userId as userId, u.role as role FROM User u WHERE u.userId = :userId")
     Optional<JwtUserDetailProjection> findJwtUserDetailsById(Long userId);
+
+    Optional<User> findByEmail(String email);
 }
