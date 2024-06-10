@@ -6,7 +6,7 @@ import com.goat.server.global.domain.type.OauthProvider;
 import com.goat.server.mypage.domain.type.Grade;
 import com.goat.server.mypage.domain.type.Role;
 import com.goat.server.mypage.domain.type.School;
-import com.goat.server.subject.domain.Directory;
+
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

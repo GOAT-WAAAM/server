@@ -2,8 +2,8 @@ package com.goat.server.mypage.application;
 
 import com.goat.server.mypage.domain.Major;
 import com.goat.server.mypage.domain.User;
-import com.goat.server.mypage.dto.GoalRequest;
-import com.goat.server.mypage.dto.UserMajorResponse;
+import com.goat.server.mypage.dto.request.GoalRequest;
+import com.goat.server.mypage.dto.response.UserMajorResponse;
 import com.goat.server.mypage.exception.UserNotFoundException;
 import com.goat.server.mypage.exception.errorcode.MypageErrorCode;
 import com.goat.server.mypage.repository.UserRepository;

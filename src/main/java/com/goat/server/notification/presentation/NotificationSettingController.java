@@ -1,7 +1,6 @@
 package com.goat.server.notification.presentation;
 
 import com.goat.server.global.dto.ResponseTemplate;
-import com.goat.server.mypage.dto.GoalRequest;
 import com.goat.server.notification.application.NotificationSettingService;
 import com.goat.server.notification.dto.CommentNotiSettingRequest;
 import com.goat.server.notification.dto.NotificationSettingResponse;

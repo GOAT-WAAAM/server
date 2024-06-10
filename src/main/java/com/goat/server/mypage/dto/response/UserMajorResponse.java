@@ -1,4 +1,4 @@
-package com.goat.server.mypage.dto;
+package com.goat.server.mypage.dto.response;
 
 import com.goat.server.mypage.domain.type.Grade;
 
