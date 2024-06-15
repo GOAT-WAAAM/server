@@ -9,6 +9,8 @@ import static com.goat.server.mypage.fixture.UserFixture.USER_USER;
 import static com.goat.server.review.fixture.ReviewFixture.DUMMY_REVIEW1;
 import static com.goat.server.review.fixture.ReviewFixture.DUMMY_REVIEW2;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -56,14 +58,14 @@ class DirectoryServiceTest {
         //given
         given(directoryRepository.existsById(PARENT_DIRECTORY1.getId()))
                 .willReturn(true);
-        given(directoryRepository.findAllByParentDirectoryId(PARENT_DIRECTORY1.getId()))
+        given(directoryRepository.findAllByParentDirectoryId(eq(PARENT_DIRECTORY1.getId()), any()))
                 .willReturn(List.of(CHILD_DIRECTORY1, CHILD_DIRECTORY2));
         given(reviewService.getReviewSimpleResponseList(PARENT_DIRECTORY1.getId())).willReturn(
                 List.of(ReviewSimpleResponse.from(DUMMY_REVIEW1), ReviewSimpleResponse.from(DUMMY_REVIEW2)));
 
         //when
         DirectoryTotalShowResponse directorySubList =
-                directoryService.getDirectorySubList(USER_USER.getUserId(), PARENT_DIRECTORY1.getId());
+                directoryService.getDirectorySubList(USER_USER.getUserId(), PARENT_DIRECTORY1.getId(), null);
 
         //then
         assertThat(directorySubList.directoryResponseList())
@@ -84,7 +86,7 @@ class DirectoryServiceTest {
 
         //when
         DirectoryTotalShowResponse directorySubList =
-                directoryService.getDirectorySubList(USER_USER.getUserId(), 0L);
+                directoryService.getDirectorySubList(USER_USER.getUserId(), 0L, null);
 
         //then
         assertThat(directorySubList.directoryResponseList())

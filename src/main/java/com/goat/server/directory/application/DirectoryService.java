@@ -1,5 +1,6 @@
 package com.goat.server.directory.application;
 
+import com.goat.server.directory.application.type.SortType;
 import com.goat.server.directory.domain.Directory;
 import com.goat.server.directory.dto.request.DirectoryInitRequest;
 import com.goat.server.directory.dto.response.DirectoryResponse;
@@ -30,11 +31,11 @@ public class DirectoryService {
     /**
      * 유저의 과목과 폴더 목록을 조회
      */
-    public DirectoryTotalShowResponse getDirectorySubList(Long userId, Long directoryId) {
+    public DirectoryTotalShowResponse getDirectorySubList(Long userId, Long directoryId, List<SortType> sort) {
 
         validateDirectory(directoryId);
 
-        List<DirectoryResponse> directoryResponseList = getDirectoryResponseList(userId, directoryId);
+        List<DirectoryResponse> directoryResponseList = getDirectoryResponseList(userId, directoryId, sort);
         List<ReviewSimpleResponse> reviewSimpleResponseList = reviewService.getReviewSimpleResponseList(directoryId);
 
         log.info("reviewSimpleResponseList: {}", reviewSimpleResponseList.size());
@@ -97,10 +98,10 @@ public class DirectoryService {
         }
     }
 
-    private List<DirectoryResponse> getDirectoryResponseList(Long userId, Long parentDirectoryId) {
+    private List<DirectoryResponse> getDirectoryResponseList(Long userId, Long parentDirectoryId, List<SortType> sort) {
         List<Directory> directoryList =
                 parentDirectoryId == 0 ? directoryRepository.findAllByUserUserIdAndParentDirectoryIsNull(userId)
-                        : directoryRepository.findAllByParentDirectoryId(parentDirectoryId);
+                        : directoryRepository.findAllByParentDirectoryId(parentDirectoryId, sort);
         //해당 메서드 없는 폴더 보려고 하면 exception 처리하기
         log.info("directoryList: {}", directoryList.size());
 

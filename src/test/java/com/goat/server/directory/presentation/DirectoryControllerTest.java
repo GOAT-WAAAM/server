@@ -5,6 +5,7 @@ import static com.goat.server.directory.fixture.DirectoryFixture.CHILD_DIRECTORY
 import static com.goat.server.directory.fixture.DirectoryFixture.PARENT_DIRECTORY1;
 import static com.goat.server.review.fixture.ReviewFixture.DUMMY_REVIEW1;
 import static com.goat.server.review.fixture.ReviewFixture.DUMMY_REVIEW2;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -57,7 +58,7 @@ class DirectoryControllerTest extends CommonControllerTest {
         DirectoryTotalShowResponse directoryTotalShowResponse =
                 DirectoryTotalShowResponse.of(directoryResponseList, reviewSimpleResponseList);
 
-        given(directoryService.getDirectorySubList(anyLong(), eq(PARENT_DIRECTORY1.getId())))
+        given(directoryService.getDirectorySubList(anyLong(), eq(PARENT_DIRECTORY1.getId()), any()))
                 .willReturn(directoryTotalShowResponse);
 
         log.info("directoryTotalShowResponse: {}", directoryTotalShowResponse);

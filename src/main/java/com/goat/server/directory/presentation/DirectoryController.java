@@ -1,11 +1,13 @@
 package com.goat.server.directory.presentation;
 
+import com.goat.server.directory.application.type.SortType;
 import com.goat.server.directory.dto.request.DirectoryInitRequest;
 import com.goat.server.directory.dto.response.DirectoryTotalShowResponse;
 import com.goat.server.global.dto.ResponseTemplate;
 import com.goat.server.directory.application.DirectoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -32,13 +34,13 @@ public class DirectoryController {
     @Operation(summary = "과목, 폴더 정보 가져 오기", description = "과목, 폴더 정보 가져 오기")
     @GetMapping
     public ResponseEntity<ResponseTemplate<Object>> getDirectorySubList(
+            @AuthenticationPrincipal Long userId,
             @RequestParam(defaultValue = "0") Long directoryId,
-            @AuthenticationPrincipal Long userId) {
+            @RequestParam(required = false) List<SortType> sort) {
 
-        DirectoryTotalShowResponse directorySubList = directoryService.getDirectorySubList(userId, directoryId);
+        DirectoryTotalShowResponse directorySubList = directoryService.getDirectorySubList(userId, directoryId, sort);
 
         log.info("directorySubList: {}", directorySubList);
-        log.info("userId: {}", userId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -63,8 +65,6 @@ public class DirectoryController {
     public ResponseEntity<ResponseTemplate<Object>> deleteDirectoryTemporal(
             @AuthenticationPrincipal Long userId,
             @PathVariable Long directoryId) {
-
-        log.info("userId: {}", userId);
 
         directoryService.deleteDirectoryTemporal(userId, directoryId);
 
