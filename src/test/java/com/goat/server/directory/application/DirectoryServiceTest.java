@@ -60,7 +60,7 @@ class DirectoryServiceTest {
                 .willReturn(true);
         given(directoryRepository.findAllByParentDirectoryId(eq(PARENT_DIRECTORY1.getId()), any()))
                 .willReturn(List.of(CHILD_DIRECTORY1, CHILD_DIRECTORY2));
-        given(reviewService.getReviewSimpleResponseList(PARENT_DIRECTORY1.getId())).willReturn(
+        given(reviewService.getReviewSimpleResponseList(eq(PARENT_DIRECTORY1.getId()), any())).willReturn(
                 List.of(ReviewSimpleResponse.from(DUMMY_REVIEW1), ReviewSimpleResponse.from(DUMMY_REVIEW2)));
 
         //when

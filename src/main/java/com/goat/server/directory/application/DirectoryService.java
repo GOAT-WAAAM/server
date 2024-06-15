@@ -36,7 +36,7 @@ public class DirectoryService {
         validateDirectory(directoryId);
 
         List<DirectoryResponse> directoryResponseList = getDirectoryResponseList(userId, directoryId, sort);
-        List<ReviewSimpleResponse> reviewSimpleResponseList = reviewService.getReviewSimpleResponseList(directoryId);
+        List<ReviewSimpleResponse> reviewSimpleResponseList = reviewService.getReviewSimpleResponseList(directoryId, sort);
 
         log.info("reviewSimpleResponseList: {}", reviewSimpleResponseList.size());
 
