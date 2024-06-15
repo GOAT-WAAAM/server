@@ -58,7 +58,7 @@ public class DirectoryController {
                 .body(ResponseTemplate.EMPTY_RESPONSE);
     }
 
-    @Operation(summary = "폴더 삭제", description = "폴더 삭제")
+    @Operation(summary = "폴더 임시 삭제", description = "폴더 임시 삭제")
     @DeleteMapping("/temporal/{directoryId}")
     public ResponseEntity<ResponseTemplate<Object>> deleteDirectoryTemporal(
             @AuthenticationPrincipal Long userId,

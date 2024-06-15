@@ -72,7 +72,7 @@ class DirectoryServiceTest {
 
         assertThat(directorySubList.reviewSimpleResponseList())
                 .extracting(ReviewSimpleResponse::reviewId)
-                .containsExactly(DUMMY_REVIEW1.getReviewId(), DUMMY_REVIEW2.getReviewId());
+                .containsExactly(DUMMY_REVIEW1.getId(), DUMMY_REVIEW2.getId());
     }
 
     @Test
@@ -126,7 +126,7 @@ class DirectoryServiceTest {
         verify(directoryRepository, times(1)).save(directoryCaptor.capture());
 
         Directory savedDirectory = directoryCaptor.getValue();
-        assertThat(savedDirectory.getDirectoryName()).isEqualTo(directoryInitRequest.directoryName());
+        assertThat(savedDirectory.getTitle()).isEqualTo(directoryInitRequest.directoryName());
         assertThat(savedDirectory.getParentDirectory()).isNull();
         assertThat(savedDirectory.getDirectoryColor()).isEqualTo(directoryInitRequest.directoryColor());
     }
@@ -149,7 +149,7 @@ class DirectoryServiceTest {
         verify(directoryRepository, times(1)).save(directoryCaptor.capture());
 
         Directory savedDirectory = directoryCaptor.getValue();
-        assertThat(savedDirectory.getDirectoryName()).isEqualTo(directoryInitRequest.directoryName());
+        assertThat(savedDirectory.getTitle()).isEqualTo(directoryInitRequest.directoryName());
         assertThat(savedDirectory.getParentDirectory()).isEqualTo(PARENT_DIRECTORY1);
         assertThat(savedDirectory.getDirectoryColor()).isEqualTo(directoryInitRequest.directoryColor());
     }

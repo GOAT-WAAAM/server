@@ -40,21 +40,21 @@ public class DirectoryInitializer implements ApplicationRunner {
             List<Directory> directoryList = new ArrayList<>();
 
             Directory DUMMY_TRASH_DIRECTORY1 = Directory.builder()
-                    .directoryName("trash_directory")
+                    .title("trash_directory")
                     .directoryColor("#FF00FF")
                     .depth(1L)
                     .parentDirectory(null)
                     .user(admin)
                     .build();
             Directory DUMMY_TRASH_DIRECTORY2 = Directory.builder()
-                    .directoryName("trash_directory")
+                    .title("trash_directory")
                     .directoryColor("#FF00FF")
                     .depth(1L)
                     .parentDirectory(null)
                     .user(user)
                     .build();
             Directory DUMMY_TRASH_DIRECTORY3 = Directory.builder()
-                    .directoryName("trash_directory")
+                    .title("trash_directory")
                     .directoryColor("#FF00FF")
                     .depth(1L)
                     .parentDirectory(null)
@@ -62,21 +62,21 @@ public class DirectoryInitializer implements ApplicationRunner {
                     .build();
 
             Directory DUMMY_PARENT_DIRECTORY1 = Directory.builder()
-                    .directoryName("dummyDirectory1")
+                    .title("dummyDirectory1")
                     .directoryColor("#FF00FF")
                     .depth(1L)
                     .parentDirectory(null)
                     .user(user)
                     .build();
             Directory DUMMY_PARENT_DIRECTORY2 = Directory.builder()
-                    .directoryName("dummyDirectory2")
+                    .title("dummyDirectory2")
                     .directoryColor("#FF00FF")
                     .depth(1L)
                     .parentDirectory(null)
                     .user(user)
                     .build();
             Directory DUMMY_PARENT_DIRECTORY3 = Directory.builder()
-                    .directoryName("dummyDirectory3")
+                    .title("dummyDirectory3")
                     .directoryColor("#FF000F")
                     .depth(1L)
                     .parentDirectory(null)
@@ -84,21 +84,21 @@ public class DirectoryInitializer implements ApplicationRunner {
                     .build();
 
             Directory DUMMY_CHILD_DIRECTORY1 = Directory.builder()
-                    .directoryName("dummyDirectory4")
+                    .title("dummyDirectory4")
                     .directoryColor("#FF00FF")
                     .depth(2L)
                     .parentDirectory(DUMMY_PARENT_DIRECTORY1)
                     .user(user)
                     .build();
             Directory DUMMY_CHILD_DIRECTORY2 = Directory.builder()
-                    .directoryName("dummyDirectory5")
+                    .title("dummyDirectory5")
                     .directoryColor("#FF00FF")
                     .depth(2L)
                     .parentDirectory(DUMMY_PARENT_DIRECTORY1)
                     .user(user)
                     .build();
             Directory DUMMY_CHILD_DIRECTORY3 = Directory.builder()
-                    .directoryName("dummyDirectory5")
+                    .title("dummyDirectory5")
                     .directoryColor("#FF00FF")
                     .depth(2L)
                     .parentDirectory(DUMMY_CHILD_DIRECTORY2)

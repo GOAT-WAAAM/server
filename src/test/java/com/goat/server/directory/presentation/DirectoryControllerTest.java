@@ -75,9 +75,9 @@ class DirectoryControllerTest extends CommonControllerTest {
                 .andExpect(jsonPath("$.results.directoryResponseList[1].directoryId")
                         .value(CHILD_DIRECTORY2.getId()))
                 .andExpect(jsonPath("$.results.reviewSimpleResponseList[0].reviewId")
-                        .value(DUMMY_REVIEW1.getReviewId()))
+                        .value(DUMMY_REVIEW1.getId()))
                 .andExpect(jsonPath("$.results.reviewSimpleResponseList[1].reviewId")
-                        .value(DUMMY_REVIEW2.getReviewId()));
+                        .value(DUMMY_REVIEW2.getId()));
     }
 
     @Test
