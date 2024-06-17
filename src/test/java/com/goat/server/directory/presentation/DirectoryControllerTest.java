@@ -65,7 +65,7 @@ class DirectoryControllerTest extends CommonControllerTest {
 
         //when
         ResultActions resultActions =
-                mockMvc.perform(get("/directory?directoryId=" + PARENT_DIRECTORY1.getId()))
+                mockMvc.perform(get("/goat/directory?directoryId=" + PARENT_DIRECTORY1.getId()))
                         .andDo(print());
 
         //then
@@ -76,9 +76,9 @@ class DirectoryControllerTest extends CommonControllerTest {
                 .andExpect(jsonPath("$.results.directoryResponseList[1].directoryId")
                         .value(CHILD_DIRECTORY2.getId()))
                 .andExpect(jsonPath("$.results.reviewSimpleResponseList[0].reviewId")
-                        .value(DUMMY_REVIEW1.getReviewId()))
+                        .value(DUMMY_REVIEW1.getId()))
                 .andExpect(jsonPath("$.results.reviewSimpleResponseList[1].reviewId")
-                        .value(DUMMY_REVIEW2.getReviewId()));
+                        .value(DUMMY_REVIEW2.getId()));
     }
 
     @Test
@@ -90,7 +90,7 @@ class DirectoryControllerTest extends CommonControllerTest {
 
         //when
         ResultActions resultActions =
-                mockMvc.perform(post("/directory")
+                mockMvc.perform(post("/goat/directory")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .with(csrf()))
@@ -108,7 +108,7 @@ class DirectoryControllerTest extends CommonControllerTest {
 
         //when
         ResultActions resultActions =
-                mockMvc.perform(delete("/directory/temporal/" + PARENT_DIRECTORY1.getId())
+                mockMvc.perform(delete("/goat/directory/temporal/" + PARENT_DIRECTORY1.getId())
                                 .with(csrf()))
                         .andDo(print());
 
