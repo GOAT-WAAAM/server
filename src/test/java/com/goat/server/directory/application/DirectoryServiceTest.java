@@ -17,6 +17,7 @@ import static org.mockito.Mockito.verify;
 
 import com.goat.server.directory.domain.Directory;
 import com.goat.server.directory.dto.request.DirectoryInitRequest;
+import com.goat.server.directory.dto.request.DirectoryMoveRequest;
 import com.goat.server.directory.dto.response.DirectoryResponse;
 import com.goat.server.directory.dto.response.DirectoryTotalShowResponse;
 import com.goat.server.directory.repository.DirectoryRepository;
@@ -154,5 +155,24 @@ class DirectoryServiceTest {
         assertThat(savedDirectory.getTitle()).isEqualTo(directoryInitRequest.directoryName());
         assertThat(savedDirectory.getParentDirectory()).isEqualTo(PARENT_DIRECTORY1);
         assertThat(savedDirectory.getDirectoryColor()).isEqualTo(directoryInitRequest.directoryColor());
+    }
+
+    @Test
+    @DisplayName("폴더 이동 테스트")
+    void moveDirectoryTest() {
+        //given
+        DirectoryMoveRequest request = new DirectoryMoveRequest(PARENT_DIRECTORY1.getId(), PARENT_DIRECTORY2.getId());
+
+        given(directoryRepository.findById(PARENT_DIRECTORY1.getId()))
+                .willReturn(Optional.of(PARENT_DIRECTORY1));
+        given(directoryRepository.findById(PARENT_DIRECTORY2.getId()))
+                .willReturn(Optional.of(PARENT_DIRECTORY2));
+
+        //when
+        directoryService.moveDirectory(request);
+
+        //then
+        assertThat(PARENT_DIRECTORY1.getParentDirectory()).isEqualTo(PARENT_DIRECTORY2);
+        assertThat(PARENT_DIRECTORY1.getDepth()).isEqualTo(PARENT_DIRECTORY2.getDepth() + 1);
     }
 }

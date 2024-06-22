@@ -2,6 +2,7 @@ package com.goat.server.directory.presentation;
 
 import com.goat.server.directory.application.type.SortType;
 import com.goat.server.directory.dto.request.DirectoryInitRequest;
+import com.goat.server.directory.dto.request.DirectoryMoveRequest;
 import com.goat.server.directory.dto.response.DirectoryTotalShowResponse;
 import com.goat.server.global.dto.ResponseTemplate;
 import com.goat.server.directory.application.DirectoryService;
@@ -67,6 +68,18 @@ public class DirectoryController {
             @PathVariable Long directoryId) {
 
         directoryService.deleteDirectoryTemporal(userId, directoryId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ResponseTemplate.EMPTY_RESPONSE);
+    }
+
+    @Operation(summary = "폴더 이동", description = "폴더 이동")
+    @PostMapping("/move")
+    public ResponseEntity<ResponseTemplate<Object>> moveDirectory(
+            @RequestBody DirectoryMoveRequest directoryMoveRequest) {
+
+        directoryService.moveDirectory(directoryMoveRequest);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

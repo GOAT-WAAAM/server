@@ -3,6 +3,7 @@ package com.goat.server.directory.application;
 import com.goat.server.directory.application.type.SortType;
 import com.goat.server.directory.domain.Directory;
 import com.goat.server.directory.dto.request.DirectoryInitRequest;
+import com.goat.server.directory.dto.request.DirectoryMoveRequest;
 import com.goat.server.directory.dto.response.DirectoryResponse;
 import com.goat.server.directory.dto.response.DirectoryTotalShowResponse;
 import com.goat.server.directory.exception.DirectoryNotFoundException;
@@ -70,7 +71,7 @@ public class DirectoryService {
     public void initDirectory(Long userId, DirectoryInitRequest directoryInitRequest) {
 
         User user = userService.findUser(userId);
-        Directory parentDirectory = getDirectory(directoryInitRequest);
+        Directory parentDirectory = getParentDirectory(directoryInitRequest);
 
         if (parentDirectory != null) {
             parentDirectory.touchParentDirectories();
@@ -79,7 +80,23 @@ public class DirectoryService {
         directoryRepository.save(directoryInitRequest.toEntity(user, parentDirectory));
     }
 
-    private Directory getDirectory(DirectoryInitRequest directoryInitRequest) {
+    /**
+     * 폴더 이동
+     */
+    @Transactional
+    public void moveDirectory(DirectoryMoveRequest request) {
+        Directory moveDirectory = directoryRepository.findById(request.moveDirectoryId())
+                .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
+        Directory targetDirectory = directoryRepository.findById(request.targetDirectoryId())
+                .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
+
+        moveDirectory.touchParentDirectories(); //이전 부모 폴더들 touch
+
+        moveDirectory.updateParentDirectory(targetDirectory);
+        moveDirectory.touchParentDirectories(); //현재 부모 폴더들 touch
+    }
+
+    private Directory getParentDirectory(DirectoryInitRequest directoryInitRequest) {
         Directory parentDirectory;
 
         if (directoryInitRequest.parentDirectoryId() == 0) {

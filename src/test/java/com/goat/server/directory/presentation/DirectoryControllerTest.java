@@ -3,6 +3,7 @@ package com.goat.server.directory.presentation;
 import static com.goat.server.directory.fixture.DirectoryFixture.CHILD_DIRECTORY1;
 import static com.goat.server.directory.fixture.DirectoryFixture.CHILD_DIRECTORY2;
 import static com.goat.server.directory.fixture.DirectoryFixture.PARENT_DIRECTORY1;
+import static com.goat.server.directory.fixture.DirectoryFixture.PARENT_DIRECTORY2;
 import static com.goat.server.review.fixture.ReviewFixture.DUMMY_REVIEW1;
 import static com.goat.server.review.fixture.ReviewFixture.DUMMY_REVIEW2;
 import static org.mockito.ArgumentMatchers.any;
@@ -18,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goat.server.directory.dto.request.DirectoryInitRequest;
+import com.goat.server.directory.dto.request.DirectoryMoveRequest;
 import com.goat.server.directory.dto.response.DirectoryResponse;
 import com.goat.server.directory.dto.response.DirectoryTotalShowResponse;
 import com.goat.server.global.CommonControllerTest;
@@ -108,6 +110,24 @@ class DirectoryControllerTest extends CommonControllerTest {
         //when
         ResultActions resultActions =
                 mockMvc.perform(delete("/goat/directory/temporal/" + PARENT_DIRECTORY1.getId()))
+                        .andDo(print());
+
+        //then
+        resultActions
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("폴더 이동")
+    void moveDirectoryTest() throws Exception {
+        //given
+        DirectoryMoveRequest request = new DirectoryMoveRequest(PARENT_DIRECTORY1.getId(), PARENT_DIRECTORY2.getId());
+
+        //when
+        ResultActions resultActions =
+                mockMvc.perform(post("/goat/directory/move")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(MediaType.APPLICATION_JSON))
                         .andDo(print());
 
         //then
