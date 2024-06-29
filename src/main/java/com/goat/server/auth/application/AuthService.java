@@ -3,6 +3,7 @@ package com.goat.server.auth.application;
 import com.goat.server.auth.dto.response.ReIssueSuccessResponse;
 import com.goat.server.global.util.jwt.JwtUserDetails;
 import com.goat.server.global.util.jwt.JwtTokenProvider;
+import com.goat.server.mypage.domain.User;
 import com.goat.server.mypage.domain.type.Role;
 import com.goat.server.mypage.exception.UserNotFoundException;
 import com.goat.server.mypage.dto.JwtUserDetailProjection;
@@ -34,9 +35,9 @@ public class AuthService {
     }
 
     public JwtUserDetails getJwtUserDetails(Long userId) {
-        JwtUserDetailProjection jwtUserDetailProjection = userRepository.findJwtUserDetailsById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 
-        return JwtUserDetails.of(jwtUserDetailProjection.userId(), Role.valueOf(jwtUserDetailProjection.role()));
+        return JwtUserDetails.from(user);
     }
 }

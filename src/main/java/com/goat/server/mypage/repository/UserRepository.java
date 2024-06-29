@@ -12,8 +12,5 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findBySocialId(String string);
 
-    @Query("SELECT u.userId as userId, u.role as role FROM User u WHERE u.userId = :userId")
-    Optional<JwtUserDetailProjection> findJwtUserDetailsById(Long userId);
-
     Optional<User> findByEmail(String email);
 }
