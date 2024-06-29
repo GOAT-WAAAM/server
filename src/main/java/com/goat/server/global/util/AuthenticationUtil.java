@@ -1,5 +1,6 @@
 package com.goat.server.global.util;
 
+import com.goat.server.auth.exception.TokenNotFoundException;
 import com.goat.server.global.util.filter.UserAuthentication;
 import com.goat.server.global.util.jwt.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +11,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import static com.goat.server.auth.exception.errorcode.AuthErrorCode.INVALID_TOKEN;
 import static com.goat.server.global.domain.type.JwtValidationType.VALID_JWT;
 
 @Component
@@ -42,9 +44,10 @@ public class AuthenticationUtil {
 
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring("Bearer ".length());
+        } else {
+            throw new TokenNotFoundException(INVALID_TOKEN);
         }
 
-        return null;
     }
 
     private boolean isTokenValid(String token) {
