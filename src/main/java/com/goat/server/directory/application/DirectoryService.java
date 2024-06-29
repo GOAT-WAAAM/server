@@ -39,7 +39,7 @@ public class DirectoryService {
         List<DirectoryResponse> directoryResponseList = getDirectoryResponseList(userId, directoryId, sort);
         List<ReviewSimpleResponse> reviewSimpleResponseList = reviewService.getReviewSimpleResponseList(directoryId, sort);
 
-        return DirectoryTotalShowResponse.of(directoryResponseList, reviewSimpleResponseList);
+        return DirectoryTotalShowResponse.of(directoryId, directoryResponseList, reviewSimpleResponseList);
     }
 
     /**
