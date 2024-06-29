@@ -56,6 +56,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isPostShare(true)
                     .user(user)
                     .directory(dummyTrashDirectory)
+                    .reviewCnt(0L)
                     .build();
 
             Review DUMMY_REVIEW2 = Review.builder()
@@ -71,6 +72,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isPostShare(true)
                     .user(user)
                     .directory(dummyParentDirectory)
+                    .reviewCnt(0L)
                     .build();
 
             Review DUMMY_REVIEW3 = Review.builder()
@@ -86,6 +88,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isPostShare(true)
                     .user(user)
                     .directory(dummyParentDirectory)
+                    .reviewCnt(0L)
                     .build();
 
             Review DUMMY_REVIEW4 = Review.builder()
@@ -101,6 +104,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isPostShare(true)
                     .user(user)
                     .directory(dummyParentDirectory)
+                    .reviewCnt(0L)
                     .build();
 
             Review DUMMY_REVIEW5 = Review.builder()
@@ -115,6 +119,8 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isAutoRepeat(false)
                     .isPostShare(true)
                     .user(user)
+                    .directory(dummyChildDirectory)
+                    .reviewCnt(0L)
                     .build();
 
             Review DUMMY_REVIEW6 = Review.builder()
@@ -130,6 +136,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isPostShare(true)
                     .user(user)
                     .directory(dummyChildDirectory)
+                    .reviewCnt(0L)
                     .build();
 
             Review DUMMY_REVIEW7 = Review.builder()
@@ -140,6 +147,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isPostShare(true)
                     .user(user)
                     .directory(dummyChildDirectory)
+                    .reviewCnt(0L)
                     .build();
 
             Review DUMMY_REVIEW8 = Review.builder()
@@ -150,6 +158,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isPostShare(true)
                     .user(user)
                     .directory(dummyChildDirectory)
+                    .reviewCnt(0L)
                     .build();
 
             Review DUMMY_REVIEW9 = Review.builder()
@@ -160,6 +169,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isPostShare(true)
                     .user(user)
                     .directory(dummyChildDirectory)
+                    .reviewCnt(0L)
                     .build();
 
             reviewList.add(DUMMY_REVIEW1);
