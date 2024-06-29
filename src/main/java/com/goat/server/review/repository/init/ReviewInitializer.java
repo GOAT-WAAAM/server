@@ -1,6 +1,7 @@
 package com.goat.server.review.repository.init;
 
 import com.goat.server.directory.domain.Directory;
+import com.goat.server.directory.repository.DirectoryRepository;
 import com.goat.server.global.domain.ImageInfo;
 import com.goat.server.global.util.LocalDummyDataInit;
 import com.goat.server.mypage.domain.User;
@@ -23,7 +24,6 @@ import java.util.List;
 @LocalDummyDataInit
 @Order(3)
 public class ReviewInitializer implements ApplicationRunner {
-
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
 
@@ -42,7 +42,7 @@ public class ReviewInitializer implements ApplicationRunner {
             List<Review> reviewList = new ArrayList<>();
 
             Review DUMMY_REVIEW1 = Review.builder()
-                    .imageTitle("this is title")
+                    .title("this is title")
                     .content("content")
                     .imageInfo(ImageInfo.builder()
                             .imageFileName("라이언1.PNG")
@@ -56,7 +56,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .build();
 
             Review DUMMY_REVIEW2 = Review.builder()
-                    .imageTitle("this is title")
+                    .title("this is title")
                     .content("content")
                     .imageInfo(ImageInfo.builder()
                             .imageFileName("라이언2.PNG")
@@ -70,7 +70,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .build();
 
             Review DUMMY_REVIEW3 = Review.builder()
-                    .imageTitle("this is title")
+                    .title("this is title")
                     .content("content")
                     .imageInfo(ImageInfo.builder()
                             .imageFileName("라이언3.PNG")
@@ -84,7 +84,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .build();
 
             Review DUMMY_REVIEW4 = Review.builder()
-                    .imageTitle("this is title")
+                    .title("this is title")
                     .content("content")
                     .imageInfo(ImageInfo.builder()
                             .imageFileName("라이언4.PNG")
@@ -98,7 +98,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .build();
 
             Review DUMMY_REVIEW5 = Review.builder()
-                    .imageTitle("this is title")
+                    .title("this is title")
                     .content("content")
                     .imageInfo(ImageInfo.builder()
                             .imageFileName("라이언5.PNG")
@@ -112,7 +112,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .build();
 
             Review DUMMY_REVIEW6 = Review.builder()
-                    .imageTitle("this is title")
+                    .title("this is title")
                     .content("content")
                     .imageInfo(ImageInfo.builder()
                             .imageFileName("라이언6.PNG")
@@ -125,12 +125,42 @@ public class ReviewInitializer implements ApplicationRunner {
                     .user(user)
                     .build();
 
+            Review DUMMY_REVIEW7 = Review.builder()
+                    .title("this is title")
+                    .content("content")
+                    .isRepeatable(true)
+                    .isAutoRepeat(false)
+                    .isPostShare(true)
+                    .user(user)
+                    .build();
+
+            Review DUMMY_REVIEW8 = Review.builder()
+                    .title("this is title")
+                    .content("content")
+                    .isRepeatable(true)
+                    .isAutoRepeat(false)
+                    .isPostShare(true)
+                    .user(user)
+                    .build();
+
+            Review DUMMY_REVIEW9 = Review.builder()
+                    .title("this is title")
+                    .content("content")
+                    .isRepeatable(true)
+                    .isAutoRepeat(false)
+                    .isPostShare(true)
+                    .user(user)
+                    .build();
+
             reviewList.add(DUMMY_REVIEW1);
             reviewList.add(DUMMY_REVIEW2);
             reviewList.add(DUMMY_REVIEW3);
             reviewList.add(DUMMY_REVIEW4);
             reviewList.add(DUMMY_REVIEW5);
             reviewList.add(DUMMY_REVIEW6);
+            reviewList.add(DUMMY_REVIEW7);
+            reviewList.add(DUMMY_REVIEW8);
+            reviewList.add(DUMMY_REVIEW9);
 
             reviewRepository.saveAll(reviewList);
         }

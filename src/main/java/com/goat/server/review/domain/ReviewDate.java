@@ -38,4 +38,8 @@ public class ReviewDate {
         this.date = date;
         this.review = review;
     }
+
+    public void setReview(Review review){
+        this.review = review;
+    }
 }
