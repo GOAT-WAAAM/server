@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -78,7 +79,7 @@ public class S3Uploader {
     }
 
     public void deleteImage(ImageInfo imageInfo) {
-        String deleteFile = "goat/" + imageInfo.getImageFileName();
+        String deleteFile = imageInfo.getImageFolderName() + "/" + imageInfo.getImageFileName();
         amazonS3Client.deleteObject(bucket, deleteFile);
     }
 

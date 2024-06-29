@@ -106,6 +106,7 @@ public class Review extends BaseTimeEntity {
             }
         }
     }
+
     public void updateReview(ReviewUpdateRequest reviewUpdateRequest, ImageInfo imageInfo) {
         this.title = reviewUpdateRequest.title();
         this.content = reviewUpdateRequest.content();
@@ -143,5 +144,9 @@ public class Review extends BaseTimeEntity {
                 }
             }
         }
+    }
+
+    public String getImageUrl() {
+        return this.imageInfo.getImageUrl();
     }
 }

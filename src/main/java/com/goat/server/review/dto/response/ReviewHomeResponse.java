@@ -9,7 +9,7 @@ public record ReviewHomeResponse(
         String imageUrl
 
 ) {
-    public static ReviewHomeResponse of(Review review) {
+    public static ReviewHomeResponse from(Review review) {
         return ReviewHomeResponse.builder()
                 .reviewId(review.getId())
                 .imageUrl(review.getImageInfo().getImageUrl())

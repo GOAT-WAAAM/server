@@ -28,11 +28,11 @@ public class StarReviewController {
             @AuthenticationPrincipal Long userId,
             @PathVariable Long reviewId) {
 
-        StarReviewResponse starReviewResponse = starReviewService.manageFavorite(userId, reviewId);
+        starReviewService.manageFavorite(userId, reviewId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(ResponseTemplate.from(starReviewResponse));
+                .body(ResponseTemplate.EMPTY_RESPONSE);
     }
 
     @Operation(summary = "즐겨찾기 목록 보기", description = "즐겨찾기 목록 보기")

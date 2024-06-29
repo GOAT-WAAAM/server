@@ -9,10 +9,10 @@ public record StarReviewInfoResponse(
         String imageUrl,
         String title
 ) {
-    public static StarReviewInfoResponse of(Review review){
+    public static StarReviewInfoResponse from(Review review){
         return StarReviewInfoResponse.builder()
                 .reviewId(review.getId())
-                .imageUrl(review.getImageInfo().getImageUrl())
+                .imageUrl(review.getImageUrl())
                 .title(review.getTitle())
                 .build();
     }

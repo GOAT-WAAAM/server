@@ -17,6 +17,8 @@ import com.goat.server.review.repository.ReviewRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -59,12 +61,9 @@ public class ReviewService {
         Pageable pageable = PageRequest.of(page, PAGE_SIZE_HOME, Sort.by("createdDate").descending());
         Page<Review> reviews = reviewRepository.findAllReviewImageByUserId(user.getUserId(), pageable);
 
-        List<ReviewHomeResponse> homeResponses = new ArrayList<>();
-
-        for (Review review : reviews) {
-            ReviewHomeResponse response = ReviewHomeResponse.of(review);
-            homeResponses.add(response);
-        }
+        List<ReviewHomeResponse> homeResponses = reviews.stream()
+                .map(ReviewHomeResponse::from)
+                .toList();
 
         return ReviewHomeResponseList.from(homeResponses);
     }

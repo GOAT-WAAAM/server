@@ -62,11 +62,10 @@ class StarReviewServiceTest {
         given(starReviewRepository.findByUserAndReview(USER_USER, DUMMY_REVIEW1)).willReturn(Optional.empty());
 
         //when
-        StarReviewResponse response = starReviewService.manageFavorite(USER_USER.getUserId(), DUMMY_REVIEW1.getId());
+        starReviewService.manageFavorite(USER_USER.getUserId(), DUMMY_REVIEW1.getId());
 
         //then
         verify(starReviewRepository, times(1)).save(starReviewCaptor.capture());
-        //verify(starReviewRepository, times(1)).save(any(StarReview.class));
         StarReview savedStarReview = starReviewCaptor.getValue();
         assertThat(savedStarReview.getUser()).isEqualTo(USER_USER);
         assertThat(savedStarReview.getReview()).isEqualTo(DUMMY_REVIEW1);
@@ -83,11 +82,9 @@ class StarReviewServiceTest {
         given(starReviewRepository.findByUserAndReview(USER_USER, DUMMY_REVIEW2)).willReturn(Optional.of(DUMMY_STARREVIEW2));
 
         //when
-        StarReviewResponse response = starReviewService.manageFavorite(USER_USER.getUserId(), DUMMY_REVIEW2.getId());
+        starReviewService.manageFavorite(USER_USER.getUserId(), DUMMY_REVIEW2.getId());
 
         //then
-        //verify(starReviewRepository).delete(DUMMY_STARREVIEW2);
-        //verify(starReviewRepository, times(1)).delete(any(StarReview.class));
         verify(starReviewRepository, times(1)).delete(starReviewCaptor.capture());
     }
 

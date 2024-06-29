@@ -81,7 +81,7 @@ public class ReviewController {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(ResponseTemplate.from(request));
+                .body(ResponseTemplate.EMPTY_RESPONSE);
     }
 
     @Operation(summary = "복습 삭제하기", description = "복습 삭제하기")

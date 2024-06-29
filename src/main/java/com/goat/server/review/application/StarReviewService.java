@@ -6,6 +6,7 @@ import com.goat.server.mypage.exception.errorcode.MypageErrorCode;
 import com.goat.server.mypage.repository.UserRepository;
 import com.goat.server.review.domain.Review;
 import com.goat.server.review.domain.StarReview;
+import com.goat.server.review.dto.response.ReviewHomeResponse;
 import com.goat.server.review.dto.response.StarReviewInfoResponse;
 import com.goat.server.review.dto.response.StarReviewResponse;
 import com.goat.server.review.dto.response.StarReviewResponseList;
@@ -42,22 +43,16 @@ public class StarReviewService {
      * 즐겨찾기 추가 및 삭제
      */
     @Transactional
-    public StarReviewResponse manageFavorite(Long userId, Long reviewId) {
+    public void manageFavorite(Long userId, Long reviewId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(MypageErrorCode.USER_NOT_FOUND));
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
 
-        Optional<StarReview> existingStar = starReviewRepository.findByUserAndReview(user, review);
-
-        if (existingStar.isPresent()){
-            StarReview starReview = existingStar.get();
-            starReviewRepository.delete(starReview);
-            return StarReviewResponse.from("즐겨찾기 목록에서 제거했습니다.");
-        } else {
-            starReviewRepository.save(new StarReview(user, review));
-            return StarReviewResponse.from("즐겨찾기 목록에 저장했습니다.");
-        }
+        starReviewRepository.findByUserAndReview(user, review).ifPresentOrElse(
+                starReviewRepository::delete,
+                () -> starReviewRepository.save(new StarReview(user, review))
+        );
     }
 
     /**
@@ -70,12 +65,9 @@ public class StarReviewService {
         Pageable pageable = PageRequest.of(page, PAGE_SIZE_STAR_REVIEW, Sort.by("createdDate").descending());
         Page<Review> reviews = reviewRepository.findAllStarReviewByUserId(user.getUserId(), pageable);
 
-        List<StarReviewInfoResponse> starReviewInfoResponses = new ArrayList<>();
-
-        for (Review review : reviews) {
-            StarReviewInfoResponse response = StarReviewInfoResponse.of(review);
-            starReviewInfoResponses.add(response);
-        }
+        List<StarReviewInfoResponse> starReviewInfoResponses = reviews.getContent().stream()
+                .map(StarReviewInfoResponse::from)
+                .toList();
 
         return StarReviewResponseList.from(starReviewInfoResponses);
     }
