@@ -1,11 +1,13 @@
 package com.goat.server.auth.application;
 
+import com.goat.server.auth.dto.OnBoardingRequest;
 import com.goat.server.auth.dto.response.ReIssueSuccessResponse;
 import com.goat.server.global.util.jwt.JwtUserDetails;
 import com.goat.server.global.util.jwt.JwtTokenProvider;
 import com.goat.server.mypage.domain.User;
 import com.goat.server.mypage.exception.UserNotFoundException;
 import com.goat.server.mypage.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -37,5 +39,17 @@ public class AuthService {
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 
         return JwtUserDetails.from(user);
+    }
+
+    @Transactional
+    public void saveOnBoardingInfo(Long userId, OnBoardingRequest onBoardingRequest) {
+        log.info("[AuthService.saveOnBoardingInfo]");
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+
+        user.updateOnBoardingInfo(onBoardingRequest.nickname(), onBoardingRequest.goal());
+
+        userRepository.save(user);
     }
 }

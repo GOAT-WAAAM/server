@@ -75,4 +75,10 @@ public class User extends BaseTimeEntity {
         this.provider = provider;
         this.goal = goal;
     }
+
+    public void updateOnBoardingInfo(String nickname, String goal) {
+        this.nickname = nickname;
+        this.goal = goal;
+        this.role = Role.USER;
+    }
 }
