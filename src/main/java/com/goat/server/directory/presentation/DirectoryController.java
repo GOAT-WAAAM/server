@@ -41,8 +41,6 @@ public class DirectoryController {
 
         DirectoryTotalShowResponse directorySubList = directoryService.getDirectorySubList(userId, directoryId, sort);
 
-        log.info("directorySubList: {}", directorySubList);
-
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ResponseTemplate.from(directorySubList));
