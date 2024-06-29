@@ -82,7 +82,7 @@ class DirectoryServiceTest {
     @DisplayName("과목과 폴더 가져 오기 테스트 - 루트 폴더")
     void getDirectoryListTest2() {
         //given
-        given(directoryRepository.findAllByUserUserIdAndParentDirectoryIsNull(USER_USER.getUserId()))
+        given(directoryRepository.findAllByUserIdAndParentDirectoryIsNull(USER_USER.getUserId(), null))
                 .willReturn(List.of(PARENT_DIRECTORY1, PARENT_DIRECTORY2));
 
         //when

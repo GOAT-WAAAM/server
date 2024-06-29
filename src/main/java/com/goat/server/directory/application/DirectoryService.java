@@ -39,8 +39,6 @@ public class DirectoryService {
         List<DirectoryResponse> directoryResponseList = getDirectoryResponseList(userId, directoryId, sort);
         List<ReviewSimpleResponse> reviewSimpleResponseList = reviewService.getReviewSimpleResponseList(directoryId, sort);
 
-        log.info("reviewSimpleResponseList: {}", reviewSimpleResponseList.size());
-
         return DirectoryTotalShowResponse.of(directoryResponseList, reviewSimpleResponseList);
     }
 
@@ -117,10 +115,8 @@ public class DirectoryService {
 
     private List<DirectoryResponse> getDirectoryResponseList(Long userId, Long parentDirectoryId, List<SortType> sort) {
         List<Directory> directoryList =
-                parentDirectoryId == 0 ? directoryRepository.findAllByUserUserIdAndParentDirectoryIsNull(userId)
+                parentDirectoryId == 0 ? directoryRepository.findAllByUserIdAndParentDirectoryIsNull(userId, sort)
                         : directoryRepository.findAllByParentDirectoryId(parentDirectoryId, sort);
-        //해당 메서드 없는 폴더 보려고 하면 exception 처리하기
-        log.info("directoryList: {}", directoryList.size());
 
         return directoryList.stream()
                 .map(DirectoryResponse::from)

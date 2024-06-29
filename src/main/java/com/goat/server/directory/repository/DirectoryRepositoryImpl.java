@@ -26,6 +26,15 @@ public class DirectoryRepositoryImpl implements DirectoryRepositoryCustom{
                 .fetch();
     }
 
+    @Override
+    public List<Directory> findAllByUserIdAndParentDirectoryIsNull(Long userId, List<SortType> sort) {
+        return query
+                .selectFrom(directory)
+                .where(directory.parentDirectory.id.isNull(), directory.user.userId.eq(userId))
+                .orderBy(sortExpression(sort))
+                .fetch();
+    }
+
     // 기본 정렬 - 이름 오름차순
     private OrderSpecifier<?>[] sortExpression(List<SortType> sort) {
         if (sort == null || sort.isEmpty()) {
