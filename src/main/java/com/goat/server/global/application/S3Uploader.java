@@ -84,8 +84,11 @@ public class S3Uploader {
     }
 
     private Optional<File> convert(MultipartFile file) throws IOException {
-
-        File convertFile = new File(file.getOriginalFilename());
+        //파일명에 UUID 적용
+        String originalFileName = file.getOriginalFilename();
+        String uuid = UUID.randomUUID().toString();
+        String uniqueFileName = uuid + "_" + originalFileName.replaceAll("\\s", "_");
+        File convertFile = new File(uniqueFileName);
 
         if(convertFile.createNewFile()) {
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {
