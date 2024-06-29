@@ -26,11 +26,11 @@ public class Directory extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "directory_id")
     private Long id;
 
-    @Column(name = "directory_name", length = 100)
-    private String directoryName;
+    @Column(name = "directory_title", length = 100)
+    private String title;
 
     @Column(name = "directory_color", length = 50)
     private String directoryColor;
@@ -50,8 +50,8 @@ public class Directory extends BaseTimeEntity {
     private List<Directory> childDirectoryList = new ArrayList<>();
 
     @Builder
-    public Directory(String directoryName, String directoryColor, Long depth, User user, Directory parentDirectory) {
-        this.directoryName = directoryName;
+    public Directory(String title, String directoryColor, Long depth, User user, Directory parentDirectory) {
+        this.title = title;
         this.directoryColor = directoryColor;
         this.depth = depth;
         this.user = user;
@@ -60,6 +60,7 @@ public class Directory extends BaseTimeEntity {
 
     public void updateParentDirectory(Directory parentDirectory) {
         this.parentDirectory = parentDirectory;
+        this.depth = parentDirectory.getDepth() + 1;
     }
 
     public void updateModifiedDate() {

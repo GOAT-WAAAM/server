@@ -27,13 +27,13 @@ public class Review extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_id")
-    private Long reviewId;
+    private Long id;
 
     @Embedded
     private ImageInfo imageInfo;
 
-    @Column(name = "image_title", length = 50)
-    private String imageTitle;
+    @Column(name = "review_title", length = 50)
+    private String title;
 
     @Column(name = "is_image_enroll")
     private Boolean isImageEnroll;
@@ -61,11 +61,11 @@ public class Review extends BaseTimeEntity {
     private Directory directory;
 
     @Builder
-    public Review(ImageInfo imageInfo, String imageTitle, Boolean isImageEnroll, String content, Boolean isRepeatable,
+    public Review(ImageInfo imageInfo, String title, Boolean isImageEnroll, String content, Boolean isRepeatable,
                   LocalDateTime remindTime, LocalDate reviewStartDate, LocalDate reviewEndDate, Boolean isPostShare,
                   Directory directory) {
         this.imageInfo = imageInfo;
-        this.imageTitle = imageTitle;
+        this.title = title;
         this.isImageEnroll = isImageEnroll;
         this.content = content;
         this.isRepeatable = isRepeatable;
