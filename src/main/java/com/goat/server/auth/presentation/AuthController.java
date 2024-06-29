@@ -53,14 +53,10 @@ public class AuthController {
 
     @Operation(summary = "테스트용 토큰발급", description = "테스트용 토큰발급")
     @GetMapping("/test-token")
-    public ResponseEntity<ResponseTemplate<Object>> testToken(@RequestParam Long userId) {
+    public String testToken(@RequestParam Long userId) {
 
         log.info("[AuthController.testToken]");
 
-        SignUpSuccessResponse response = authService.getTestToken(userId);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(ResponseTemplate.from(response));
+        return authService.getTestToken(userId);
     }
 }
