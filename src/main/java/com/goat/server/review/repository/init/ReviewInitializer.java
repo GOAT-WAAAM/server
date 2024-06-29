@@ -10,20 +10,22 @@ import com.goat.server.mypage.exception.errorcode.MypageErrorCode;
 import com.goat.server.mypage.repository.UserRepository;
 import com.goat.server.review.domain.Review;
 import com.goat.server.review.repository.ReviewRepository;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 @LocalDummyDataInit
 @Order(3)
 public class ReviewInitializer implements ApplicationRunner {
+
+    private final DirectoryRepository directoryRepository;
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
 
@@ -32,11 +34,11 @@ public class ReviewInitializer implements ApplicationRunner {
         if (reviewRepository.count() > 0) {
             log.info("[Review] 더미 데이터 존재");
         } else {
-            User admin = userRepository.findByEmail("adminEmail")
-                    .orElseThrow(() -> new UserNotFoundException(MypageErrorCode.USER_NOT_FOUND));
+            Directory dummyTrashDirectory = directoryRepository.findById(2L).orElseThrow();
+            Directory dummyParentDirectory = directoryRepository.findById(4L).orElseThrow();
+            Directory dummyChildDirectory = directoryRepository.findById(7L).orElseThrow();
+
             User user = userRepository.findByEmail("userEmail")
-                    .orElseThrow(() -> new UserNotFoundException(MypageErrorCode.USER_NOT_FOUND));
-            User guest = userRepository.findByEmail("guestEmail")
                     .orElseThrow(() -> new UserNotFoundException(MypageErrorCode.USER_NOT_FOUND));
 
             List<Review> reviewList = new ArrayList<>();
@@ -53,6 +55,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isAutoRepeat(true)
                     .isPostShare(true)
                     .user(user)
+                    .directory(dummyTrashDirectory)
                     .build();
 
             Review DUMMY_REVIEW2 = Review.builder()
@@ -67,6 +70,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isAutoRepeat(false)
                     .isPostShare(true)
                     .user(user)
+                    .directory(dummyParentDirectory)
                     .build();
 
             Review DUMMY_REVIEW3 = Review.builder()
@@ -81,6 +85,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isAutoRepeat(false)
                     .isPostShare(true)
                     .user(user)
+                    .directory(dummyParentDirectory)
                     .build();
 
             Review DUMMY_REVIEW4 = Review.builder()
@@ -95,6 +100,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isAutoRepeat(false)
                     .isPostShare(true)
                     .user(user)
+                    .directory(dummyParentDirectory)
                     .build();
 
             Review DUMMY_REVIEW5 = Review.builder()
@@ -123,6 +129,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isAutoRepeat(false)
                     .isPostShare(true)
                     .user(user)
+                    .directory(dummyChildDirectory)
                     .build();
 
             Review DUMMY_REVIEW7 = Review.builder()
@@ -132,6 +139,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isAutoRepeat(false)
                     .isPostShare(true)
                     .user(user)
+                    .directory(dummyChildDirectory)
                     .build();
 
             Review DUMMY_REVIEW8 = Review.builder()
@@ -141,6 +149,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isAutoRepeat(false)
                     .isPostShare(true)
                     .user(user)
+                    .directory(dummyChildDirectory)
                     .build();
 
             Review DUMMY_REVIEW9 = Review.builder()
@@ -150,6 +159,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isAutoRepeat(false)
                     .isPostShare(true)
                     .user(user)
+                    .directory(dummyChildDirectory)
                     .build();
 
             reviewList.add(DUMMY_REVIEW1);

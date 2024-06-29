@@ -1,6 +1,6 @@
 package com.goat.server.global.util.filter;
 
-import com.goat.server.global.domain.JwtUserDetails;
+import com.goat.server.global.util.jwt.JwtUserDetails;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 

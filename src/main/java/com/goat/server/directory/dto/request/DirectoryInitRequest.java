@@ -13,7 +13,7 @@ public record DirectoryInitRequest(
                 .user(user)
                 .parentDirectory(parentDirectory)
                 .depth(parentDirectory == null ? 1 : parentDirectory.getDepth() + 1)
-                .directoryName(directoryName)
+                .title(directoryName)
                 .directoryColor(directoryColor)
                 .build();
     }

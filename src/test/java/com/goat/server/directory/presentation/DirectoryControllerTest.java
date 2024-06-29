@@ -3,11 +3,12 @@ package com.goat.server.directory.presentation;
 import static com.goat.server.directory.fixture.DirectoryFixture.CHILD_DIRECTORY1;
 import static com.goat.server.directory.fixture.DirectoryFixture.CHILD_DIRECTORY2;
 import static com.goat.server.directory.fixture.DirectoryFixture.PARENT_DIRECTORY1;
+import static com.goat.server.directory.fixture.DirectoryFixture.PARENT_DIRECTORY2;
 import static com.goat.server.review.fixture.ReviewFixture.DUMMY_REVIEW1;
 import static com.goat.server.review.fixture.ReviewFixture.DUMMY_REVIEW2;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.mockito.BDDMockito.given;
@@ -18,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goat.server.directory.dto.request.DirectoryInitRequest;
+import com.goat.server.directory.dto.request.DirectoryMoveRequest;
 import com.goat.server.directory.dto.response.DirectoryResponse;
 import com.goat.server.directory.dto.response.DirectoryTotalShowResponse;
 import com.goat.server.global.CommonControllerTest;
@@ -58,7 +60,7 @@ class DirectoryControllerTest extends CommonControllerTest {
         DirectoryTotalShowResponse directoryTotalShowResponse =
                 DirectoryTotalShowResponse.of(directoryResponseList, reviewSimpleResponseList);
 
-        given(directoryService.getDirectorySubList(anyLong(), eq(PARENT_DIRECTORY1.getId())))
+        given(directoryService.getDirectorySubList(anyLong(), eq(PARENT_DIRECTORY1.getId()), any()))
                 .willReturn(directoryTotalShowResponse);
 
         log.info("directoryTotalShowResponse: {}", directoryTotalShowResponse);
@@ -92,8 +94,7 @@ class DirectoryControllerTest extends CommonControllerTest {
         ResultActions resultActions =
                 mockMvc.perform(post("/goat/directory")
                                 .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .with(csrf()))
+                                .contentType(MediaType.APPLICATION_JSON))
                         .andDo(print());
 
         //then
@@ -108,8 +109,25 @@ class DirectoryControllerTest extends CommonControllerTest {
 
         //when
         ResultActions resultActions =
-                mockMvc.perform(delete("/goat/directory/temporal/" + PARENT_DIRECTORY1.getId())
-                                .with(csrf()))
+                mockMvc.perform(delete("/goat/directory/temporal/" + PARENT_DIRECTORY1.getId()))
+                        .andDo(print());
+
+        //then
+        resultActions
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("폴더 이동")
+    void moveDirectoryTest() throws Exception {
+        //given
+        DirectoryMoveRequest request = new DirectoryMoveRequest(PARENT_DIRECTORY1.getId(), PARENT_DIRECTORY2.getId());
+
+        //when
+        ResultActions resultActions =
+                mockMvc.perform(post("/goat/directory/move")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(MediaType.APPLICATION_JSON))
                         .andDo(print());
 
         //then

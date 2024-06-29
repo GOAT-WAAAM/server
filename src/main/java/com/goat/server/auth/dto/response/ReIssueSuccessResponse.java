@@ -1,6 +1,6 @@
 package com.goat.server.auth.dto.response;
 
-import com.goat.server.global.domain.type.Tokens;
+import com.goat.server.global.util.jwt.Tokens;
 import lombok.Builder;
 
 @Builder

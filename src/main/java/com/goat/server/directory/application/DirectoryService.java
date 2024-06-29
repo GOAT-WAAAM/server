@@ -1,7 +1,9 @@
 package com.goat.server.directory.application;
 
+import com.goat.server.directory.application.type.SortType;
 import com.goat.server.directory.domain.Directory;
 import com.goat.server.directory.dto.request.DirectoryInitRequest;
+import com.goat.server.directory.dto.request.DirectoryMoveRequest;
 import com.goat.server.directory.dto.response.DirectoryResponse;
 import com.goat.server.directory.dto.response.DirectoryTotalShowResponse;
 import com.goat.server.directory.exception.DirectoryNotFoundException;
@@ -30,14 +32,12 @@ public class DirectoryService {
     /**
      * 유저의 과목과 폴더 목록을 조회
      */
-    public DirectoryTotalShowResponse getDirectorySubList(Long userId, Long directoryId) {
+    public DirectoryTotalShowResponse getDirectorySubList(Long userId, Long directoryId, List<SortType> sort) {
 
         validateDirectory(directoryId);
 
-        List<DirectoryResponse> directoryResponseList = getDirectoryResponseList(userId, directoryId);
-        List<ReviewSimpleResponse> reviewSimpleResponseList = reviewService.getReviewSimpleResponseList(directoryId);
-
-        log.info("reviewSimpleResponseList: {}", reviewSimpleResponseList.size());
+        List<DirectoryResponse> directoryResponseList = getDirectoryResponseList(userId, directoryId, sort);
+        List<ReviewSimpleResponse> reviewSimpleResponseList = reviewService.getReviewSimpleResponseList(directoryId, sort);
 
         return DirectoryTotalShowResponse.of(directoryResponseList, reviewSimpleResponseList);
     }
@@ -69,7 +69,7 @@ public class DirectoryService {
     public void initDirectory(Long userId, DirectoryInitRequest directoryInitRequest) {
 
         User user = userService.findUser(userId);
-        Directory parentDirectory = getDirectory(directoryInitRequest);
+        Directory parentDirectory = getParentDirectory(directoryInitRequest);
 
         if (parentDirectory != null) {
             parentDirectory.touchParentDirectories();
@@ -78,7 +78,23 @@ public class DirectoryService {
         directoryRepository.save(directoryInitRequest.toEntity(user, parentDirectory));
     }
 
-    private Directory getDirectory(DirectoryInitRequest directoryInitRequest) {
+    /**
+     * 폴더 이동
+     */
+    @Transactional
+    public void moveDirectory(DirectoryMoveRequest request) {
+        Directory moveDirectory = directoryRepository.findById(request.moveDirectoryId())
+                .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
+        Directory targetDirectory = directoryRepository.findById(request.targetDirectoryId())
+                .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
+
+        moveDirectory.touchParentDirectories(); //이전 부모 폴더들 touch
+
+        moveDirectory.updateParentDirectory(targetDirectory);
+        moveDirectory.touchParentDirectories(); //현재 부모 폴더들 touch
+    }
+
+    private Directory getParentDirectory(DirectoryInitRequest directoryInitRequest) {
         Directory parentDirectory;
 
         if (directoryInitRequest.parentDirectoryId() == 0) {
@@ -97,12 +113,10 @@ public class DirectoryService {
         }
     }
 
-    private List<DirectoryResponse> getDirectoryResponseList(Long userId, Long parentDirectoryId) {
+    private List<DirectoryResponse> getDirectoryResponseList(Long userId, Long parentDirectoryId, List<SortType> sort) {
         List<Directory> directoryList =
-                parentDirectoryId == 0 ? directoryRepository.findAllByUserUserIdAndParentDirectoryIsNull(userId)
-                        : directoryRepository.findAllByParentDirectoryId(parentDirectoryId);
-        //해당 메서드 없는 폴더 보려고 하면 exception 처리하기
-        log.info("directoryList: {}", directoryList.size());
+                parentDirectoryId == 0 ? directoryRepository.findAllByUserIdAndParentDirectoryIsNull(userId, sort)
+                        : directoryRepository.findAllByParentDirectoryId(parentDirectoryId, sort);
 
         return directoryList.stream()
                 .map(DirectoryResponse::from)

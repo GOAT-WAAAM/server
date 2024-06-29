@@ -13,6 +13,8 @@ import com.goat.server.review.dto.request.ReviewUploadRequest;
 import com.goat.server.review.dto.response.*;
 import com.goat.server.review.exception.ReviewNotFoundException;
 import com.goat.server.review.exception.errorcode.ReviewErrorCode;
+import com.goat.server.directory.application.type.SortType;
+import com.goat.server.review.dto.response.ReviewSimpleResponse;
 import com.goat.server.review.repository.ReviewRepository;
 
 import java.util.ArrayList;
@@ -45,8 +47,8 @@ public class ReviewService {
     /**
      * 폴더에 속한 리뷰 목록 조회
      */
-    public List<ReviewSimpleResponse> getReviewSimpleResponseList(Long directoryId) {
-        return reviewRepository.findByDirectoryId(directoryId).stream()
+    public List<ReviewSimpleResponse> getReviewSimpleResponseList(Long directoryId, List<SortType> sort) {
+        return reviewRepository.findByDirectoryId(directoryId, sort).stream()
                 .map(ReviewSimpleResponse::from)
                 .toList();
     }

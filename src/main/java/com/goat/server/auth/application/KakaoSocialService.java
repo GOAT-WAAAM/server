@@ -1,8 +1,8 @@
 package com.goat.server.auth.application;
 
-import com.goat.server.global.domain.JwtUserDetails;
+import com.goat.server.global.util.jwt.JwtUserDetails;
 import com.goat.server.global.exception.CustomFeignException;
-import com.goat.server.global.util.JwtTokenProvider;
+import com.goat.server.global.util.jwt.JwtTokenProvider;
 import com.goat.server.mypage.domain.User;
 import com.goat.server.mypage.repository.UserRepository;
 import com.goat.server.mypage.application.UserService;
@@ -31,6 +31,8 @@ public class KakaoSocialService {
     @Transactional
     public SignUpSuccessResponse socialLogin(final String kakaoAccessToken) {
 
+        log.info("[KakaoSocialService.socialLogin]");
+
         KakaoUserResponse userResponse = getUserInformationFromKakao(kakaoAccessToken);
 
         User user = findOrCreateUser(userResponse);
@@ -43,14 +45,14 @@ public class KakaoSocialService {
 
     private KakaoUserResponse getUserInformationFromKakao(String kakaoAccessToken) {
         try {
-            return kakaoApiClient.getUserInformation("Bearer " + kakaoAccessToken);
+            return kakaoApiClient.getUserInformation(kakaoAccessToken);
         } catch (FeignException e) {
             throw new CustomFeignException(FEIGN_FAILED, "Failed to get user information from Kakao: " + e.contentUTF8());
         }
     }
 
     private User findOrCreateUser(KakaoUserResponse userResponse) {
-        User user = userRepository.findBySocialId(userResponse.id().toString());
-        return (user != null) ? user : userService.createUser(userResponse);
+        return userRepository.findBySocialId(userResponse.id().toString())
+                .orElseGet(() -> userService.createUser(userResponse));
     }
 }
