@@ -2,9 +2,13 @@ package com.goat.server.global.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 public class ImageInfo {
 
@@ -16,4 +20,11 @@ public class ImageInfo {
 
     @Column(name = "image_url")
     String imageUrl;
+
+    @Builder
+    public ImageInfo(String imageFileName, String imageFolderName, String imageUrl){
+        this.imageFileName = imageFileName;
+        this.imageFolderName = imageFolderName;
+        this.imageUrl = imageUrl;
+    }
 }

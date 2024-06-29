@@ -3,22 +3,24 @@ package com.goat.server.review.domain;
 import com.goat.server.global.domain.BaseTimeEntity;
 import com.goat.server.global.domain.ImageInfo;
 import com.goat.server.directory.domain.Directory;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import com.goat.server.mypage.domain.User;
+import com.goat.server.review.domain.type.Date;
+import com.goat.server.review.dto.request.ReviewUpdateRequest;
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -44,8 +46,17 @@ public class Review extends BaseTimeEntity {
     @Column(name = "is_repeatable")
     private Boolean isRepeatable;
 
+    @Column(name = "is_auto_repeat")
+    private Boolean isAutoRepeat;
+
+    @OneToMany(mappedBy = "review", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<ReviewDate> reviewDates = new ArrayList<>();
+
+    @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE)
+    private List<StarReview> starReviews = new ArrayList<>();
+
     @Column(name = "remind_time")
-    private LocalDateTime remindTime;
+    private LocalTime remindTime;
 
     @Column(name = "review_start_date")
     private LocalDate reviewStartDate;
@@ -60,19 +71,82 @@ public class Review extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Directory directory;
 
+    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
+
     @Builder
     public Review(ImageInfo imageInfo, String title, Boolean isImageEnroll, String content, Boolean isRepeatable,
-                  LocalDateTime remindTime, LocalDate reviewStartDate, LocalDate reviewEndDate, Boolean isPostShare,
-                  Directory directory) {
+                  Boolean isAutoRepeat, LocalTime remindTime, LocalDate reviewStartDate, LocalDate reviewEndDate, Boolean isPostShare,
+                  Directory directory, User user) {
         this.imageInfo = imageInfo;
         this.title = title;
         this.isImageEnroll = isImageEnroll;
         this.content = content;
         this.isRepeatable = isRepeatable;
+        this.isAutoRepeat = isAutoRepeat;
         this.remindTime = remindTime;
         this.reviewStartDate = reviewStartDate;
         this.reviewEndDate = reviewEndDate;
         this.isPostShare = isPostShare;
         this.directory = directory;
+        this.user = user;
+    }
+
+    public void setImageInfo(ImageInfo imageInfo){
+        this.imageInfo = imageInfo;
+    }
+
+    public void setReviewDates(List<ReviewDate> reviewDates) {
+        this.reviewDates.clear();
+        if (reviewDates != null) {
+            this.reviewDates.addAll(reviewDates);
+            for (ReviewDate reviewDate : reviewDates) {
+                reviewDate.setReview(this);
+            }
+        }
+    }
+
+    public void updateReview(ReviewUpdateRequest reviewUpdateRequest, ImageInfo imageInfo) {
+        this.title = reviewUpdateRequest.title();
+        this.content = reviewUpdateRequest.content();
+        this.isRepeatable = reviewUpdateRequest.repeat();
+        this.isAutoRepeat = reviewUpdateRequest.autoRepeat();
+        this.remindTime = reviewUpdateRequest.remindTime();
+        this.reviewStartDate = reviewUpdateRequest.reviewStartDate();
+        this.reviewEndDate = reviewUpdateRequest.reviewEndDate();
+        this.isPostShare = reviewUpdateRequest.postShare();
+        this.imageInfo = imageInfo;
+
+        if (!reviewUpdateRequest.autoRepeat()) {
+            List<Date> newReviewDates = reviewUpdateRequest.reviewDates().stream()
+                    .map(Date::valueOf)
+                    .toList();
+
+            log.info("newReviewDates log start");
+            for (Date newReviewDate : newReviewDates) {
+                log.info("reviewDate: {}", newReviewDate);
+            }
+
+            // 기존 reviewDates에서 삭제해야 할 날짜 제거
+            this.reviewDates.removeIf(existingReviewDate -> !newReviewDates.contains(existingReviewDate.getDate()));
+
+            // 새로운 날짜 추가
+            for (Date date : newReviewDates) {
+                boolean exists = this.reviewDates.stream()
+                        .anyMatch(existingReviewDate -> existingReviewDate.getDate().equals(date));
+
+                if (!exists) {
+                    this.reviewDates.add(ReviewDate.builder()
+                            .date(date)
+                            .review(this)
+                            .build());
+                }
+            }
+        }
+    }
+
+    public String getImageUrl() {
+        return this.imageInfo.getImageUrl();
     }
 }

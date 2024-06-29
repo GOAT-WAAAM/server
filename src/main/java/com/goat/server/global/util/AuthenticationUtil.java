@@ -45,7 +45,7 @@ public class AuthenticationUtil {
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring("Bearer ".length());
         } else {
-            throw new TokenNotFoundException(INVALID_TOKEN);
+           return null;
         }
 
     }
