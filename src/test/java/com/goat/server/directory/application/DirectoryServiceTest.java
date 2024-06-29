@@ -72,7 +72,7 @@ class DirectoryServiceTest {
 
         assertThat(directorySubList.reviewSimpleResponseList())
                 .extracting(ReviewSimpleResponse::reviewId)
-                .containsExactly(DUMMY_REVIEW1.getReviewId(), DUMMY_REVIEW2.getReviewId());
+                .containsExactly(DUMMY_REVIEW1.getId(), DUMMY_REVIEW2.getId());
     }
 
     @Test
