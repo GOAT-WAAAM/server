@@ -7,6 +7,6 @@ public record ReviewSimpleResponse(
         String imageTitle
 ) {
         public static ReviewSimpleResponse from(Review review) {
-            return new ReviewSimpleResponse(review.getReviewId(), review.getImageTitle());
+            return new ReviewSimpleResponse(review.getId(), review.getTitle());
         }
 }

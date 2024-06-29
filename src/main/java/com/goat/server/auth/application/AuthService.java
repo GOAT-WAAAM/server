@@ -1,12 +1,10 @@
 package com.goat.server.auth.application;
 
 import com.goat.server.auth.dto.response.ReIssueSuccessResponse;
-import com.goat.server.auth.dto.response.SignUpSuccessResponse;
-import com.goat.server.global.domain.JwtUserDetails;
-import com.goat.server.global.util.JwtTokenProvider;
-import com.goat.server.mypage.domain.type.Role;
+import com.goat.server.global.util.jwt.JwtUserDetails;
+import com.goat.server.global.util.jwt.JwtTokenProvider;
+import com.goat.server.mypage.domain.User;
 import com.goat.server.mypage.exception.UserNotFoundException;
-import com.goat.server.mypage.repository.JwtUserDetailProjection;
 import com.goat.server.mypage.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,19 +28,14 @@ public class AuthService {
                 .from(jwtTokenProvider.generateToken(getJwtUserDetails(userId)));
     }
 
-    public SignUpSuccessResponse getTestToken(Long userId) {
-
-        return SignUpSuccessResponse
-                .from(jwtTokenProvider.generateToken(getJwtUserDetails(userId)));
+    public String getTestToken(Long userId) {
+        return jwtTokenProvider.generateToken(getJwtUserDetails(userId)).accessToken();
     }
 
     public JwtUserDetails getJwtUserDetails(Long userId) {
-        JwtUserDetailProjection jwtUserDetailProjection = userRepository.findJwtUserDetailsById(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 
-        if (jwtUserDetailProjection == null) {
-            throw new UserNotFoundException(USER_NOT_FOUND);
-        }
-
-        return JwtUserDetails.of(jwtUserDetailProjection.getUserId(), Role.valueOf(jwtUserDetailProjection.getRole()));
+        return JwtUserDetails.from(user);
     }
 }
