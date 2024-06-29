@@ -37,6 +37,6 @@ public class AuthService {
         JwtUserDetailProjection jwtUserDetailProjection = userRepository.findJwtUserDetailsById(userId)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 
-        return JwtUserDetails.of(jwtUserDetailProjection.getUserId(), Role.valueOf(jwtUserDetailProjection.getRole()));
+        return JwtUserDetails.of(jwtUserDetailProjection.userId(), Role.valueOf(jwtUserDetailProjection.role()));
     }
 }
