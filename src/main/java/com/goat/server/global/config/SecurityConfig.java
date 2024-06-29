@@ -25,18 +25,16 @@ public class SecurityConfig {
     private final CustomJwtAuthenticationEntryPoint customJwtAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
-    private static final String[] AUTH_WHITELIST = {
-            "/error",
-            "/swagger-ui/**",
-            "/swagger-resources/*",
-            "/webjars/",
-            "/v3/api-docs/**",
-            "/goat/auth/login/**",
-    };
-
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers(AUTH_WHITELIST);
+        return (web) -> web.ignoring().requestMatchers(
+                "/error",
+                "/swagger-ui/**",
+                "/swagger-resources/*",
+                "/webjars/",
+                "/v3/api-docs/**",
+                "/goat/auth/login/**",
+                "/goat/auth/test-token");
     }
 
     @Bean
@@ -45,6 +43,8 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable) //form login 비활성화
                 .httpBasic(AbstractHttpConfigurer::disable)//http 기본 인증 비활성화
                 .cors(Customizer.withDefaults())
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().authenticated())
                 .sessionManagement(session -> {
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 })
