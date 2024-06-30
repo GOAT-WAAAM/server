@@ -38,7 +38,7 @@ public class MypageService {
                 .map(Major::getMajorName)
                 .collect(Collectors.toList());
 
-        return new MypageHomeResponse(user.getProfileImageUrl(), user.getNickname(), user.getGrade(), user.getGoal(), majorNames);
+        return MypageHomeResponse.of(user, majorNames);
     }
 
     /**
@@ -54,7 +54,7 @@ public class MypageService {
                 .map(Major::getMajorName)
                 .collect(Collectors.toList());
 
-        return new MypageDetailsResponse(user.getProfileImageUrl(), user.getNickname(), user.getGrade(), majorNames);
+        return MypageDetailsResponse.of(user, majorNames);
     }
 
     /**
@@ -66,11 +66,6 @@ public class MypageService {
         if (user == null) {
             throw new UserNotFoundException(MypageErrorCode.USER_NOT_FOUND);
         }
-
-        List<String> majorNames = user.getMajorList().stream()
-                .map(Major::getMajorName)
-                .collect(Collectors.toList());
-
         user.updateMypageDetails(request);
     }
 
@@ -83,7 +78,6 @@ public class MypageService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(MypageErrorCode.USER_NOT_FOUND));
         user.updateGoal(goalRequest.goal());
-        userRepository.save(user);
     }
 
 }
