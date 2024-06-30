@@ -8,6 +8,7 @@ import com.goat.server.global.dto.ResponseTemplate;
 import com.goat.server.directory.application.DirectoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,9 +38,11 @@ public class DirectoryController {
     public ResponseEntity<ResponseTemplate<Object>> getDirectorySubList(
             @AuthenticationPrincipal Long userId,
             @RequestParam(defaultValue = "0") Long directoryId,
-            @RequestParam(required = false) List<SortType> sort) {
+            @RequestParam(required = false) List<SortType> sort,
+            @RequestParam(required = false) String search) {
 
-        DirectoryTotalShowResponse directorySubList = directoryService.getDirectorySubList(userId, directoryId, sort);
+        DirectoryTotalShowResponse directorySubList =
+                directoryService.getDirectorySubList(userId, directoryId, sort, search);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -75,7 +78,7 @@ public class DirectoryController {
     @Operation(summary = "폴더 이동", description = "폴더 이동")
     @PostMapping("/move")
     public ResponseEntity<ResponseTemplate<Object>> moveDirectory(
-            @RequestBody DirectoryMoveRequest directoryMoveRequest) {
+            @Valid @RequestBody DirectoryMoveRequest directoryMoveRequest) {
 
         directoryService.moveDirectory(directoryMoveRequest);
 

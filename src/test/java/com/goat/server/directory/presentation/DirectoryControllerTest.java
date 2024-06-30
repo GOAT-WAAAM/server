@@ -58,9 +58,9 @@ class DirectoryControllerTest extends CommonControllerTest {
         List<ReviewSimpleResponse> reviewSimpleResponseList =
                 List.of(ReviewSimpleResponse.from(DUMMY_REVIEW1), ReviewSimpleResponse.from(DUMMY_REVIEW2));
         DirectoryTotalShowResponse directoryTotalShowResponse =
-                DirectoryTotalShowResponse.of(directoryResponseList, reviewSimpleResponseList);
+                DirectoryTotalShowResponse.of(PARENT_DIRECTORY1.getId(), directoryResponseList, reviewSimpleResponseList);
 
-        given(directoryService.getDirectorySubList(anyLong(), eq(PARENT_DIRECTORY1.getId()), any()))
+        given(directoryService.getDirectorySubList(anyLong(), eq(PARENT_DIRECTORY1.getId()), any(), any()))
                 .willReturn(directoryTotalShowResponse);
 
         log.info("directoryTotalShowResponse: {}", directoryTotalShowResponse);

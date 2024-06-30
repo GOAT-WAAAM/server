@@ -61,12 +61,12 @@ class DirectoryServiceTest {
                 .willReturn(true);
         given(directoryRepository.findAllByParentDirectoryId(eq(PARENT_DIRECTORY1.getId()), any()))
                 .willReturn(List.of(CHILD_DIRECTORY1, CHILD_DIRECTORY2));
-        given(reviewService.getReviewSimpleResponseList(eq(PARENT_DIRECTORY1.getId()), any())).willReturn(
+        given(reviewService.getReviewSimpleResponseList(any(), eq(PARENT_DIRECTORY1.getId()), any(), any())).willReturn(
                 List.of(ReviewSimpleResponse.from(DUMMY_REVIEW1), ReviewSimpleResponse.from(DUMMY_REVIEW2)));
 
         //when
         DirectoryTotalShowResponse directorySubList =
-                directoryService.getDirectorySubList(USER_USER.getUserId(), PARENT_DIRECTORY1.getId(), null);
+                directoryService.getDirectorySubList(USER_USER.getUserId(), PARENT_DIRECTORY1.getId(), null, null);
 
         //then
         assertThat(directorySubList.directoryResponseList())
@@ -82,12 +82,12 @@ class DirectoryServiceTest {
     @DisplayName("과목과 폴더 가져 오기 테스트 - 루트 폴더")
     void getDirectoryListTest2() {
         //given
-        given(directoryRepository.findAllByUserIdAndParentDirectoryIsNull(USER_USER.getUserId(), null))
+        given(directoryRepository.findAllByUserIdAndParentDirectoryIsNull(eq(USER_USER.getUserId()), any()))
                 .willReturn(List.of(PARENT_DIRECTORY1, PARENT_DIRECTORY2));
 
         //when
         DirectoryTotalShowResponse directorySubList =
-                directoryService.getDirectorySubList(USER_USER.getUserId(), 0L, null);
+                directoryService.getDirectorySubList(USER_USER.getUserId(), 0L, null, null);
 
         //then
         assertThat(directorySubList.directoryResponseList())

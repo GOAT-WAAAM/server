@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 @Slf4j
 @Transactional(readOnly = true)
@@ -32,12 +33,15 @@ public class DirectoryService {
     /**
      * 유저의 과목과 폴더 목록을 조회
      */
-    public DirectoryTotalShowResponse getDirectorySubList(Long userId, Long directoryId, List<SortType> sort) {
+    public DirectoryTotalShowResponse getDirectorySubList(
+            Long userId, Long directoryId, List<SortType> sort, String search) {
 
         validateDirectory(directoryId);
 
-        List<DirectoryResponse> directoryResponseList = getDirectoryResponseList(userId, directoryId, sort);
-        List<ReviewSimpleResponse> reviewSimpleResponseList = reviewService.getReviewSimpleResponseList(directoryId, sort);
+        List<DirectoryResponse> directoryResponseList =
+                getDirectoryResponseList(userId, directoryId, sort, search);
+        List<ReviewSimpleResponse> reviewSimpleResponseList =
+                reviewService.getReviewSimpleResponseList(userId, directoryId, sort, search);
 
         return DirectoryTotalShowResponse.of(directoryId, directoryResponseList, reviewSimpleResponseList);
     }
@@ -113,9 +117,18 @@ public class DirectoryService {
         }
     }
 
-    private List<DirectoryResponse> getDirectoryResponseList(Long userId, Long parentDirectoryId, List<SortType> sort) {
+    private List<DirectoryResponse> getDirectoryResponseList(
+            Long userId, Long parentDirectoryId, List<SortType> sort, String search) {
+
+        if (!ObjectUtils.isEmpty(search)) {
+            return directoryRepository.findAllBySearch(userId, search, sort).stream()
+                    .map(DirectoryResponse::from)
+                    .toList();
+        }
+
         List<Directory> directoryList =
-                parentDirectoryId == 0 ? directoryRepository.findAllByUserIdAndParentDirectoryIsNull(userId, sort)
+                parentDirectoryId == 0 ?
+                        directoryRepository.findAllByUserIdAndParentDirectoryIsNull(userId, sort)
                         : directoryRepository.findAllByParentDirectoryId(parentDirectoryId, sort);
 
         return directoryList.stream()
