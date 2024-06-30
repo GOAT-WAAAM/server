@@ -43,6 +43,5 @@ public class NotificationSettingService {
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
         NotificationSetting notificationSetting = notificationSettingRepository.findByUserUserId(userId);
         notificationSetting.updateReviewNoti(request.isReviewNoti());
-        notificationSettingRepository.save(notificationSetting);
     }
 }
