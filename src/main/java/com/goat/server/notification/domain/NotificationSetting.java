@@ -43,14 +43,4 @@ public class NotificationSetting extends BaseTimeEntity {
     public void updateReviewNoti(Boolean isReviewNoti) {
         this.isReviewNoti = isReviewNoti;
     }
-
-    //내 게시글 알림 권한 수정
-    public void updatePostNoti(Boolean isPostNoti) {
-        this.isPostNoti = isPostNoti;
-    }
-
-    //내 댓글 알림 권한 수정
-    public void updateCommentNoti(Boolean isCommentNoti) {
-        this.isCommentNoti = isCommentNoti;
-    }
 }

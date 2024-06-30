@@ -1,15 +1,18 @@
 package com.goat.server.notification.application;
 
+import com.goat.server.mypage.domain.User;
+import com.goat.server.mypage.exception.UserNotFoundException;
+import com.goat.server.mypage.repository.UserRepository;
 import com.goat.server.notification.domain.NotificationSetting;
-import com.goat.server.notification.dto.CommentNotiSettingRequest;
-import com.goat.server.notification.dto.NotificationSettingResponse;
-import com.goat.server.notification.dto.PostNotiSettingRequest;
-import com.goat.server.notification.dto.ReviewNotiSettingRequest;
+import com.goat.server.notification.dto.request.NotificationSettingRequest;
+import com.goat.server.notification.dto.response.NotificationSettingResponse;
 import com.goat.server.notification.repository.NotificationSettingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.goat.server.mypage.exception.errorcode.MypageErrorCode.USER_NOT_FOUND;
 
 @Slf4j
 @Transactional(readOnly = true)
@@ -18,46 +21,28 @@ import org.springframework.transaction.annotation.Transactional;
 public class NotificationSettingService {
 
     private final NotificationSettingRepository notificationSettingRepository;
+    private final UserRepository userRepository;
 
     /**
      * 알림 권한 설정 보기
      */
     public NotificationSettingResponse getNotificationSetting(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
         NotificationSetting notificationSetting = notificationSettingRepository.findByUserUserId(userId);
-        return new NotificationSettingResponse(
-                notificationSetting.getIsReviewNoti(),
-                notificationSetting.getIsPostNoti(),
-                notificationSetting.getIsCommentNoti()
-        );
+
+        return NotificationSettingResponse.from(notificationSetting);
     }
 
     /**
      * 복습 알림 권한 변경하기
      */
     @Transactional
-    public void updateReviewNotiSetting(Long userId, ReviewNotiSettingRequest request) {
+    public void updateNotificationSetting(Long userId, NotificationSettingRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
         NotificationSetting notificationSetting = notificationSettingRepository.findByUserUserId(userId);
         notificationSetting.updateReviewNoti(request.isReviewNoti());
-        notificationSettingRepository.save(notificationSetting);
-    }
-
-    /**
-     * 댓글 알림 권한 변경하기
-     */
-    @Transactional
-    public void updateCommentNotiSetting(Long userId, CommentNotiSettingRequest request) {
-        NotificationSetting notificationSetting = notificationSettingRepository.findByUserUserId(userId);
-        notificationSetting.updateCommentNoti(request.isCommentNoti());
-        notificationSettingRepository.save(notificationSetting);
-    }
-
-    /**
-     * 게시글 알림 권한 변경하기
-     */
-    @Transactional
-    public void updatePostNotiSetting(Long userId, PostNotiSettingRequest request) {
-        NotificationSetting notificationSetting = notificationSettingRepository.findByUserUserId(userId);
-        notificationSetting.updatePostNoti(request.isPostNoti());
         notificationSettingRepository.save(notificationSetting);
     }
 }
