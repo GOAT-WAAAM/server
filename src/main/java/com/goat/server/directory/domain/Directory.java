@@ -78,4 +78,10 @@ public class Directory extends BaseTimeEntity {
             this.parentDirectory.touchParentDirectories();
         }
     }
+
+    public void validateUser(Long userId) {
+        if (!this.getUser().getUserId().equals(userId)) {
+            throw new IllegalArgumentException("해당 폴더에 대한 권한이 없습니다.");
+        }
+    }
 }

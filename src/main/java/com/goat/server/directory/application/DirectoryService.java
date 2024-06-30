@@ -14,7 +14,6 @@ import com.goat.server.mypage.domain.User;
 import com.goat.server.review.application.ReviewService;
 import com.goat.server.review.dto.response.ReviewSimpleResponse;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -56,6 +55,8 @@ public class DirectoryService {
         Directory directory = directoryRepository.findById(directoryId)
                 .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
+        directory.validateUser(userId);
+
         directory.touchParentDirectories();
 
         directoryRepository.findTrashDirectoryByUser(userId)
@@ -76,9 +77,7 @@ public class DirectoryService {
         Directory directory = directoryRepository.findById(directoryId)
                 .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
-        if (!Objects.equals(directory.getUser().getUserId(), userId)) {
-            throw new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND);
-        }
+        directory.validateUser(userId);
 
         directory.touchParentDirectories();
         directoryRepository.delete(directory);

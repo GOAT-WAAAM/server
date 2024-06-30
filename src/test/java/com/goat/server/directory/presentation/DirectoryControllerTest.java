@@ -103,13 +103,28 @@ class DirectoryControllerTest extends CommonControllerTest {
     }
 
     @Test
-    @DisplayName("폴더 삭제")
-    void deleteDirectoryTest() throws Exception {
+    @DisplayName("폴더 임시 삭제")
+    void deleteDirectoryTemporalTest() throws Exception {
         //given
 
         //when
         ResultActions resultActions =
                 mockMvc.perform(delete("/goat/directory/temporal/" + PARENT_DIRECTORY1.getId()))
+                        .andDo(print());
+
+        //then
+        resultActions
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("폴더 임시 삭제")
+    void deleteDirectoryPermanentTest() throws Exception {
+        //given
+
+        //when
+        ResultActions resultActions =
+                mockMvc.perform(delete("/goat/directory/permanent/" + PARENT_DIRECTORY1.getId()))
                         .andDo(print());
 
         //then
