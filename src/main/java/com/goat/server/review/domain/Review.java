@@ -6,6 +6,7 @@ import com.goat.server.directory.domain.Directory;
 import com.goat.server.mypage.domain.User;
 import com.goat.server.review.domain.type.Date;
 import com.goat.server.review.dto.request.ReviewUpdateRequest;
+import com.goat.server.review.util.ReviewRemoveListener;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -23,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@EntityListeners(ReviewRemoveListener.class)
 public class Review extends BaseTimeEntity {
 
     @Id

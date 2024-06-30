@@ -6,5 +6,7 @@ import java.util.List;
 
 public interface ReviewRepositoryCustom {
 
-    List<Review> findByDirectoryId(Long directoryId, List<SortType> sort);
+    List<Review> findAllByDirectoryId(Long directoryId, List<SortType> sort);
+
+    List<Review> findAllBySearch(Long userId, String search, List<SortType> sort);
 }

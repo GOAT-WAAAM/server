@@ -2,6 +2,7 @@ package com.goat.server.directory.domain;
 
 import com.goat.server.global.domain.BaseTimeEntity;
 import com.goat.server.mypage.domain.User;
+import com.goat.server.review.domain.Review;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -49,6 +50,9 @@ public class Directory extends BaseTimeEntity {
     @OneToMany(mappedBy = "parentDirectory", cascade = CascadeType.REMOVE)
     private List<Directory> childDirectoryList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "directory", cascade = CascadeType.REMOVE)
+    private List<Review> reviewList = new ArrayList<>();
+
     @Builder
     public Directory(String title, String directoryColor, Long depth, User user, Directory parentDirectory) {
         this.title = title;
@@ -72,6 +76,12 @@ public class Directory extends BaseTimeEntity {
 
         if (this.parentDirectory != null) {
             this.parentDirectory.touchParentDirectories();
+        }
+    }
+
+    public void validateUser(Long userId) {
+        if (!this.getUser().getUserId().equals(userId)) {
+            throw new IllegalArgumentException("해당 폴더에 대한 권한이 없습니다.");
         }
     }
 }

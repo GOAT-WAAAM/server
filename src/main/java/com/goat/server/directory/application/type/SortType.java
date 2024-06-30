@@ -10,19 +10,19 @@ public enum SortType {
     NAME_ASC,
     NAME_DESC,
     CREATED_AT,
-    UPDATED_AT
+    MOST_REVIEWED,
     ;
 
     public static final Map<SortType, Function<QDirectory, OrderSpecifier<?>>> DIRECTORY_SORT_MAP = Map.of(
             SortType.CREATED_AT, dir -> dir.createdDate.desc(),
-            SortType.UPDATED_AT, dir -> dir.modifiedDate.desc(),
+            SortType.MOST_REVIEWED, dir -> dir.modifiedDate.desc(),
             SortType.NAME_ASC, dir -> dir.title.asc(),
             SortType.NAME_DESC, dir -> dir.title.desc()
     );
 
     public static final Map<SortType, Function<QReview, OrderSpecifier<?>>> REVIEW_SORT_MAP = Map.of(
             SortType.CREATED_AT, review -> review.createdDate.desc(),
-            SortType.UPDATED_AT, review -> review.modifiedDate.desc(),
+            SortType.MOST_REVIEWED, review -> review.reviewCnt.desc(),
             SortType.NAME_ASC, review -> review.title.asc(),
             SortType.NAME_DESC, review -> review.title.desc()
     );

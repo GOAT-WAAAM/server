@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 public enum DirectoryErrorCode implements ErrorCode {
 
     DIRECTORY_NOT_FOUND(HttpStatus.NOT_FOUND, "Directory not found."),
+    DIRECTORY_CANNOT_DELETE(HttpStatus.FORBIDDEN, "Directory cannot delete."),
     ;
 
     private final HttpStatus httpStatus;

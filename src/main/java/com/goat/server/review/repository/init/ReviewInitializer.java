@@ -38,6 +38,8 @@ public class ReviewInitializer implements ApplicationRunner {
             Directory dummyParentDirectory = directoryRepository.findById(4L).orElseThrow();
             Directory dummyChildDirectory = directoryRepository.findById(7L).orElseThrow();
 
+            Directory deleteTestDirectory = directoryRepository.findById(8L).orElseThrow();
+
             User user = userRepository.findByEmail("userEmail")
                     .orElseThrow(() -> new UserNotFoundException(MypageErrorCode.USER_NOT_FOUND));
 
@@ -72,7 +74,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isPostShare(true)
                     .user(user)
                     .directory(dummyParentDirectory)
-                    .reviewCnt(0L)
+                    .reviewCnt(1L)
                     .build();
 
             Review DUMMY_REVIEW3 = Review.builder()
@@ -88,7 +90,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isPostShare(true)
                     .user(user)
                     .directory(dummyParentDirectory)
-                    .reviewCnt(0L)
+                    .reviewCnt(2L)
                     .build();
 
             Review DUMMY_REVIEW4 = Review.builder()
@@ -104,7 +106,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isPostShare(true)
                     .user(user)
                     .directory(dummyParentDirectory)
-                    .reviewCnt(0L)
+                    .reviewCnt(4L)
                     .build();
 
             Review DUMMY_REVIEW5 = Review.builder()
@@ -120,7 +122,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isPostShare(true)
                     .user(user)
                     .directory(dummyChildDirectory)
-                    .reviewCnt(0L)
+                    .reviewCnt(3L)
                     .build();
 
             Review DUMMY_REVIEW6 = Review.builder()
@@ -136,7 +138,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isPostShare(true)
                     .user(user)
                     .directory(dummyChildDirectory)
-                    .reviewCnt(0L)
+                    .reviewCnt(6L)
                     .build();
 
             Review DUMMY_REVIEW7 = Review.builder()
@@ -147,7 +149,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isPostShare(true)
                     .user(user)
                     .directory(dummyChildDirectory)
-                    .reviewCnt(0L)
+                    .reviewCnt(8L)
                     .build();
 
             Review DUMMY_REVIEW8 = Review.builder()
@@ -158,7 +160,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isPostShare(true)
                     .user(user)
                     .directory(dummyChildDirectory)
-                    .reviewCnt(0L)
+                    .reviewCnt(9L)
                     .build();
 
             Review DUMMY_REVIEW9 = Review.builder()
@@ -168,8 +170,13 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isAutoRepeat(false)
                     .isPostShare(true)
                     .user(user)
-                    .directory(dummyChildDirectory)
-                    .reviewCnt(0L)
+                    .directory(deleteTestDirectory)
+                    .imageInfo(ImageInfo.builder()
+                            .imageFileName("bee.jpg")
+                            .imageFolderName("goat")
+                            .imageUrl("https://team-goat-bucket.s3.ap-northeast-2.amazonaws.com/goat/bee.jpg")
+                            .build())
+                    .reviewCnt(10L)
                     .build();
 
             reviewList.add(DUMMY_REVIEW1);

@@ -1,5 +1,6 @@
 package com.goat.server.global.exception.handler;
 
+import com.goat.server.directory.exception.DirectoryCanNotDeleteException;
 import com.goat.server.directory.exception.DirectoryNotFoundException;
 import com.goat.server.mypage.exception.UserNotFoundException;
 import java.util.List;
@@ -39,6 +40,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(DirectoryNotFoundException.class)
     public ResponseEntity<Object> handleDirectoryNotFound(final DirectoryNotFoundException e) {
+        final ErrorCode errorCode = e.getErrorCode();
+        return handleExceptionInternal(errorCode);
+    }
+
+    @ExceptionHandler(DirectoryCanNotDeleteException.class)
+    public ResponseEntity<Object> handleDirectoryCanNotDelete(final DirectoryCanNotDeleteException e) {
         final ErrorCode errorCode = e.getErrorCode();
         return handleExceptionInternal(errorCode);
     }

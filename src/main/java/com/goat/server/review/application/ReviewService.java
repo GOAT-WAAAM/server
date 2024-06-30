@@ -17,9 +17,7 @@ import com.goat.server.directory.application.type.SortType;
 import com.goat.server.review.dto.response.ReviewSimpleResponse;
 import com.goat.server.review.repository.ReviewRepository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
@@ -47,8 +46,16 @@ public class ReviewService {
     /**
      * 폴더에 속한 리뷰 목록 조회
      */
-    public List<ReviewSimpleResponse> getReviewSimpleResponseList(Long directoryId, List<SortType> sort) {
-        return reviewRepository.findByDirectoryId(directoryId, sort).stream()
+    public List<ReviewSimpleResponse> getReviewSimpleResponseList(
+            Long userId, Long directoryId, List<SortType> sort, String search) {
+
+        if (!ObjectUtils.isEmpty(search)) {
+            return reviewRepository.findAllBySearch(userId, search, sort).stream()
+                    .map(ReviewSimpleResponse::from)
+                    .toList();
+        }
+
+        return reviewRepository.findAllByDirectoryId(directoryId, sort).stream()
                 .map(ReviewSimpleResponse::from)
                 .toList();
     }

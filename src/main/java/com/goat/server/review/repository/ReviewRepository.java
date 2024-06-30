@@ -1,7 +1,6 @@
 package com.goat.server.review.repository;
 
 import com.goat.server.review.domain.Review;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,8 +11,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRepositoryCustom {
-
-    List<Review> findByDirectoryId(Long directoryId);
 
     Optional<Review> findByIdAndUser_UserId(Long reviewId, Long userId);
 

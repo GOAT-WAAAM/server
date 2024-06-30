@@ -6,14 +6,16 @@ import static com.goat.server.directory.domain.QDirectory.directory;
 import com.goat.server.directory.application.type.SortType;
 import com.goat.server.directory.domain.Directory;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.ObjectUtils;
 
 @Repository
 @RequiredArgsConstructor
-public class DirectoryRepositoryImpl implements DirectoryRepositoryCustom{
+public class DirectoryRepositoryImpl implements DirectoryRepositoryCustom {
 
     private final JPAQueryFactory query;
 
@@ -33,6 +35,22 @@ public class DirectoryRepositoryImpl implements DirectoryRepositoryCustom{
                 .where(directory.parentDirectory.id.isNull(), directory.user.userId.eq(userId))
                 .orderBy(sortExpression(sort))
                 .fetch();
+    }
+
+    @Override
+    public List<Directory> findAllBySearch(Long userId, String search, List<SortType> sort) {
+        return query
+                .selectFrom(directory)
+                .where(directory.user.userId.eq(userId), searchExpression(search))
+                .orderBy(sortExpression(sort))
+                .fetch();
+    }
+
+    private BooleanExpression searchExpression(String search) {
+        if (ObjectUtils.isEmpty(search)) {
+            return null;
+        }
+        return directory.title.contains(search);
     }
 
     // 기본 정렬 - 이름 오름차순
