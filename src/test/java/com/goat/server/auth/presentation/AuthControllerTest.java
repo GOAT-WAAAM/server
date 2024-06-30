@@ -1,13 +1,16 @@
 package com.goat.server.auth.presentation;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goat.server.auth.application.AuthService;
 import com.goat.server.auth.application.KakaoSocialService;
+import com.goat.server.auth.dto.OnBoardingRequest;
 import com.goat.server.auth.dto.response.ReIssueSuccessResponse;
 import com.goat.server.auth.dto.response.SignUpSuccessResponse;
 import com.goat.server.global.CommonControllerTest;
 import com.goat.server.global.util.jwt.Tokens;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -32,6 +35,9 @@ class AuthControllerTest extends CommonControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @Test
     @DisplayName("소셜 로그인 테스트")
@@ -80,4 +86,20 @@ class AuthControllerTest extends CommonControllerTest {
                 .andExpect(jsonPath("$.results.refreshToken").value("refreshToken"));
 
     }
+
+    @Test
+    @DisplayName("온보딩 회원정보 입력 테스트")
+    void saveOnBoardingInfo() throws Exception {
+        //given
+
+        //when
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.patch("/goat/auth/info")
+                .content(objectMapper.writeValueAsString(new OnBoardingRequest("nickname", "안녕하세요!")))
+                .contentType("application/json"));
+
+        //then
+        resultActions
+                .andExpect(status().isOk());
+    }
+
 }
