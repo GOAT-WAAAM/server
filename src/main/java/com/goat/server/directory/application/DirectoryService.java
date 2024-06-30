@@ -14,6 +14,7 @@ import com.goat.server.mypage.domain.User;
 import com.goat.server.review.application.ReviewService;
 import com.goat.server.review.dto.response.ReviewSimpleResponse;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -64,6 +65,23 @@ public class DirectoryService {
                             log.error("trash directory not found");
                             throw new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND);
                         });
+    }
+
+    /**
+     * 폴더 영구 삭제
+     */
+    @Transactional
+    public void deleteDirectoryPermanent(Long userId, Long directoryId) {
+
+        Directory directory = directoryRepository.findById(directoryId)
+                .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
+
+        if (!Objects.equals(directory.getUser().getUserId(), userId)) {
+            throw new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND);
+        }
+
+        directory.touchParentDirectories();
+        directoryRepository.delete(directory);
     }
 
     /**

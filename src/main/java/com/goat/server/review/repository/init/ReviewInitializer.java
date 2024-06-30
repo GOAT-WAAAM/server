@@ -38,6 +38,8 @@ public class ReviewInitializer implements ApplicationRunner {
             Directory dummyParentDirectory = directoryRepository.findById(4L).orElseThrow();
             Directory dummyChildDirectory = directoryRepository.findById(7L).orElseThrow();
 
+            Directory deleteTestDirectory = directoryRepository.findById(8L).orElseThrow();
+
             User user = userRepository.findByEmail("userEmail")
                     .orElseThrow(() -> new UserNotFoundException(MypageErrorCode.USER_NOT_FOUND));
 
@@ -168,7 +170,12 @@ public class ReviewInitializer implements ApplicationRunner {
                     .isAutoRepeat(false)
                     .isPostShare(true)
                     .user(user)
-                    .directory(dummyChildDirectory)
+                    .directory(deleteTestDirectory)
+                    .imageInfo(ImageInfo.builder()
+                            .imageFileName("bee.jpg")
+                            .imageFolderName("goat")
+                            .imageUrl("https://team-goat-bucket.s3.ap-northeast-2.amazonaws.com/goat/bee.jpg")
+                            .build())
                     .reviewCnt(10L)
                     .build();
 

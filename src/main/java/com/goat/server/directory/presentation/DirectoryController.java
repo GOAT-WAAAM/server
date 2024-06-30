@@ -75,6 +75,19 @@ public class DirectoryController {
                 .body(ResponseTemplate.EMPTY_RESPONSE);
     }
 
+    @Operation(summary = "폴더 영구 삭제", description = "폴더 영구 삭제")
+    @DeleteMapping("/permanent/{directoryId}")
+    public ResponseEntity<ResponseTemplate<Object>> deleteDirectoryPermanent(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long directoryId) {
+
+        directoryService.deleteDirectoryPermanent(userId, directoryId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ResponseTemplate.EMPTY_RESPONSE);
+    }
+
     @Operation(summary = "폴더 이동", description = "폴더 이동")
     @PostMapping("/move")
     public ResponseEntity<ResponseTemplate<Object>> moveDirectory(
