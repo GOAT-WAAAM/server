@@ -12,7 +12,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -75,10 +74,13 @@ public class Review extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+    @Column(name = "review_cnt")
+    private Long reviewCnt;
+
     @Builder
     public Review(ImageInfo imageInfo, String title, Boolean isImageEnroll, String content, Boolean isRepeatable,
                   Boolean isAutoRepeat, LocalTime remindTime, LocalDate reviewStartDate, LocalDate reviewEndDate, Boolean isPostShare,
-                  Directory directory, User user) {
+                  Directory directory, User user, Long reviewCnt) {
         this.imageInfo = imageInfo;
         this.title = title;
         this.isImageEnroll = isImageEnroll;
@@ -91,6 +93,7 @@ public class Review extends BaseTimeEntity {
         this.isPostShare = isPostShare;
         this.directory = directory;
         this.user = user;
+        this.reviewCnt = reviewCnt;
     }
 
     public void setImageInfo(ImageInfo imageInfo){

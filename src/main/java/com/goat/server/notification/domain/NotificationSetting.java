@@ -2,14 +2,7 @@ package com.goat.server.notification.domain;
 
 import com.goat.server.global.domain.BaseTimeEntity;
 import com.goat.server.mypage.domain.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,7 +28,7 @@ public class NotificationSetting extends BaseTimeEntity {
     private Boolean isCommentNoti;
 
     @JoinColumn(name = "user_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     private User user;
 
     @Builder
@@ -44,5 +37,10 @@ public class NotificationSetting extends BaseTimeEntity {
         this.isPostNoti = isPostNoti;
         this.isCommentNoti = isCommentNoti;
         this.user = user;
+    }
+
+    //복습 알림 권한 수정
+    public void updateReviewNoti(Boolean isReviewNoti) {
+        this.isReviewNoti = isReviewNoti;
     }
 }
