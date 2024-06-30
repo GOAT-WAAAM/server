@@ -42,22 +42,16 @@ public class NotificationSettingInitializer implements ApplicationRunner {
             List<NotificationSetting> settingList = new ArrayList<>();
             NotificationSetting DUMMY_NOTISETTING1 = NotificationSetting.builder()
                     .user(admin)
-                    .isCommentNoti(false)
-                    .isPostNoti(false)
                     .isReviewNoti(true)
                     .build();
 
             NotificationSetting DUMMY_NOTISETTING2 = NotificationSetting.builder()
                     .user(user)
-                    .isCommentNoti(true)
-                    .isPostNoti(true)
                     .isReviewNoti(true)
                     .build();
 
             NotificationSetting DUMMY_NOTISETTING3 = NotificationSetting.builder()
                     .user(guest)
-                    .isCommentNoti(false)
-                    .isPostNoti(false)
                     .isReviewNoti(false)
                     .build();
 
