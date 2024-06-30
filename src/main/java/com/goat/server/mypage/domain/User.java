@@ -120,4 +120,10 @@ public class User extends BaseTimeEntity {
             return this.imageInfo.getImageUrl();
         }
     }
+
+    public void updateOnBoardingInfo(String nickname, String goal) {
+        this.nickname = nickname;
+        this.goal = goal;
+        this.role = Role.USER;
+    }
 }

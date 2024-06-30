@@ -1,6 +1,7 @@
 package com.goat.server.auth.presentation;
 
 import com.goat.server.auth.application.AuthService;
+import com.goat.server.auth.dto.OnBoardingRequest;
 import com.goat.server.auth.dto.response.ReIssueSuccessResponse;
 import com.goat.server.global.dto.ResponseTemplate;
 import com.goat.server.auth.application.KakaoSocialService;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "AuthController", description = "AuthController 관련 API")
@@ -58,5 +60,19 @@ public class AuthController {
         log.info("[AuthController.testToken]");
 
         return authService.getTestToken(userId);
+    }
+
+    @Operation(summary = "온보딩 회원정보 입력", description = "온보딩 회원정보 입력")
+    @PatchMapping("/info")
+    public ResponseEntity<ResponseTemplate<Object>> saveOnBoardingInfo(@AuthenticationPrincipal Long userId,
+                                                               @RequestBody OnBoardingRequest onBoardingRequest) {
+
+        log.info("[AuthController.saveOnBoardingInfo]");
+
+        authService.saveOnBoardingInfo(userId, onBoardingRequest);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ResponseTemplate.from(ResponseTemplate.EMPTY_RESPONSE));
     }
 }
