@@ -29,10 +29,7 @@ public class MypageService {
      * 마이페이지에서 닉네임, 학년, 전공들, 한줄목표 조회하기, 프로필 이미지 조회하기
      */
     public MypageHomeResponse getUserWithMajors(Long userId) {
-        User user = userRepository.findUserWithMajors(userId);
-        if (user == null) {
-            throw new UserNotFoundException(MypageErrorCode.USER_NOT_FOUND);
-        }
+        User user = userRepository.findUserWithMajors(userId).orElseThrow();
 
         List<String> majorNames = user.getMajorList().stream()
                 .map(Major::getMajorName)
@@ -45,10 +42,7 @@ public class MypageService {
      * 마이페이지에서 세부 정보 조회하기 (프로필 이미지, 닉네임, 전공들, 학년 )
      */
     public MypageDetailsResponse getMypageDetails(Long userId) {
-        User user = userRepository.findUserWithMajors(userId);
-        if (user == null) {
-            throw new UserNotFoundException(MypageErrorCode.USER_NOT_FOUND);
-        }
+        User user = userRepository.findUserWithMajors(userId).orElseThrow();
 
         List<String> majorNames = user.getMajorList().stream()
                 .map(Major::getMajorName)
@@ -62,10 +56,8 @@ public class MypageService {
      */
     @Transactional
     public void updateMypageDetails(Long userId, MypageDetailsRequest request) {
-        User user = userRepository.findUserWithMajors(userId);
-        if (user == null) {
-            throw new UserNotFoundException(MypageErrorCode.USER_NOT_FOUND);
-        }
+        User user = userRepository.findUserWithMajors(userId).orElseThrow();
+
         user.updateMypageDetails(request);
     }
 

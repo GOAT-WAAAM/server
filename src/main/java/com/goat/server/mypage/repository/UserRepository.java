@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u left join fetch u.majorList where u.userId = :userId")
-    User findUserWithMajors(@Param("userId") Long userId);
+    Optional<User> findUserWithMajors(@Param("userId") Long userId);
 
     Optional<User> findBySocialId(String string);
 
