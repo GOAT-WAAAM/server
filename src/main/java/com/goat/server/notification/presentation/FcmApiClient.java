@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 @FeignClient(name = "fcmApiClient", url = "https://fcm.googleapis.com/v1")
 public interface FcmApiClient {
 
-    @PostMapping(value = "/projects/{projectName}/messages:send")
+    @PostMapping(value = "/projects/{projectName}/messages:send", consumes = "application/json")
     String sendMessage(@PathVariable("projectName") String projectName,
                        @RequestHeader("Authorization") String authorizationToken,
                        @RequestBody String message);

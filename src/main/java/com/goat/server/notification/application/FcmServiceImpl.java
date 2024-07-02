@@ -9,16 +9,13 @@ import com.goat.server.notification.presentation.FcmApiClient;
 import com.google.auth.oauth2.GoogleCredentials;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,16 +29,21 @@ public class FcmServiceImpl implements FcmService {
 
     private final FcmApiClient fcmApiClient;
 
+    @Value("${fcm.project.name}")
+    private String projectName;
+
+    @Value("${fcm.config.path}")
+    private String firebaseConfigPath;
+
     /**
      * 푸시 메시지 처리를 수행하는 비즈니스 로직
      *
      * @param fcmSendDto 모바일에서 전달받은 Object
-     * @return 성공(1), 실패(0)
      */
     @Override
     public void sendMessageTo(FcmSendDto fcmSendDto) throws IOException {
+
         String message = makeMessage(fcmSendDto);
-        String projectName = "adjh54-effb8";
 
         try {
             fcmApiClient.sendMessage(projectName, "Bearer " + getAccessToken(), message);
@@ -49,12 +51,11 @@ public class FcmServiceImpl implements FcmService {
             log.error("[-] FCM 전송 오류 :: " + e.getMessage());
             log.error("[-] 오류 발생 토큰 :: [" + fcmSendDto.token() + "]");
             log.error("[-] 오류 발생 메시지 :: [" + fcmSendDto.body() + "]");
-//            log.error("[-] 현재 바라보고 있는 Key Path 파일 :: [" + KEY_PATH + "]");
         }
     }
 
     /**
-     * FCM 전송 디바이스 리스트 조회
+     * FCM 전송 디바이스 리스트 조회 (공통 알림을 받을 클라이언트 선택 메서드)
      */
     @Override
     @Transactional(readOnly = true)
@@ -78,13 +79,13 @@ public class FcmServiceImpl implements FcmService {
      * @return Bearer token
      */
     private String getAccessToken() throws IOException {
-        String firebaseConfigPath = "firebase/tugboat-dev-firebase-key.json";
 
         GoogleCredentials googleCredentials = GoogleCredentials
                 .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
-                .createScoped(List.of("<https://www.googleapis.com/auth/cloud-platform>"));
+                .createScoped(Arrays.asList("https://www.googleapis.com/auth/firebase.messaging"));
 
         googleCredentials.refreshIfExpired();
+
         return googleCredentials.getAccessToken().getTokenValue();
     }
 

@@ -65,6 +65,12 @@ dependencies {
 	//firebase
 	implementation 'com.google.firebase:firebase-admin:9.2.0'
 
+	//quartz
+	implementation 'org.springframework.boot:spring-boot-starter-quartz:3.2.3'
+
+	implementation 'com.google.auth:google-auth-library-oauth2-http:0.26.0'
+
+
 	//테스트 코드 작성시 사용할 DB(H2)
 	runtimeOnly 'com.h2database:h2'
 	//테스트 코드 lombok 사용

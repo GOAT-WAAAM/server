@@ -23,6 +23,7 @@ public class UserFixture {
             .nickname("user")
             .goal("user go home")
             .provider(OauthProvider.KAKAO)
+            .fcmToken("c5z1BZ-J4UIEv58an4DPTK:APA91bGBItmR0XevTVL4wUJqOTW4vESdyhpkdrNu1scBDPV-rBAc31GsASTvK3hSSGrIGs9X9zijLdJqpe9dZbHI2oTdQHyZLNlhxFCJYb08L99vJMWPYsoaJQux88SKKQWoXYRuzVZf")
             .build();
 
     public static final User USER_ADMIN = User.builder()
