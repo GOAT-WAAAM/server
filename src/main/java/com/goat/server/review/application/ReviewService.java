@@ -209,4 +209,17 @@ public class ReviewService {
                 .build();
         reviewRepository.save(review);
     }
+
+    /**
+     * 모든 유저의 모든 리뷰의 reviewCnt를 매주 월요일 새벽 1시에 초기화
+     */
+    @Scheduled(cron = "0 0 1 * * MON") // 매주 월요일 0시에 실행
+    @Transactional
+    public void initReviewCount() {
+        List<Review> reviews = reviewRepository.findAll();
+
+        for (Review review : reviews) {
+            review.resetReviewCnt();
+        }
+    }
 }
