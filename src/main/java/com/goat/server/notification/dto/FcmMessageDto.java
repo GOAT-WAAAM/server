@@ -14,17 +14,3 @@ public record FcmMessageDto(
 ) {
 }
 
-@Builder
-record Message(
-        Notification notification,
-        String token
-) {
-}
-
-@Builder
-record Notification(
-        String title,
-        String body,
-        String image
-) {
-}

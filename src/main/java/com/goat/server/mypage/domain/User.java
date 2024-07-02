@@ -59,12 +59,15 @@ public class User extends BaseTimeEntity {
     @Column(name = "goal", length = 50)
     private String goal;
 
+    @Column(name = "fcm_token", length = 200)
+    private String fcmToken;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Major> majorList = new ArrayList<>();
 
     @Builder
     public User(School school, Grade grade, ImageInfo imageInfo, String nickname, Role role, String socialId,
-                String email, OauthProvider provider, String goal, List<Major> majorList) {
+                String email, OauthProvider provider, String goal, String fcmToken, List<Major> majorList) {
         this.school = school;
         this.grade = grade;
         this.imageInfo = imageInfo;
@@ -74,6 +77,7 @@ public class User extends BaseTimeEntity {
         this.email = email;
         this.provider = provider;
         this.goal = goal;
+        this.fcmToken = fcmToken;
         this.majorList = majorList;
     }
 
