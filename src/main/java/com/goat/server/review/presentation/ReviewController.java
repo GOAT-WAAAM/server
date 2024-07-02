@@ -133,4 +133,16 @@ public class ReviewController {
                 .body(ResponseTemplate.EMPTY_RESPONSE);
     }
 
+    @Operation(summary = "복습 정보 나중에 입력하기", description = "복습 정보 나중에 입력하기")
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE},value ="/directory/review/storage")
+    public ResponseEntity<ResponseTemplate<Object>> uploadReviewLater(
+            @AuthenticationPrincipal Long userId,
+            @RequestPart MultipartFile multipartFile) {
+
+        reviewService.uploadReviewLater(userId, multipartFile);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ResponseTemplate.EMPTY_RESPONSE);
+    }
 }

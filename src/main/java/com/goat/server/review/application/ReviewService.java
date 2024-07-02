@@ -27,6 +27,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -189,4 +190,23 @@ public class ReviewService {
         review.updateDirectory(targetDirectory);
     }
 
+    /**
+     * 복습 정보 나중에 입력하기
+     */
+    @Transactional
+    public void uploadReviewLater(Long userId, MultipartFile multipartFile) {
+        User user = userService.findUser(userId);
+        Directory storageDirectory = directoryRepository.findStorageDirectoryByUser(userId)
+                .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
+
+        String folderName = "goat";
+        ImageInfo imageInfo = s3Uploader.upload(multipartFile, folderName);
+
+        Review review = Review.builder()
+                .imageInfo(imageInfo)
+                .user(user)
+                .directory(storageDirectory)
+                .build();
+        reviewRepository.save(review);
+    }
 }
