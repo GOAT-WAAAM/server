@@ -14,7 +14,7 @@ public record ReviewDetailResponse(
     public static ReviewDetailResponse from(Review review){
         return ReviewDetailResponse.builder()
                 .directoryName(review.getDirectory().getTitle())
-                .imageUrl(review.getImageInfo().getImageUrl())
+                .imageUrl(review.getImageUrl())
                 .title(review.getTitle())
                 .content(review.getContent())
                 .build();
