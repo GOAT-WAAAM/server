@@ -87,7 +87,8 @@ public class ReviewService {
     @Transactional
     public void uploadReview(Long userId, MultipartFile multipartFile, ReviewUploadRequest request) {
         User user = userService.findUser(userId);
-        Directory directory = directoryRepository.findById(request.directoryId()).orElseThrow();
+        Directory directory = directoryRepository.findById(request.directoryId())
+                .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
         Review review = request.toReview(user, directory);
 
@@ -108,6 +109,11 @@ public class ReviewService {
                 .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
 
         reviewRepository.updateReviewCnt(review.getId());
+
+        // 클리어 후 다시 로드
+        review = reviewRepository.findByIdAndUser_UserId(reviewId, userId)
+                .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
+
         return ReviewDetailResponse.from(review);
     }
 
@@ -131,7 +137,8 @@ public class ReviewService {
                 imageInfo = s3Uploader.upload(multipartFile, folderName);
             }
         }
-        Directory directory = directoryRepository.findById(reviewUpdateRequest.directoryId()).orElseThrow();
+        Directory directory = directoryRepository.findById(reviewUpdateRequest.directoryId())
+                .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
         review.updateReview(reviewUpdateRequest, imageInfo);
         review.updateDirectory(directory);
     }
