@@ -107,13 +107,7 @@ public class ReviewService {
     public ReviewDetailResponse getDetailReview(Long userId, Long reviewId) {
         Review review = reviewRepository.findByIdAndUser_UserId(reviewId, userId)
                 .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
-
-        reviewRepository.updateReviewCnt(review.getId());
-
-        // 클리어 후 다시 로드
-        review = reviewRepository.findByIdAndUser_UserId(reviewId, userId)
-                .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
-
+        review.increaseReviewCnt();
         return ReviewDetailResponse.from(review);
     }
 

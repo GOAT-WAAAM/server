@@ -166,4 +166,8 @@ public class Review extends BaseTimeEntity {
     public void resetReviewCnt() {
         this.reviewCnt = 0L;
     }
+
+    public void increaseReviewCnt() {
+        this.reviewCnt++;
+    }
 }
