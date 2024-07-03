@@ -105,6 +105,28 @@ public class DirectoryInitializer implements ApplicationRunner {
                     .user(user)
                     .build();
 
+            Directory DUMMY_STORAGE_DIRECTORY1 = Directory.builder()
+                    .title("storage_directory")
+                    .directoryColor("#FF00FF")
+                    .depth(1L)
+                    .parentDirectory(null)
+                    .user(admin)
+                    .build();
+            Directory DUMMY_STORAGE_DIRECTORY2 = Directory.builder()
+                    .title("storage_directory")
+                    .directoryColor("#FF00FF")
+                    .depth(1L)
+                    .parentDirectory(null)
+                    .user(user)
+                    .build();
+            Directory DUMMY_STORAGE_DIRECTORY3 = Directory.builder()
+                    .title("storage_directory")
+                    .directoryColor("#FF00FF")
+                    .depth(1L)
+                    .parentDirectory(null)
+                    .user(guest)
+                    .build();
+
             directoryList.add(DUMMY_TRASH_DIRECTORY1);
             directoryList.add(DUMMY_TRASH_DIRECTORY2);
             directoryList.add(DUMMY_TRASH_DIRECTORY3);
@@ -114,6 +136,10 @@ public class DirectoryInitializer implements ApplicationRunner {
             directoryList.add(DUMMY_CHILD_DIRECTORY1);
             directoryList.add(DUMMY_CHILD_DIRECTORY2);
             directoryList.add(DUMMY_CHILD_DIRECTORY3);
+
+            directoryList.add(DUMMY_STORAGE_DIRECTORY1);
+            directoryList.add(DUMMY_STORAGE_DIRECTORY2);
+            directoryList.add(DUMMY_STORAGE_DIRECTORY3);
 
             directoryRepository.saveAll(directoryList);
         }

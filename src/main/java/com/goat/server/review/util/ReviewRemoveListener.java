@@ -19,6 +19,9 @@ public class ReviewRemoveListener {
         if (s3Uploader == null) {
             s3Uploader = ApplicationContextProvider.getApplicationContext().getBean(S3Uploader.class);
         }
-        s3Uploader.deleteImage(target.getImageInfo());
+
+        if (s3Uploader != null && target.getImageInfo() != null) {
+            s3Uploader.deleteImage(target.getImageInfo());
+        }
     }
 }
