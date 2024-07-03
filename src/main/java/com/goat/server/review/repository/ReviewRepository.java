@@ -25,7 +25,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRep
     @Query("SELECT r FROM Review r WHERE r.user.userId = :userId AND r.imageInfo.imageUrl IS NOT NULL")
     Page<Review> findAllReviewImageByUserId(@Param("userId") Long userId, Pageable pageable);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("UPDATE Review r SET r.reviewCnt = r.reviewCnt + 1 WHERE r.id = :id")
     void updateReviewCnt(@Param("id") Long id);
 
