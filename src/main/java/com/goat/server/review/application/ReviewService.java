@@ -152,7 +152,6 @@ public class ReviewService {
         Review review = reviewRepository.findByIdAndUser_UserId(reviewId, userId)
                 .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
 
-        s3Uploader.deleteImage(review.getImageInfo());
         reviewRepository.delete(review);
     }
 
