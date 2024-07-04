@@ -1,6 +1,5 @@
 package com.goat.server.notification.util;
 
-import com.goat.server.mypage.application.UserService;
 import com.goat.server.mypage.domain.User;
 import com.goat.server.mypage.exception.UserNotFoundException;
 import com.goat.server.mypage.repository.UserRepository;
@@ -16,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 

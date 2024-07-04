@@ -15,13 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.goat.server.mypage.exception.errorcode.MypageErrorCode.USER_NOT_FOUND;
 
@@ -40,25 +37,6 @@ public class FcmServiceImpl implements FcmService {
     @Value("${fcm.config.path}")
     private String firebaseConfigPath;
 
-    /**
-     * 푸시 메시지 처리를 수행하는 비즈니스 로직
-     *
-     * @param fcmSendDto 모바일에서 전달받은 Object
-     */
-    @Override
-    public void sendMessageTo(FcmSendDto fcmSendDto) throws IOException {
-
-        String message = makeMessage(fcmSendDto);
-
-        try {
-            fcmApiClient.sendMessage(projectName, "Bearer " + getAccessToken(), message);
-        } catch (Exception e) {
-            log.error("[-] FCM 전송 오류 :: " + e.getMessage());
-            log.error("[-] 오류 발생 토큰 :: [" + fcmSendDto.token() + "]");
-            log.error("[-] 오류 발생 메시지 :: [" + fcmSendDto.body() + "]");
-        }
-    }
-
     @Override
     public void sendMessageTo(Review review, PushType pushType) throws IOException {
 
@@ -69,27 +47,6 @@ public class FcmServiceImpl implements FcmService {
         } catch (Exception e) {
             log.error("[-] FCM 전송 오류 :: " + e.getMessage());
         }
-    }
-
-
-
-    /**
-     * FCM 전송 디바이스 리스트 조회 (공통 알림을 받을 클라이언트 선택 메서드)
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public List<FcmSendDeviceDto> selectFcmSendList() {
-
-        List<User> userList = userRepository.findAll();
-
-        List<FcmSendDeviceDto> sendList = userList.stream()
-                .filter(user -> Optional.ofNullable(user.getFcmToken()).isPresent())
-                .map(user -> FcmSendDeviceDto.builder()
-                        .deviceToken(user.getFcmToken())
-                        .build())
-                .collect(Collectors.toList());
-
-        return sendList;
     }
 
     /**
@@ -108,29 +65,6 @@ public class FcmServiceImpl implements FcmService {
         return googleCredentials.getAccessToken().getTokenValue();
     }
 
-    /**
-     * FCM 전송 정보를 기반으로 메시지를 구성. (Object -> String)
-     *
-     * @param fcmSendDto FcmSendDto
-     * @return String
-     */
-    private String makeMessage(FcmSendDto fcmSendDto) throws JsonProcessingException {
-
-        ObjectMapper om = new ObjectMapper();
-        FcmMessageDto fcmMessageDto = FcmMessageDto.builder()
-                .message(Message.builder()
-                        .token(fcmSendDto.token())
-                        .notification(Notification.builder()
-                                .title(fcmSendDto.title())
-                                .body(fcmSendDto.body())
-                                .image(null)
-                                .build()
-                        ).build())
-                .validateOnly(false)
-                .build();
-
-        return om.writeValueAsString(fcmMessageDto);
-    }
 
     private String makeMessageFromReview(Long userId, PushType pushType) throws JsonProcessingException {
 

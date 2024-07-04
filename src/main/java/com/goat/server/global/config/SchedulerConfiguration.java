@@ -5,8 +5,6 @@ import com.goat.server.notification.util.FcmJob;
 import com.goat.server.notification.util.FcmJobListener;
 import com.goat.server.review.domain.Review;
 import com.goat.server.review.domain.ReviewDate;
-import com.goat.server.review.repository.ReviewDateRepository;
-import com.goat.server.review.repository.ReviewRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.springframework.context.ApplicationContext;
@@ -19,7 +17,6 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.List;
 
 @Slf4j
 @Configuration
