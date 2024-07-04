@@ -40,7 +40,7 @@ public class FcmServiceImpl implements FcmService {
     @Override
     public void sendMessageTo(Review review, PushType pushType) throws IOException {
 
-        String message = makeMessageFromReview(review.getUser().getUserId(), pushType);
+        String message = makeMessageFromReview(review.getId(), review.getUser().getUserId(), pushType);
 
         try {
             fcmApiClient.sendMessage(projectName, "Bearer " + getAccessToken(), message);
@@ -66,7 +66,7 @@ public class FcmServiceImpl implements FcmService {
     }
 
 
-    private String makeMessageFromReview(Long userId, PushType pushType) throws JsonProcessingException {
+    private String makeMessageFromReview(Long reviewId, Long userId, PushType pushType) throws JsonProcessingException {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
         String deviceToken = Optional.ofNullable(user.getFcmToken())
@@ -84,7 +84,11 @@ public class FcmServiceImpl implements FcmService {
                                 .body(body)
                                 .image(null)
                                 .build()
-                        ).build())
+                        )
+                        .data(Data.builder()
+                                .reviewId(reviewId.toString())
+                                .build())
+                        .build())
                 .validateOnly(false)
                 .build();
 

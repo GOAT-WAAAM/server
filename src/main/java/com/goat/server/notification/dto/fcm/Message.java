@@ -5,6 +5,7 @@ import lombok.Builder;
 @Builder
 public record Message(
         Notification notification,
-        String token
+        String token,
+        Data data
 ) {
 }
