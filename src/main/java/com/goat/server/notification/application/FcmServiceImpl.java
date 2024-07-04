@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goat.server.mypage.domain.User;
 import com.goat.server.mypage.exception.UserNotFoundException;
 import com.goat.server.mypage.repository.UserRepository;
+import com.goat.server.notification.domain.type.PushType;
 import com.goat.server.notification.dto.fcm.*;
 import com.goat.server.notification.presentation.FcmApiClient;
 import com.goat.server.review.domain.Review;
@@ -59,9 +60,9 @@ public class FcmServiceImpl implements FcmService {
     }
 
     @Override
-    public void sendMessageTo(Review review) throws IOException {
+    public void sendMessageTo(Review review, PushType pushType) throws IOException {
 
-        String message = makeMessageFromReview(review.getUser().getUserId());
+        String message = makeMessageFromReview(review.getUser().getUserId(), pushType);
 
         try {
             fcmApiClient.sendMessage(projectName, "Bearer " + getAccessToken(), message);
@@ -131,19 +132,22 @@ public class FcmServiceImpl implements FcmService {
         return om.writeValueAsString(fcmMessageDto);
     }
 
-    private String makeMessageFromReview(Long userId) throws JsonProcessingException {
+    private String makeMessageFromReview(Long userId, PushType pushType) throws JsonProcessingException {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
         String deviceToken = Optional.ofNullable(user.getFcmToken())
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+
+        String title = user.getNickname() + pushType.getTitle();
+        String body = pushType.getBody();
 
         ObjectMapper om = new ObjectMapper();
         FcmMessageDto fcmMessageDto = FcmMessageDto.builder()
                 .message(Message.builder()
                         .token(deviceToken)
                         .notification(Notification.builder()
-                                .title("🔔복습할 시이에요!")
-                                .body("지금 복습하면 잊어버리지 않아요")
+                                .title(title)
+                                .body(body)
                                 .image(null)
                                 .build()
                         ).build())

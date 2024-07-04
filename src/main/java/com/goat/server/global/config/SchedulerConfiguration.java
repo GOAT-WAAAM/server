@@ -1,5 +1,6 @@
 package com.goat.server.global.config;
 
+import com.goat.server.notification.domain.type.PushType;
 import com.goat.server.notification.util.FcmJob;
 import com.goat.server.notification.util.FcmJobListener;
 import com.goat.server.review.domain.Review;
@@ -16,6 +17,7 @@ import javax.annotation.PostConstruct;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 
@@ -54,14 +56,15 @@ public class SchedulerConfiguration implements WebMvcConfigurer {
         List<ReviewDate> reviewDates = reviewDateRepository.findByReviewId(review.getId());
 
         for (ReviewDate reviewDate : reviewDates) {
-            scheduleReviewNotification(review, reviewDate);
+            scheduleCustomReviewNotification(review, reviewDate);
         }
     }
 
-    public void scheduleReviewNotification(Review review, ReviewDate reviewDate) throws SchedulerException {
+    public void scheduleCustomReviewNotification(Review review, ReviewDate reviewDate) throws SchedulerException {
         JobDataMap dataMap = new JobDataMap();
         dataMap.put(APPLICATION_NAME, applicationContext);
         dataMap.put("reviewId", review.getId());
+        dataMap.put("pushType", PushType.CUSTOM_REVIEW.name());
 
         JobDetail job = JobBuilder
                 .newJob(FcmJob.class)
@@ -97,6 +100,49 @@ public class SchedulerConfiguration implements WebMvcConfigurer {
             log.error("[scheduleReviewNotification] Review Notification Scheduling Failed: " + e.getMessage());
         }
     }
+
+    public void scheduleAutoReviewNotification(Review review) throws SchedulerException {
+        ZoneId zoneId = ZoneId.systemDefault();
+        Instant registrationTime = Instant.now();
+
+//        scheduleNotification(review, registrationTime.plus(1, ChronoUnit.HOURS), PushType.AUTO_REVIEW_ONE_HOUR);
+//        scheduleNotification(review, registrationTime.plus(24, ChronoUnit.HOURS), PushType.AUTO_REVIEW_ONE_DAY);
+//        scheduleNotification(review, registrationTime.plus(6, ChronoUnit.DAYS), PushType.AUTO_REVIEW_ONE_WEEK);
+//        scheduleNotification(review, registrationTime.plus(30, ChronoUnit.DAYS), PushType.AUTO_REVIEW_ONE_MONTH);
+
+        scheduleNotification(review, registrationTime.plus(10, ChronoUnit.SECONDS), PushType.AUTO_REVIEW_ONE_HOUR);
+        scheduleNotification(review, registrationTime.plus(20, ChronoUnit.SECONDS), PushType.AUTO_REVIEW_ONE_DAY);
+        scheduleNotification(review, registrationTime.plus(30, ChronoUnit.SECONDS), PushType.AUTO_REVIEW_ONE_WEEK);
+        scheduleNotification(review, registrationTime.plus(40, ChronoUnit.SECONDS), PushType.AUTO_REVIEW_ONE_MONTH);
+    }
+
+    private void scheduleNotification(Review review, Instant notificationTime, PushType pushType) throws SchedulerException {
+        JobDataMap dataMap = new JobDataMap();
+        dataMap.put(APPLICATION_NAME, applicationContext);
+        dataMap.put("reviewId", review.getId());
+        dataMap.put("pushType", pushType.name());
+
+        String notificationIdentity = "fcmSendJob" + review.getId() + "-" + notificationTime.toString();
+
+        JobDetail job = JobBuilder.newJob(FcmJob.class)
+                .withIdentity(notificationIdentity, "fcmGroup")
+                .setJobData(dataMap)
+                .build();
+
+        Trigger trigger = TriggerBuilder.newTrigger()
+                .withIdentity("fcmSendTrigger" + notificationIdentity, "fcmGroup")
+                .startAt(Date.from(notificationTime))
+                .build();
+
+        try {
+            scheduler.scheduleJob(job, trigger);
+            log.info("[scheduleNotification] Notification Scheduled: " + notificationIdentity);
+        } catch (SchedulerException e) {
+            log.error("[scheduleNotification] Notification Scheduling Failed: " + e.getMessage());
+        }
+    }
+
+
 
     private int getDayOfWeek(String dayOfWeek) {
         switch (dayOfWeek.toUpperCase()) {

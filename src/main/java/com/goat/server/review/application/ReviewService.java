@@ -19,7 +19,6 @@ import com.goat.server.directory.application.type.SortType;
 import com.goat.server.review.dto.response.ReviewSimpleResponse;
 import com.goat.server.review.repository.ReviewRepository;
 
-import java.util.Date;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -101,16 +100,27 @@ public class ReviewService {
         }
         reviewRepository.save(review);
 
-        registerNotification(review);
+        if(review.getIsAutoRepeat() || review.getIsRepeatable() || !review.getReviewDates().isEmpty()) {
+            registerNotification(review);
+        }
     }
 
     /**
      * 복습 업로드 시 알림 등록
      */
     private void registerNotification(Review review) {
+
+        if(review.getIsAutoRepeat()) {
+            try {
+                schedulerConfiguration.scheduleAutoReviewNotification(review);
+            } catch (SchedulerException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         for (ReviewDate date : review.getReviewDates()) {
             try {
-                schedulerConfiguration.scheduleReviewNotification(review, date);
+                schedulerConfiguration.scheduleCustomReviewNotification(review, date);
             } catch (SchedulerException e) {
                 throw new RuntimeException(e);
             }

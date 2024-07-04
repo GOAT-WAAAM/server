@@ -1,6 +1,7 @@
 package com.goat.server.notification.util;
 
 import com.goat.server.notification.application.FcmService;
+import com.goat.server.notification.domain.type.PushType;
 import com.goat.server.review.domain.Review;
 import com.goat.server.review.repository.ReviewRepository;
 import lombok.NoArgsConstructor;
@@ -36,12 +37,13 @@ public class FcmJob implements Job {
         ApplicationContext applicationContext = (ApplicationContext) dataMap.get("appContext");
 
         Long reviewId = dataMap.getLong("reviewId");
+        String pushType = (String) dataMap.get("pushType");
 
         ReviewRepository reviewRepository = applicationContext.getBean(ReviewRepository.class);
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new JobExecutionException("Review not found"));
 
         try {
-            fcmService.sendMessageTo(review);
+            fcmService.sendMessageTo(review, PushType.valueOf(pushType));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

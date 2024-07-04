@@ -1,5 +1,6 @@
 package com.goat.server.notification.application;
 
+import com.goat.server.notification.domain.type.PushType;
 import com.goat.server.notification.dto.fcm.FcmSendDto;
 import com.goat.server.notification.dto.fcm.FcmSendDeviceDto;
 import com.goat.server.review.domain.Review;
@@ -12,7 +13,7 @@ import java.util.List;
 public interface FcmService {
     void sendMessageTo(FcmSendDto fcmSendDto) throws IOException;
 
-    void sendMessageTo(Review review) throws IOException;
+    void sendMessageTo(Review review, PushType pushType) throws IOException;
 
     List<FcmSendDeviceDto> selectFcmSendList();
 }
