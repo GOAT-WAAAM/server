@@ -1,19 +1,18 @@
 package com.goat.server.notification.util;
 
-import com.goat.server.global.util.ApplicationContextProvider;
 import com.goat.server.notification.application.FcmService;
-import com.goat.server.notification.dto.FcmSendDeviceDto;
-import com.goat.server.notification.dto.FcmSendDto;
+import com.goat.server.review.domain.Review;
+import com.goat.server.review.repository.ReviewRepository;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
+import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * FCM 메시지 전송을 위한 Job
@@ -33,20 +32,18 @@ public class FcmJob implements Job {
             fcmService = appCtx.getBean(FcmService.class);
         }
 
-        List<FcmSendDeviceDto> selectFcmSendList = fcmService.selectFcmSendList();
+        JobDataMap dataMap = jobExecutionContext.getJobDetail().getJobDataMap();
+        ApplicationContext applicationContext = (ApplicationContext) dataMap.get("appContext");
 
-        for (FcmSendDeviceDto fcmSendItem : selectFcmSendList) {
+        Long reviewId = dataMap.getLong("reviewId");
 
-            FcmSendDto fcmSendDto = FcmSendDto.builder()
-                    .token(fcmSendItem.deviceToken())
-                    .title("푸시 메시지입니다!")
-                    .body("계획된 시간이 되었어요!")
-                    .build();
-            try {
-                fcmService.sendMessageTo(fcmSendDto);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        ReviewRepository reviewRepository = applicationContext.getBean(ReviewRepository.class);
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new JobExecutionException("Review not found"));
+
+        try {
+            fcmService.sendMessageTo(review);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

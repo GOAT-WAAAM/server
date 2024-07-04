@@ -1,6 +1,7 @@
 package com.goat.server.review.application;
 
 import com.goat.server.global.application.S3Uploader;
+import com.goat.server.global.config.SchedulerConfiguration;
 import com.goat.server.global.domain.ImageInfo;
 import com.goat.server.mypage.application.UserService;
 import com.goat.server.mypage.domain.User;
@@ -8,6 +9,7 @@ import com.goat.server.mypage.exception.UserNotFoundException;
 import com.goat.server.mypage.exception.errorcode.MypageErrorCode;
 import com.goat.server.mypage.repository.UserRepository;
 import com.goat.server.review.domain.Review;
+import com.goat.server.review.domain.ReviewDate;
 import com.goat.server.review.dto.request.ReviewUpdateRequest;
 import com.goat.server.review.dto.request.ReviewUploadRequest;
 import com.goat.server.review.dto.response.*;
@@ -17,10 +19,12 @@ import com.goat.server.directory.application.type.SortType;
 import com.goat.server.review.dto.response.ReviewSimpleResponse;
 import com.goat.server.review.repository.ReviewRepository;
 
+import java.util.Date;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.quartz.SchedulerException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -40,6 +44,8 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final S3Uploader s3Uploader;
     private final UserService userService;
+
+    private final SchedulerConfiguration schedulerConfiguration;
 
     private static final int PAGE_SIZE_HOME = 4;
 
@@ -82,8 +88,11 @@ public class ReviewService {
      */
     @Transactional
     public void uploadReview(Long userId, MultipartFile multipartFile, ReviewUploadRequest request) {
+        log.info("[ReviewService.uploadReview]");
+
         User user = userService.findUser(userId);
         Review review = request.toReview(user);
+
 
         if (multipartFile != null && !multipartFile.isEmpty()) {
             String folderName = "goat";
@@ -91,6 +100,21 @@ public class ReviewService {
             review.setImageInfo(imageInfo);
         }
         reviewRepository.save(review);
+
+        registerNotification(review);
+    }
+
+    /**
+     * 복습 업로드 시 알림 등록
+     */
+    private void registerNotification(Review review) {
+        for (ReviewDate date : review.getReviewDates()) {
+            try {
+                schedulerConfiguration.scheduleReviewNotification(review, date);
+            } catch (SchedulerException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     /**

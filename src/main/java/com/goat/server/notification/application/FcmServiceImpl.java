@@ -3,9 +3,11 @@ package com.goat.server.notification.application;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goat.server.mypage.domain.User;
+import com.goat.server.mypage.exception.UserNotFoundException;
 import com.goat.server.mypage.repository.UserRepository;
-import com.goat.server.notification.dto.*;
+import com.goat.server.notification.dto.fcm.*;
 import com.goat.server.notification.presentation.FcmApiClient;
+import com.goat.server.review.domain.Review;
 import com.google.auth.oauth2.GoogleCredentials;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.goat.server.mypage.exception.errorcode.MypageErrorCode.USER_NOT_FOUND;
 
 @Slf4j
 @Service
@@ -53,6 +57,20 @@ public class FcmServiceImpl implements FcmService {
             log.error("[-] 오류 발생 메시지 :: [" + fcmSendDto.body() + "]");
         }
     }
+
+    @Override
+    public void sendMessageTo(Review review) throws IOException {
+
+        String message = makeMessageFromReview(review.getUser().getUserId());
+
+        try {
+            fcmApiClient.sendMessage(projectName, "Bearer " + getAccessToken(), message);
+        } catch (Exception e) {
+            log.error("[-] FCM 전송 오류 :: " + e.getMessage());
+        }
+    }
+
+
 
     /**
      * FCM 전송 디바이스 리스트 조회 (공통 알림을 받을 클라이언트 선택 메서드)
@@ -104,6 +122,28 @@ public class FcmServiceImpl implements FcmService {
                         .notification(Notification.builder()
                                 .title(fcmSendDto.title())
                                 .body(fcmSendDto.body())
+                                .image(null)
+                                .build()
+                        ).build())
+                .validateOnly(false)
+                .build();
+
+        return om.writeValueAsString(fcmMessageDto);
+    }
+
+    private String makeMessageFromReview(Long userId) throws JsonProcessingException {
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        String deviceToken = Optional.ofNullable(user.getFcmToken())
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+
+        ObjectMapper om = new ObjectMapper();
+        FcmMessageDto fcmMessageDto = FcmMessageDto.builder()
+                .message(Message.builder()
+                        .token(deviceToken)
+                        .notification(Notification.builder()
+                                .title("🔔복습할 시이에요!")
+                                .body("지금 복습하면 잊어버리지 않아요")
                                 .image(null)
                                 .build()
                         ).build())

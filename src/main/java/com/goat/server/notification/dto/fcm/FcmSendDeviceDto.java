@@ -1,4 +1,4 @@
-package com.goat.server.notification.dto;
+package com.goat.server.notification.dto.fcm;
 
 import lombok.Builder;
 
