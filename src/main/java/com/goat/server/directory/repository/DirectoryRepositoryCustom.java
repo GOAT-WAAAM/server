@@ -5,6 +5,6 @@ import com.goat.server.directory.dto.response.DirectoryResponse;
 import java.util.List;
 
 public interface DirectoryRepositoryCustom {
-    List<DirectoryResponse> findAllDirectoryAndReview(
+    List<DirectoryResponse> findAllDirectoryResponseBySortAndSearch(
             Long userId, Long parentDirectoryId, List<SortType> sort, String search);
 }

@@ -30,7 +30,6 @@ import org.springframework.data.domain.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
@@ -53,21 +52,13 @@ public class ReviewService {
     public List<ReviewSimpleResponse> getReviewSimpleResponseList(
             Long userId, Long directoryId, List<SortType> sort, String search) {
 
-        if (!ObjectUtils.isEmpty(search)) {
-            return reviewRepository.findAllBySearch(userId, search, sort).stream()
-                    .map(ReviewSimpleResponse::from)
-                    .toList();
-        }
-
-        return reviewRepository.findAllByDirectoryId(directoryId, sort).stream()
-                .map(ReviewSimpleResponse::from)
-                .toList();
+        return reviewRepository.findAllReviewSimpleResponseBySortAndSearch(userId, directoryId, sort, search);
     }
 
     /**
      * 홈 화면에서 최근 등록 복습 이미지 조회
      */
-    public ReviewHomeResponseList getRecentReviews(Long userId, int page){
+    public ReviewHomeResponseList getRecentReviews(Long userId, int page) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(MypageErrorCode.USER_NOT_FOUND));
 
@@ -141,8 +132,7 @@ public class ReviewService {
      * 복습 자료 한 개 삭제
      */
     @Transactional
-    public void deleteReview(Long userId, Long reviewId){
-        User user = userService.findUser(userId);
+    public void deleteReview(Long userId, Long reviewId) {
         Review review = reviewRepository.findByIdAndUser_UserId(reviewId, userId)
                 .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
 

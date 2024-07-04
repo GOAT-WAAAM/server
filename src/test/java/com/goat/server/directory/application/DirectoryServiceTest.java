@@ -59,7 +59,7 @@ class DirectoryServiceTest {
         //given
         given(directoryRepository.existsById(PARENT_DIRECTORY1.getId()))
                 .willReturn(true);
-        given(directoryRepository.findAllDirectoryAndReview(eq(USER_USER.getUserId()), eq(PARENT_DIRECTORY1.getId()), any(), any()))
+        given(directoryRepository.findAllDirectoryResponseBySortAndSearch(eq(USER_USER.getUserId()), eq(PARENT_DIRECTORY1.getId()), any(), any()))
                 .willReturn(List.of(DirectoryResponse.from(CHILD_DIRECTORY1), DirectoryResponse.from(CHILD_DIRECTORY2)));
         given(reviewService.getReviewSimpleResponseList(any(), eq(PARENT_DIRECTORY1.getId()), any(), any())).willReturn(
                 List.of(ReviewSimpleResponse.from(DUMMY_REVIEW1), ReviewSimpleResponse.from(DUMMY_REVIEW2)));
@@ -82,7 +82,7 @@ class DirectoryServiceTest {
     @DisplayName("과목과 폴더 가져 오기 테스트 - 루트 폴더")
     void getDirectoryListTest2() {
         //given
-        given(directoryRepository.findAllDirectoryAndReview(eq(USER_USER.getUserId()), eq(0L), any(), any()))
+        given(directoryRepository.findAllDirectoryResponseBySortAndSearch(eq(USER_USER.getUserId()), eq(0L), any(), any()))
                 .willReturn(List.of(DirectoryResponse.from(PARENT_DIRECTORY1), DirectoryResponse.from(PARENT_DIRECTORY2)));
 
         //when

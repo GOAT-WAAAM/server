@@ -21,7 +21,7 @@ public class DirectoryRepositoryImpl implements DirectoryRepositoryCustom {
     private final JPAQueryFactory query;
 
     @Override
-    public List<DirectoryResponse> findAllDirectoryAndReview(
+    public List<DirectoryResponse> findAllDirectoryResponseBySortAndSearch(
             Long userId, Long parentDirectoryId, List<SortType> sort, String search) {
         return query
                 .select(Projections.constructor(DirectoryResponse.class,
@@ -29,11 +29,18 @@ public class DirectoryRepositoryImpl implements DirectoryRepositoryCustom {
                         directory.title,
                         directory.directoryColor))
                 .from(directory)
-                .where(directory.user.userId.eq(userId),
-                        parentDirectoryFindExpression(parentDirectoryId),
-                        searchExpression(search))
+                .where(directory.user.userId.eq(userId), isSearchExpression(parentDirectoryId, search))
                 .orderBy(sortExpression(sort))
                 .fetch();
+    }
+
+    //search가 null이면 parentDirectoryId로 검색, 아니면 search로 검색 - search 존재 -> 전체 검색
+    private BooleanExpression isSearchExpression(Long parentDirectoryId, String search) {
+        if (ObjectUtils.isEmpty(search)) {
+            return parentDirectoryFindExpression(parentDirectoryId);
+        } else {
+            return directory.title.contains(search);
+        }
     }
 
     private BooleanExpression parentDirectoryFindExpression(Long parentDirectoryId) {
@@ -44,12 +51,7 @@ public class DirectoryRepositoryImpl implements DirectoryRepositoryCustom {
         }
     }
 
-    private BooleanExpression searchExpression(String search) {
-        if (ObjectUtils.isEmpty(search)) {
-            return null;
-        }
-        return directory.title.contains(search);
-    }
+
 
     // 기본 정렬 - 이름 오름차순
     private OrderSpecifier<?>[] sortExpression(List<SortType> sort) {
