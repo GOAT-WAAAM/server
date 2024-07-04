@@ -49,23 +49,22 @@ public class FcmJob implements Job {
 
         Long reviewId = dataMap.getLong("reviewId");
         String pushType = (String) dataMap.get("pushType");
+        String content = (String) dataMap.get("content");
 
         try {
-            sendMessageToClient(applicationContext, reviewId, pushType);
+            sendMessageToClient(applicationContext, reviewId, pushType, content);
         } catch (Exception e) {
             log.error("FCM 전송 실패", e);
         }
     }
 
-    private static void sendMessageToClient(ApplicationContext applicationContext, Long reviewId, String pushType) throws IOException {
+    private static void sendMessageToClient(ApplicationContext applicationContext, Long reviewId, String pushType, String content) throws IOException {
 
         ReviewRepository reviewRepository = applicationContext.getBean(ReviewRepository.class);
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new ReviewNotFoundException(REVIEW_NOT_FOUND));
 
         UserRepository userRepository = applicationContext.getBean(UserRepository.class);
         User user = userRepository.findById(review.getUser().getUserId()).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
-
-        String content = user.getNickname() + "님! 복습할 시간이에요" + review.getDirectory().getTitle() + "의" + review.getTitle() + "을 지금 복습해보세요!";
 
         Notification notification = Notification.builder()
                 .content(content)

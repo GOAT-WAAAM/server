@@ -48,6 +48,9 @@ public class SchedulerConfiguration implements WebMvcConfigurer {
         dataMap.put("reviewId", review.getId());
         dataMap.put("pushType", PushType.CUSTOM_REVIEW.name());
 
+        String content = review.getUser().getNickname() + "님, 복습할 시간이에요! " + review.getDirectory().getTitle() + "의 " + review.getTitle() + "을 복습해보세요!";
+        dataMap.put("content", content);
+
         JobDetail job = JobBuilder
                 .newJob(FcmJob.class)
                 .withIdentity("fcmSendJob" + review.getId() + reviewDate.getDate().toString(), "fcmGroup")
@@ -104,6 +107,9 @@ public class SchedulerConfiguration implements WebMvcConfigurer {
         dataMap.put(APPLICATION_NAME, applicationContext);
         dataMap.put("reviewId", review.getId());
         dataMap.put("pushType", pushType.name());
+
+        String content = review.getUser().getNickname() + "님! 복습할 시간이에요" + review.getDirectory().getTitle() + "의 " + review.getTitle() + "을 복습해보세요!";
+        dataMap.put("content", content);
 
         String notificationIdentity = "fcmSendJob" + review.getId() + "-" + notificationTime.toString();
 
