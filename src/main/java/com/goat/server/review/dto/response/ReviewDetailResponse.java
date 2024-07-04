@@ -5,15 +5,16 @@ import lombok.Builder;
 
 @Builder
 public record ReviewDetailResponse(
+        String directoryName,
         String imageUrl,
         String title,
         String content
 
-
 ) {
     public static ReviewDetailResponse from(Review review){
         return ReviewDetailResponse.builder()
-                .imageUrl(review.getImageInfo().getImageUrl())
+                .directoryName(review.getDirectory().getTitle())
+                .imageUrl(review.getImageUrl())
                 .title(review.getTitle())
                 .content(review.getContent())
                 .build();
