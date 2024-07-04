@@ -6,7 +6,10 @@ import com.goat.server.mypage.repository.UserRepository;
 import com.goat.server.notification.application.FcmService;
 import com.goat.server.notification.application.NotificationService;
 import com.goat.server.notification.domain.Notification;
+import com.goat.server.notification.domain.NotificationSetting;
 import com.goat.server.notification.domain.type.PushType;
+import com.goat.server.notification.exception.PushPermissionDeniedException;
+import com.goat.server.notification.repository.NotificationSettingRepository;
 import com.goat.server.review.domain.Review;
 import com.goat.server.review.exception.ReviewNotFoundException;
 import com.goat.server.review.repository.ReviewRepository;
@@ -21,6 +24,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 import static com.goat.server.mypage.exception.errorcode.MypageErrorCode.USER_NOT_FOUND;
+import static com.goat.server.notification.exception.errorcode.NotificationErrorCode.PUSH_DENIED;
 import static com.goat.server.review.exception.errorcode.ReviewErrorCode.REVIEW_NOT_FOUND;
 
 /**
@@ -63,6 +67,13 @@ public class FcmJob implements Job {
 
         UserRepository userRepository = applicationContext.getBean(UserRepository.class);
         User user = userRepository.findById(review.getUser().getUserId()).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+
+        NotificationSettingRepository notificationSettingRepository = applicationContext.getBean(NotificationSettingRepository.class);
+        NotificationSetting notificationSetting = notificationSettingRepository.findByUserUserId(user.getUserId());
+
+        if (!notificationSetting.getIsReviewNoti()) {
+            throw new PushPermissionDeniedException(PUSH_DENIED);
+        }
 
         Notification notification = Notification.builder()
                 .content(content)
