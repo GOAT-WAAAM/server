@@ -37,27 +37,9 @@ public class SchedulerConfiguration implements WebMvcConfigurer {
 
     @PostConstruct
     private void configScheduler() throws SchedulerException {
-        // 스케줄러 초기화
         scheduler.start();
         FcmJobListener fcmJobListener = new FcmJobListener();
         scheduler.getListenerManager().addJobListener(fcmJobListener);
-
-        // 모든 리뷰 스케줄 설정
-        ReviewRepository reviewRepository = applicationContext.getBean(ReviewRepository.class);
-        List<Review> reviews = reviewRepository.findAll();
-
-        for (Review review : reviews) {
-            scheduleReviewNotifications(review);
-        }
-    }
-
-    public void scheduleReviewNotifications(Review review) throws SchedulerException {
-        ReviewDateRepository reviewDateRepository = applicationContext.getBean(ReviewDateRepository.class);
-        List<ReviewDate> reviewDates = reviewDateRepository.findByReviewId(review.getId());
-
-        for (ReviewDate reviewDate : reviewDates) {
-            scheduleCustomReviewNotification(review, reviewDate);
-        }
     }
 
     public void scheduleCustomReviewNotification(Review review, ReviewDate reviewDate) throws SchedulerException {
@@ -102,14 +84,15 @@ public class SchedulerConfiguration implements WebMvcConfigurer {
     }
 
     public void scheduleAutoReviewNotification(Review review) throws SchedulerException {
-        ZoneId zoneId = ZoneId.systemDefault();
         Instant registrationTime = Instant.now();
 
+        // 실제 사용
 //        scheduleNotification(review, registrationTime.plus(1, ChronoUnit.HOURS), PushType.AUTO_REVIEW_ONE_HOUR);
 //        scheduleNotification(review, registrationTime.plus(24, ChronoUnit.HOURS), PushType.AUTO_REVIEW_ONE_DAY);
 //        scheduleNotification(review, registrationTime.plus(6, ChronoUnit.DAYS), PushType.AUTO_REVIEW_ONE_WEEK);
 //        scheduleNotification(review, registrationTime.plus(30, ChronoUnit.DAYS), PushType.AUTO_REVIEW_ONE_MONTH);
 
+        // 테스트용
         scheduleNotification(review, registrationTime.plus(10, ChronoUnit.SECONDS), PushType.AUTO_REVIEW_ONE_HOUR);
         scheduleNotification(review, registrationTime.plus(20, ChronoUnit.SECONDS), PushType.AUTO_REVIEW_ONE_DAY);
         scheduleNotification(review, registrationTime.plus(30, ChronoUnit.SECONDS), PushType.AUTO_REVIEW_ONE_WEEK);
@@ -130,6 +113,7 @@ public class SchedulerConfiguration implements WebMvcConfigurer {
                 .build();
 
         Trigger trigger = TriggerBuilder.newTrigger()
+
                 .withIdentity("fcmSendTrigger" + notificationIdentity, "fcmGroup")
                 .startAt(Date.from(notificationTime))
                 .build();
@@ -141,8 +125,6 @@ public class SchedulerConfiguration implements WebMvcConfigurer {
             log.error("[scheduleNotification] Notification Scheduling Failed: " + e.getMessage());
         }
     }
-
-
 
     private int getDayOfWeek(String dayOfWeek) {
         switch (dayOfWeek.toUpperCase()) {

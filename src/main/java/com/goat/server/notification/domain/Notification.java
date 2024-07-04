@@ -2,6 +2,7 @@ package com.goat.server.notification.domain;
 
 import com.goat.server.global.domain.BaseTimeEntity;
 import com.goat.server.mypage.domain.User;
+import com.goat.server.review.domain.Review;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -32,9 +33,14 @@ public class Notification extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+    @JoinColumn(name = "review_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Review review;
+
     @Builder
-    public Notification(String content, User user) {
+    public Notification(String content, User user, Review review) {
         this.content = content;
         this.user = user;
+        this.review = review;
     }
 }
