@@ -1,13 +1,10 @@
 package com.goat.server.directory.repository;
 
 import com.goat.server.directory.application.type.SortType;
-import com.goat.server.directory.domain.Directory;
+import com.goat.server.directory.dto.response.DirectoryResponse;
 import java.util.List;
 
 public interface DirectoryRepositoryCustom {
-    List<Directory> findAllByParentDirectoryId(Long parentDirectoryId, List<SortType> sort);
-
-    List<Directory> findAllByUserIdAndParentDirectoryIsNull(Long userId, List<SortType> sort);
-
-    List<Directory> findAllBySearch(Long userId, String search, List<SortType> sort);
+    List<DirectoryResponse> findAllDirectoryAndReview(
+            Long userId, Long parentDirectoryId, List<SortType> sort, String search);
 }

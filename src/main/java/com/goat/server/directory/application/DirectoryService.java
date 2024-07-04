@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
 @Slf4j
 @Transactional(readOnly = true)
@@ -39,7 +38,7 @@ public class DirectoryService {
         validateDirectory(directoryId);
 
         List<DirectoryResponse> directoryResponseList =
-                getDirectoryResponseList(userId, directoryId, sort, search);
+                directoryRepository.findAllDirectoryAndReview(userId, directoryId, sort, search);
         List<ReviewSimpleResponse> reviewSimpleResponseList =
                 reviewService.getReviewSimpleResponseList(userId, directoryId, sort, search);
 
@@ -132,24 +131,5 @@ public class DirectoryService {
         if (directoryId != 0 && !directoryRepository.existsById(directoryId)) {
             throw new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND);
         }
-    }
-
-    private List<DirectoryResponse> getDirectoryResponseList(
-            Long userId, Long parentDirectoryId, List<SortType> sort, String search) {
-
-        if (!ObjectUtils.isEmpty(search)) {
-            return directoryRepository.findAllBySearch(userId, search, sort).stream()
-                    .map(DirectoryResponse::from)
-                    .toList();
-        }
-
-        List<Directory> directoryList =
-                parentDirectoryId == 0 ?
-                        directoryRepository.findAllByUserIdAndParentDirectoryIsNull(userId, sort)
-                        : directoryRepository.findAllByParentDirectoryId(parentDirectoryId, sort);
-
-        return directoryList.stream()
-                .map(DirectoryResponse::from)
-                .toList();
     }
 }
