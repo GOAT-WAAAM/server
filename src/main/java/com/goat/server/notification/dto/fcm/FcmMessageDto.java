@@ -12,5 +12,26 @@ public record FcmMessageDto(
         boolean validateOnly,
         Message message
 ) {
+    @Builder
+    public record Message(
+            Notification notification,
+            String token,
+            Data data
+    ) {
+        @Builder
+        public record Notification(
+                String title,
+                String body,
+                String image
+        ) {
+        }
+
+        @Builder
+        public record Data(
+                String reviewId
+        ) {
+        }
+
+    }
 }
 

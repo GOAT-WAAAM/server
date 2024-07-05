@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.Objects;
 
 import static com.goat.server.mypage.exception.errorcode.MypageErrorCode.USER_NOT_FOUND;
 
@@ -69,23 +69,22 @@ public class FcmServiceImpl implements FcmService {
     private String makeMessageFromReview(Long reviewId, Long userId, PushType pushType) throws JsonProcessingException {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
-        String deviceToken = Optional.ofNullable(user.getFcmToken())
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        String deviceToken = Objects.requireNonNull(user.getFcmToken());
 
         String title = user.getNickname() + pushType.getTitle();
         String body = pushType.getBody();
 
         ObjectMapper om = new ObjectMapper();
         FcmMessageDto fcmMessageDto = FcmMessageDto.builder()
-                .message(Message.builder()
+                .message(FcmMessageDto.Message.builder()
                         .token(deviceToken)
-                        .notification(Notification.builder()
+                        .notification(FcmMessageDto.Message.Notification.builder()
                                 .title(title)
                                 .body(body)
                                 .image(null)
                                 .build()
                         )
-                        .data(Data.builder()
+                        .data(FcmMessageDto.Message.Data.builder()
                                 .reviewId(reviewId.toString())
                                 .build())
                         .build())

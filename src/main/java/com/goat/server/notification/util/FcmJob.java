@@ -33,7 +33,6 @@ import static com.goat.server.review.exception.errorcode.ReviewErrorCode.REVIEW_
  */
 @Slf4j
 @NoArgsConstructor
-@Component
 public class FcmJob implements Job {
 
     private static FcmService fcmService;
