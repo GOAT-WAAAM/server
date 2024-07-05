@@ -130,4 +130,8 @@ public class User extends BaseTimeEntity {
         this.goal = goal;
         this.role = Role.USER;
     }
+
+    public void updateFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
 }

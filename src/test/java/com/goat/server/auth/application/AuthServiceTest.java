@@ -57,11 +57,12 @@ class AuthServiceTest {
         given(userRepository.findById(1L)).willReturn(Optional.of(USER_GUEST));
 
         // when
-        authService.saveOnBoardingInfo(1L, new OnBoardingRequest("modifiedNickname", "modifiedGoal"));
+        authService.saveOnBoardingInfo(1L, new OnBoardingRequest("modifiedNickname", "modifiedGoal", "fcmToken"));
 
         // then
         assertEquals("modifiedNickname", USER_GUEST.getNickname());
         assertEquals("modifiedGoal", USER_GUEST.getGoal());
+        assertEquals("fcmToken", USER_GUEST.getFcmToken());
         assertEquals(Role.USER, USER_GUEST.getRole());
     }
 
