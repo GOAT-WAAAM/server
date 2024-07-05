@@ -1,6 +1,8 @@
 package com.goat.server.mypage.application;
 
 import com.goat.server.auth.dto.response.KakaoUserResponse;
+import com.goat.server.directory.domain.Directory;
+import com.goat.server.directory.repository.DirectoryRepository;
 import com.goat.server.global.application.S3Uploader;
 import com.goat.server.global.domain.ImageInfo;
 import com.goat.server.mypage.domain.User;
@@ -24,18 +26,33 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class UserService {
 
+    private final DirectoryRepository directoryRepository;
     private final UserRepository userRepository;
     private final S3Uploader s3Uploader;
 
     /**
      * 유저 회원가입
      */
+    @Transactional
     public User createUser(final KakaoUserResponse userResponse) {
         User user = User.builder()
                 .socialId(userResponse.id().toString())
                 .nickname(userResponse.getNickname())
                 .role(Role.GUEST)
                 .build();
+
+        Directory trashDirectory = Directory.builder()
+                .user(user)
+                .title("trash_directory")
+                .build();
+
+        Directory storageDirectory = Directory.builder()
+                .user(user)
+                .title("storage_directory")
+                .build();
+
+        directoryRepository.save(trashDirectory);
+        directoryRepository.save(storageDirectory);
 
         return userRepository.save(user);
     }
