@@ -44,11 +44,13 @@ public class UserService {
         Directory trashDirectory = Directory.builder()
                 .user(user)
                 .title("trash_directory")
+                .depth(1L)
                 .build();
 
         Directory storageDirectory = Directory.builder()
                 .user(user)
                 .title("storage_directory")
+                .depth(1L)
                 .build();
 
         directoryRepository.save(trashDirectory);
