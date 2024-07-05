@@ -4,8 +4,9 @@ import static com.goat.server.directory.application.type.SortType.REVIEW_SORT_MA
 import static com.goat.server.review.domain.QReview.review;
 
 import com.goat.server.directory.application.type.SortType;
-import com.goat.server.review.domain.Review;
+import com.goat.server.review.dto.response.ReviewSimpleResponse;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
@@ -20,28 +21,27 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
     private final JPAQueryFactory query;
 
     @Override
-    public List<Review> findAllByDirectoryId(Long directoryId, List<SortType> sort) {
+    public List<ReviewSimpleResponse> findAllReviewSimpleResponseBySortAndSearch(
+            Long userId, Long parentDirectoryId, List<SortType> sort, String search) {
         return query
-                .selectFrom(review)
-                .where(review.directory.id.eq(directoryId))
+                .select(Projections.constructor(ReviewSimpleResponse.class,
+                        review.id,
+                        review.title,
+                        review.imageInfo.imageUrl,
+                        review.reviewCnt))
+                .from(review)
+                .where(review.user.userId.eq(userId), searchExpression(parentDirectoryId, search))
                 .orderBy(sortExpression(sort))
                 .fetch();
     }
 
-    @Override
-    public List<Review> findAllBySearch(Long userId, String search, List<SortType> sort) {
-        return query
-                .selectFrom(review)
-                .where(review.user.userId.eq(userId), searchExpression(search))
-                .orderBy(sortExpression(sort))
-                .fetch();
-    }
-
-    private BooleanExpression searchExpression(String search) {
+    //search가 null이면 parentDirectoryId로 검색, 아니면 search로 검색 - search 존재 -> 전체 검색
+    private BooleanExpression searchExpression(Long parentDirectoryId, String search) {
         if (ObjectUtils.isEmpty(search)) {
-            return null;
+            return review.directory.id.eq(parentDirectoryId);
+        } else {
+            return review.title.contains(search);
         }
-        return review.title.contains(search);
     }
 
     // 기본 정렬 - 이름 오름차순

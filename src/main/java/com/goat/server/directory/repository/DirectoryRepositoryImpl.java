@@ -4,8 +4,9 @@ import static com.goat.server.directory.application.type.SortType.DIRECTORY_SORT
 import static com.goat.server.directory.domain.QDirectory.directory;
 
 import com.goat.server.directory.application.type.SortType;
-import com.goat.server.directory.domain.Directory;
+import com.goat.server.directory.dto.response.DirectoryResponse;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
@@ -20,38 +21,37 @@ public class DirectoryRepositoryImpl implements DirectoryRepositoryCustom {
     private final JPAQueryFactory query;
 
     @Override
-    public List<Directory> findAllByParentDirectoryId(Long parentDirectoryId, List<SortType> sort) {
+    public List<DirectoryResponse> findAllDirectoryResponseBySortAndSearch(
+            Long userId, Long parentDirectoryId, List<SortType> sort, String search) {
         return query
-                .selectFrom(directory)
-                .where(directory.parentDirectory.id.eq(parentDirectoryId))
+                .select(Projections.constructor(DirectoryResponse.class,
+                        directory.id,
+                        directory.title,
+                        directory.directoryColor))
+                .from(directory)
+                .where(directory.user.userId.eq(userId), isSearchExpression(parentDirectoryId, search))
                 .orderBy(sortExpression(sort))
                 .fetch();
     }
 
-    @Override
-    public List<Directory> findAllByUserIdAndParentDirectoryIsNull(Long userId, List<SortType> sort) {
-        return query
-                .selectFrom(directory)
-                .where(directory.parentDirectory.id.isNull(), directory.user.userId.eq(userId))
-                .orderBy(sortExpression(sort))
-                .fetch();
-    }
-
-    @Override
-    public List<Directory> findAllBySearch(Long userId, String search, List<SortType> sort) {
-        return query
-                .selectFrom(directory)
-                .where(directory.user.userId.eq(userId), searchExpression(search))
-                .orderBy(sortExpression(sort))
-                .fetch();
-    }
-
-    private BooleanExpression searchExpression(String search) {
+    //search가 null이면 parentDirectoryId로 검색, 아니면 search로 검색 - search 존재 -> 전체 검색
+    private BooleanExpression isSearchExpression(Long parentDirectoryId, String search) {
         if (ObjectUtils.isEmpty(search)) {
-            return null;
+            return parentDirectoryFindExpression(parentDirectoryId);
+        } else {
+            return directory.title.contains(search);
         }
-        return directory.title.contains(search);
     }
+
+    private BooleanExpression parentDirectoryFindExpression(Long parentDirectoryId) {
+        if (parentDirectoryId == 0) {
+            return directory.parentDirectory.isNull();
+        } else {
+            return directory.parentDirectory.id.eq(parentDirectoryId);
+        }
+    }
+
+
 
     // 기본 정렬 - 이름 오름차순
     private OrderSpecifier<?>[] sortExpression(List<SortType> sort) {

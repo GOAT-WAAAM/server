@@ -33,7 +33,10 @@ public class DirectoryController {
 
     private final DirectoryService directoryService;
 
-    @Operation(summary = "과목, 폴더 정보 가져 오기", description = "과목, 폴더 정보 가져 오기")
+    @Operation(summary = "과목, 폴더 정보 가져 오기",
+            description = "directoryId가 0이면 root directory에 속한 폴더, 파일 불러오기. "
+                    + "만약 search가 있는 경우 해당 검색어로 검색 - 이때 정렬 조건은 정상적으로 동작하나 directoryId는 무시됨."
+                    + "간단히 말하면 전체에서 검색")
     @GetMapping
     public ResponseEntity<ResponseTemplate<Object>> getDirectorySubList(
             @AuthenticationPrincipal Long userId,
