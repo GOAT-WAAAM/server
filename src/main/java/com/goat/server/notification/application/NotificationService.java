@@ -1,5 +1,6 @@
 package com.goat.server.notification.application;
 
+import com.goat.server.global.exception.AccessDeniedException;
 import com.goat.server.mypage.domain.User;
 import com.goat.server.mypage.exception.UserNotFoundException;
 import com.goat.server.mypage.repository.UserRepository;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.goat.server.global.exception.errorcode.GlobalErrorCode.ACCESS_DENIED;
 import static com.goat.server.mypage.exception.errorcode.MypageErrorCode.USER_NOT_FOUND;
 
 @Slf4j
@@ -46,5 +48,22 @@ public class NotificationService {
                     .toList();
 
             return NotificationResponse.from(notificationComponents);
+    }
+
+    @Transactional
+    public void readNotification(Long userId, Long notificationId) {
+
+        log.info("[NotificationService.readNotification]");
+
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new IllegalArgumentException("Notification not found"));
+
+        if (!notification.getUser().getUserId().equals(userId)) {
+            throw new AccessDeniedException(ACCESS_DENIED);
+        }
+
+        notification.read();
+
+        notificationRepository.save(notification);
     }
 }

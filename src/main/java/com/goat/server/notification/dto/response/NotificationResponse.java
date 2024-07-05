@@ -11,12 +11,14 @@ public record NotificationResponse(
 ) {
     @Builder
     public record NotificationComponentResponse(
+            Long notificationId,
             Long reviewId,
             String reviewBody,
             Boolean isRead
     ){
         public static NotificationComponentResponse from(Notification notification) {
             return NotificationComponentResponse.builder()
+                    .notificationId(notification.getNoti_id())
                     .reviewId(notification.getReview().getId())
                     .reviewBody(notification.getContent())
                     .isRead(notification.getIsRead())

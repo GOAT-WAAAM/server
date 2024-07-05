@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,7 +24,7 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
-    @Operation(summary = "알림 목록 보기", description = "알림 목록 보기")
+    @Operation(summary = "알림 목록 출력", description = "알림 목록 보기")
     @GetMapping
     public ResponseEntity<ResponseTemplate<Object>> getNotifications(@AuthenticationPrincipal Long userId) {
 
@@ -34,5 +35,18 @@ public class NotificationController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ResponseTemplate.from(notification));
+    }
+
+    @Operation(summary = "알림 읽음 표시", description = "알림 읽음 표시")
+    @GetMapping("/{notificationId}")
+    public ResponseEntity<ResponseTemplate<Object>> readNotification(@AuthenticationPrincipal Long userId, @PathVariable Long notificationId) {
+
+        log.info("[NotificationController.readNotification]");
+
+        notificationService.readNotification(userId, notificationId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ResponseTemplate.EMPTY_RESPONSE);
     }
 }
