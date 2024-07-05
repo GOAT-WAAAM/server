@@ -1,13 +1,7 @@
 package com.goat.server.review.application;
 
-import com.goat.server.directory.domain.Directory;
-import com.goat.server.directory.dto.response.DirectoryResponse;
 import com.goat.server.mypage.repository.UserRepository;
-import com.goat.server.review.domain.Review;
 import com.goat.server.review.domain.StarReview;
-import com.goat.server.review.dto.response.ReviewSimpleResponse;
-import com.goat.server.review.dto.response.StarReviewResponse;
-import com.goat.server.review.dto.response.StarReviewResponseList;
 import com.goat.server.review.repository.ReviewRepository;
 import com.goat.server.review.repository.StarReviewRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -18,20 +12,14 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.*;
 
-import java.util.List;
 import java.util.Optional;
 
-import static com.goat.server.directory.fixture.DirectoryFixture.CHILD_DIRECTORY1;
-import static com.goat.server.directory.fixture.DirectoryFixture.CHILD_DIRECTORY2;
 import static com.goat.server.mypage.fixture.UserFixture.USER_USER;
 import static com.goat.server.review.fixture.ReviewFixture.DUMMY_REVIEW1;
 import static com.goat.server.review.fixture.ReviewFixture.DUMMY_REVIEW2;
-//import static com.goat.server.review.fixture.StarReviewFixture.DUMMY_STARREVIEW1;
 import static com.goat.server.review.fixture.StarReviewFixture.DUMMY_STARREVIEW2;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
