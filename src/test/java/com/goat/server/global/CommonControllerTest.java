@@ -2,6 +2,7 @@ package com.goat.server.global;
 
 import static com.goat.server.mypage.fixture.UserFixture.USER_USER;
 
+import com.goat.server.global.config.SchedulerConfiguration;
 import com.goat.server.global.util.AuthenticationUtil;
 import com.goat.server.global.util.jwt.JwtTokenProvider;
 import com.goat.server.global.config.TestSecurityConfig;
@@ -21,6 +22,9 @@ public class CommonControllerTest {
 
     @MockBean
     private AuthenticationUtil authenticationUtil;
+
+    @MockBean
+    private SchedulerConfiguration schedulerConfiguration;
 
     @BeforeEach
     public void setUp() {

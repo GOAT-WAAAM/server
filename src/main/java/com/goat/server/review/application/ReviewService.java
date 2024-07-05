@@ -5,6 +5,7 @@ import com.goat.server.directory.exception.DirectoryNotFoundException;
 import com.goat.server.directory.exception.errorcode.DirectoryErrorCode;
 import com.goat.server.directory.repository.DirectoryRepository;
 import com.goat.server.global.application.S3Uploader;
+import com.goat.server.global.config.SchedulerConfiguration;
 import com.goat.server.global.domain.ImageInfo;
 import com.goat.server.mypage.application.UserService;
 import com.goat.server.mypage.domain.User;
@@ -12,6 +13,7 @@ import com.goat.server.mypage.exception.UserNotFoundException;
 import com.goat.server.mypage.exception.errorcode.MypageErrorCode;
 import com.goat.server.mypage.repository.UserRepository;
 import com.goat.server.review.domain.Review;
+import com.goat.server.review.domain.ReviewDate;
 import com.goat.server.review.dto.request.ReviewMoveRequest;
 import com.goat.server.review.dto.request.ReviewUpdateRequest;
 import com.goat.server.review.dto.request.ReviewUploadRequest;
@@ -26,7 +28,11 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.*;
+import org.quartz.SchedulerException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +49,8 @@ public class ReviewService {
     private final DirectoryRepository directoryRepository;
     private final S3Uploader s3Uploader;
     private final UserService userService;
+
+    private final SchedulerConfiguration schedulerConfiguration;
 
     private static final int PAGE_SIZE_HOME = 4;
 
@@ -77,11 +85,14 @@ public class ReviewService {
      */
     @Transactional
     public void uploadReview(Long userId, MultipartFile multipartFile, ReviewUploadRequest request) {
+        log.info("[ReviewService.uploadReview]");
+
         User user = userService.findUser(userId);
         Directory directory = directoryRepository.findById(request.directoryId())
                 .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
         Review review = request.toReview(user, directory);
+
 
         if (multipartFile != null && !multipartFile.isEmpty()) {
             String folderName = "goat";
@@ -89,6 +100,32 @@ public class ReviewService {
             review.setImageInfo(imageInfo);
         }
         reviewRepository.save(review);
+
+        if(review.getIsAutoRepeat() || review.getIsRepeatable() || !review.getReviewDates().isEmpty()) {
+            registerNotification(review);
+        }
+    }
+
+    /**
+     * 복습 업로드 시 알림 등록
+     */
+    private void registerNotification(Review review) {
+
+        if(review.getIsAutoRepeat()) {
+            try {
+                schedulerConfiguration.scheduleAutoReviewNotification(review);
+            } catch (SchedulerException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        for (ReviewDate date : review.getReviewDates()) {
+            try {
+                schedulerConfiguration.scheduleCustomReviewNotification(review, date);
+            } catch (SchedulerException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     /**
@@ -136,6 +173,7 @@ public class ReviewService {
         Review review = reviewRepository.findByIdAndUser_UserId(reviewId, userId)
                 .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
 
+        s3Uploader.deleteImage(review.getImageInfo());
         reviewRepository.delete(review);
     }
 

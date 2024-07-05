@@ -48,6 +48,8 @@ public class ReviewController {
             @RequestPart(required = false) MultipartFile multipartFile,
             @RequestPart ReviewUploadRequest request) {
 
+        log.info("[ReviewController.uploadReview]");
+
         reviewService.uploadReview(userId, multipartFile, request);
 
         return ResponseEntity

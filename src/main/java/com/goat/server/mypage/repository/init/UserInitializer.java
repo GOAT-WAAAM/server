@@ -42,6 +42,7 @@ public class UserInitializer implements ApplicationRunner {
                     .role(Role.USER)
                     .nickname("user")
                     .goal("user go home")
+                    .fcmToken("c5z1BZ-J4UIEv58an4DPTK:APA91bGBItmR0XevTVL4wUJqOTW4vESdyhpkdrNu1scBDPV-rBAc31GsASTvK3hSSGrIGs9X9zijLdJqpe9dZbHI2oTdQHyZLNlhxFCJYb08L99vJMWPYsoaJQux88SKKQWoXYRuzVZf")
                     .provider(OauthProvider.KAKAO)
                     .build();
 
