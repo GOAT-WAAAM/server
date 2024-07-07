@@ -1,11 +1,15 @@
 package com.goat.server.directory.domain;
 
+import com.goat.server.directory.domain.type.DirectoryColor;
+import com.goat.server.directory.domain.type.DirectoryIcon;
 import com.goat.server.global.domain.BaseTimeEntity;
 import com.goat.server.mypage.domain.User;
 import com.goat.server.review.domain.Review;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,8 +37,11 @@ public class Directory extends BaseTimeEntity {
     @Column(name = "directory_title", length = 100)
     private String title;
 
-    @Column(name = "directory_color", length = 50)
-    private String directoryColor;
+    @Enumerated(EnumType.STRING)
+    private DirectoryIcon directoryIcon;
+
+    @Enumerated(EnumType.STRING)
+    private DirectoryColor directoryColor;
 
     @Column(name = "depth")
     private Long depth;
@@ -54,13 +61,19 @@ public class Directory extends BaseTimeEntity {
     private List<Review> reviewList = new ArrayList<>();
 
     @Builder
-    public Directory(String title, String directoryColor, Long depth, User user, Directory parentDirectory) {
+    public Directory(String title,
+                     DirectoryIcon directoryIcon,
+                     DirectoryColor directoryColor,
+                     Long depth, User user,
+                     Directory parentDirectory) {
         this.title = title;
+        this.directoryIcon = directoryIcon;
         this.directoryColor = directoryColor;
         this.depth = depth;
         this.user = user;
         this.parentDirectory = parentDirectory;
     }
+
 
     public void updateParentDirectory(Directory parentDirectory) {
         this.parentDirectory = parentDirectory;
