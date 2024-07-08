@@ -91,29 +91,9 @@ public class User extends BaseTimeEntity {
         this.imageInfo = imageInfo;
     }
 
-    //마이페이지에서 세부 내용 업데이트 (닉네임, 학년, 전공)
+    //마이페이지에서 세부 내용 업데이트 (닉네임)
     public void updateMypageDetails(MypageDetailsRequest request) {
         this.nickname = request.nickname();
-        this.grade = request.grade();
-
-        List<String> newMajorNames = request.majorList().stream()
-                .map(String::valueOf)
-                .toList();
-
-        this.majorList.removeIf(existingMajor -> !newMajorNames.contains(existingMajor.getMajorName()));
-
-        // 전공 추가
-        for (String majorName : newMajorNames) {
-            boolean exists = this.majorList.stream()
-                    .anyMatch(existingMajor -> existingMajor.getMajorName().equals(majorName));
-
-            if (!exists) {
-                this.majorList.add(Major.builder()
-                        .majorName(majorName)
-                        .user(this)
-                        .build());
-            }
-        }
     }
 
     //프로필 url 가져오는 메서드

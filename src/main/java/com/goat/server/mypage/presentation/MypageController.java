@@ -29,18 +29,18 @@ public class MypageController {
     private final MypageService mypageService;
     private final UserService userService;
 
-    @Operation(summary = "마이페이지 정보 보기", description = "마이페이지 정보 보기")
+    @Operation(summary = "마이페이지 첫화면 정보 보기", description = "마이페이지에서 프로필이미지, 닉네임, 목표, 복습횟수 정보 보기")
     @GetMapping("/info")
     public ResponseEntity<ResponseTemplate<Object>> getMypageAllDetail(@AuthenticationPrincipal Long userId) {
 
-        MypageHomeResponse mypageHomeResponse = mypageService.getUserWithMajors(userId);
+        MypageHomeResponse mypageHomeResponse = mypageService.getMypageHome(userId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ResponseTemplate.from(mypageHomeResponse));
     }
 
-    @Operation(summary = "마이페이지 세부 정보 보기", description = "마이페이지에서 프로필이미지, 닉네임, 전공, 학년 보기")
+    @Operation(summary = "마이페이지 세부 정보 보기", description = "마이페이지에서 프로필이미지, 닉네임 보기")
     @GetMapping("/info/details")
     public ResponseEntity<ResponseTemplate<Object>> getMypageDetails(@AuthenticationPrincipal Long userId) {
 
@@ -51,7 +51,7 @@ public class MypageController {
                 .body(ResponseTemplate.from(mypageDetailsResponse));
     }
 
-    @Operation(summary = "마이페이지 세부 정보 수정하기", description = "마이페이지에서 닉네임, 전공, 학년 수정하기")
+    @Operation(summary = "마이페이지 세부 정보 수정하기", description = "마이페이지에서 닉네임 수정하기")
     @PutMapping("/info/details")
     public ResponseEntity<ResponseTemplate<Object>> updateUserDetails(
             @AuthenticationPrincipal Long userId,
@@ -64,7 +64,7 @@ public class MypageController {
                 .body(ResponseTemplate.EMPTY_RESPONSE);
     }
 
-    @Operation(summary = "마이페이지 프로필 이미지 수정하기", description = "마이페이지 프로필 이미지 수정하기")
+    @Operation(summary = "마이페이지 프로필 이미지 수정하기", description = "마이페이지에서 프로필 이미지 수정하기")
     @PutMapping (consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, value ="/info/profile")
     public ResponseEntity<ResponseTemplate<Object>> updateProfileImage(
             @AuthenticationPrincipal Long userId,
