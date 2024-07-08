@@ -58,7 +58,8 @@ class DirectoryControllerTest extends CommonControllerTest {
         List<ReviewSimpleResponse> reviewSimpleResponseList =
                 List.of(ReviewSimpleResponse.from(DUMMY_REVIEW1), ReviewSimpleResponse.from(DUMMY_REVIEW2));
         DirectoryTotalShowResponse directoryTotalShowResponse =
-                DirectoryTotalShowResponse.of(PARENT_DIRECTORY1.getId(), directoryResponseList, reviewSimpleResponseList);
+                DirectoryTotalShowResponse.of(PARENT_DIRECTORY1.getId(), directoryResponseList,
+                        reviewSimpleResponseList);
 
         given(directoryService.getDirectorySubList(anyLong(), eq(PARENT_DIRECTORY1.getId()), any(), any()))
                 .willReturn(directoryTotalShowResponse);
@@ -88,7 +89,7 @@ class DirectoryControllerTest extends CommonControllerTest {
     void initDirectoryTest() throws Exception {
         //given
         DirectoryInitRequest request =
-                new DirectoryInitRequest("폴더 이름", PARENT_DIRECTORY1.getId(), "#FFFFFF");
+                new DirectoryInitRequest("폴더 이름", PARENT_DIRECTORY1.getId(), "BLUE", "PENCIL", "설명");
 
         //when
         ResultActions resultActions =
