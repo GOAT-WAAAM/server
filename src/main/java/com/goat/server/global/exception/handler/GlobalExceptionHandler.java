@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -73,23 +74,36 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return makeErrorResponse(errorCode, e.getMessage());
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleAllException(Exception e, HttpServletRequest request) {
+        logError(e, request);
+        ErrorCode errorCode = GlobalErrorCode.INTERNAL_SERVER_ERROR;
+        return handleExceptionInternal(errorCode);
+    }
 
     /**
      * DTO @Valid 관련 exception 처리
      */
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e,
-                                                                  HttpHeaders headers,
-                                                                  HttpStatusCode status,
-                                                                  WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException e,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request) {
         ErrorCode errorCode = GlobalErrorCode.INVALID_PARAMETER;
         return handleExceptionInternal(e, errorCode);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleAllException(Exception e, HttpServletRequest request) {
-        logError(e, request);
-        ErrorCode errorCode = GlobalErrorCode.INTERNAL_SERVER_ERROR;
+    /**
+     * HTTP Method 관련 exception 처리
+     */
+    @Override
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
+            HttpRequestMethodNotSupportedException e,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request) {
+        ErrorCode errorCode = GlobalErrorCode.INVALID_METHOD;
         return handleExceptionInternal(errorCode);
     }
 
