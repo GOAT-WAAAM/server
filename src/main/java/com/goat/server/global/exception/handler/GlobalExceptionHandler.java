@@ -9,6 +9,8 @@ import java.util.List;
 import com.goat.server.global.exception.CustomFeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,9 +23,11 @@ import com.goat.server.global.exception.errorcode.GlobalErrorCode;
 import com.goat.server.global.exception.response.ErrorResponse;
 import com.goat.server.global.exception.response.ErrorResponse.ValidationError;
 import com.goat.server.global.exception.response.ErrorResponse.ValidationErrors;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger("ErrorLogger");
     private static final String LOG_FORMAT_INFO = "\n[🔵INFO] - ({} {})\n(id: {}, role: {})\n{}\n {}: {}";
@@ -33,21 +37,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException e, HttpServletRequest request) {
         logInfo(GlobalErrorCode.INVALID_PARAMETER, e, request);
-        final ErrorCode errorCode = GlobalErrorCode.INVALID_PARAMETER;
+        ErrorCode errorCode = GlobalErrorCode.INVALID_PARAMETER;
         return handleExceptionInternal(errorCode, e.getMessage());
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Object> handleUserNotFound(UserNotFoundException e, HttpServletRequest request) {
         logInfo(e.getErrorCode(), e, request);
-        final ErrorCode errorCode = e.getErrorCode();
+        ErrorCode errorCode = e.getErrorCode();
         return handleExceptionInternal(errorCode);
     }
 
     @ExceptionHandler(DirectoryNotFoundException.class)
     public ResponseEntity<Object> handleDirectoryNotFound(DirectoryNotFoundException e, HttpServletRequest request) {
         logInfo(e.getErrorCode(), e, request);
-        final ErrorCode errorCode = e.getErrorCode();
+        ErrorCode errorCode = e.getErrorCode();
         return handleExceptionInternal(errorCode);
     }
 
@@ -55,7 +59,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleDirectoryCanNotDelete(DirectoryCanNotDeleteException e,
                                                               HttpServletRequest request) {
         logInfo(e.getErrorCode(), e, request);
-        final ErrorCode errorCode = e.getErrorCode();
+        ErrorCode errorCode = e.getErrorCode();
         return handleExceptionInternal(errorCode);
     }
 
@@ -65,7 +69,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomFeignException.class)
     public ErrorResponse handleTokenNotExist(CustomFeignException e, HttpServletRequest request) {
         logInfo(e.getErrorCode(), e, request);
-        final ErrorCode errorCode = e.getErrorCode();
+        ErrorCode errorCode = e.getErrorCode();
         return makeErrorResponse(errorCode, e.getMessage());
     }
 
@@ -73,18 +77,19 @@ public class GlobalExceptionHandler {
     /**
      * DTO @Valid 관련 exception 처리
      */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException e, HttpServletRequest request) {
-        logWarn(e, request);
-        final ErrorCode errorCode = GlobalErrorCode.INVALID_PARAMETER;
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e,
+                                                                  HttpHeaders headers,
+                                                                  HttpStatusCode status,
+                                                                  WebRequest request) {
+        ErrorCode errorCode = GlobalErrorCode.INVALID_PARAMETER;
         return handleExceptionInternal(e, errorCode);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleAllException(Exception ex, HttpServletRequest request) {
-        logError(ex, request);
-        final ErrorCode errorCode = GlobalErrorCode.INTERNAL_SERVER_ERROR;
+    public ResponseEntity<Object> handleAllException(Exception e, HttpServletRequest request) {
+        logError(e, request);
+        ErrorCode errorCode = GlobalErrorCode.INTERNAL_SERVER_ERROR;
         return handleExceptionInternal(errorCode);
     }
 
