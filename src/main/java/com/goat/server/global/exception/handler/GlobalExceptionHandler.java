@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import com.goat.server.global.exception.CustomFeignException;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +22,6 @@ import com.goat.server.global.exception.response.ErrorResponse;
 import com.goat.server.global.exception.response.ErrorResponse.ValidationError;
 import com.goat.server.global.exception.response.ErrorResponse.ValidationErrors;
 
-@RequiredArgsConstructor
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
