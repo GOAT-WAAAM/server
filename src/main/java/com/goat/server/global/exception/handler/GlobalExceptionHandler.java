@@ -3,49 +3,60 @@ package com.goat.server.global.exception.handler;
 import com.goat.server.directory.exception.DirectoryCanNotDeleteException;
 import com.goat.server.directory.exception.DirectoryNotFoundException;
 import com.goat.server.mypage.exception.UserNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import com.goat.server.global.exception.CustomFeignException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatusCode;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import com.goat.server.global.exception.errorcode.ErrorCode;
 import com.goat.server.global.exception.errorcode.GlobalErrorCode;
 import com.goat.server.global.exception.response.ErrorResponse;
 import com.goat.server.global.exception.response.ErrorResponse.ValidationError;
 import com.goat.server.global.exception.response.ErrorResponse.ValidationErrors;
 
-@Slf4j
+@RequiredArgsConstructor
 @RestControllerAdvice
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+public class GlobalExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger("ErrorLogger");
+    private static final String LOG_FORMAT_INFO = "\n[🔵INFO] - ({} {})\n(id: {}, role: {})\n{}\n {}: {}";
+    private static final String LOG_FORMAT_WARN = "\n[🟠WARN] - ({} {})\n(id: {}, role: {})";
+    private static final String LOG_FORMAT_ERROR = "\n[🔴ERROR] - ({} {})\n(id: {}, role: {})";
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Object> handleIllegalArgument(final IllegalArgumentException e) {
+    public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException e, HttpServletRequest request) {
+        logInfo(GlobalErrorCode.INVALID_PARAMETER, e, request);
         final ErrorCode errorCode = GlobalErrorCode.INVALID_PARAMETER;
         return handleExceptionInternal(errorCode, e.getMessage());
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Object> handleUserNotFound(final UserNotFoundException e) {
+    public ResponseEntity<Object> handleUserNotFound(UserNotFoundException e, HttpServletRequest request) {
+        logInfo(e.getErrorCode(), e, request);
         final ErrorCode errorCode = e.getErrorCode();
         return handleExceptionInternal(errorCode);
     }
 
     @ExceptionHandler(DirectoryNotFoundException.class)
-    public ResponseEntity<Object> handleDirectoryNotFound(final DirectoryNotFoundException e) {
+    public ResponseEntity<Object> handleDirectoryNotFound(DirectoryNotFoundException e, HttpServletRequest request) {
+        logInfo(e.getErrorCode(), e, request);
         final ErrorCode errorCode = e.getErrorCode();
         return handleExceptionInternal(errorCode);
     }
 
     @ExceptionHandler(DirectoryCanNotDeleteException.class)
-    public ResponseEntity<Object> handleDirectoryCanNotDelete(final DirectoryCanNotDeleteException e) {
+    public ResponseEntity<Object> handleDirectoryCanNotDelete(DirectoryCanNotDeleteException e,
+                                                              HttpServletRequest request) {
+        logInfo(e.getErrorCode(), e, request);
         final ErrorCode errorCode = e.getErrorCode();
         return handleExceptionInternal(errorCode);
     }
@@ -54,7 +65,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * Feign 관련 exception 처리
      */
     @ExceptionHandler(CustomFeignException.class)
-    public ErrorResponse handleTokenNotExist(final CustomFeignException e) {
+    public ErrorResponse handleTokenNotExist(CustomFeignException e, HttpServletRequest request) {
+        logInfo(e.getErrorCode(), e, request);
         final ErrorCode errorCode = e.getErrorCode();
         return makeErrorResponse(errorCode, e.getMessage());
     }
@@ -63,30 +75,27 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     /**
      * DTO @Valid 관련 exception 처리
      */
-    @Override
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleMethodArgumentNotValid(
-            final MethodArgumentNotValidException e,
-            final HttpHeaders headers,
-            final HttpStatusCode status,
-            final WebRequest request) {
-        log.warn("handleIllegalArgument", e);
+            MethodArgumentNotValidException e, HttpServletRequest request) {
+        logWarn(e, request);
         final ErrorCode errorCode = GlobalErrorCode.INVALID_PARAMETER;
         return handleExceptionInternal(e, errorCode);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleAllException(final Exception ex) {
-        log.warn("handleAllException", ex);
+    public ResponseEntity<Object> handleAllException(Exception ex, HttpServletRequest request) {
+        logError(ex, request);
         final ErrorCode errorCode = GlobalErrorCode.INTERNAL_SERVER_ERROR;
         return handleExceptionInternal(errorCode);
     }
 
-    private ResponseEntity<Object> handleExceptionInternal(final ErrorCode errorCode) {
+    private ResponseEntity<Object> handleExceptionInternal(ErrorCode errorCode) {
         return ResponseEntity.status(errorCode.getHttpStatus())
                 .body(makeErrorResponse(errorCode));
     }
 
-    private ErrorResponse makeErrorResponse(final ErrorCode errorCode) {
+    private ErrorResponse makeErrorResponse(ErrorCode errorCode) {
         return ErrorResponse.builder()
                 .isSuccess(false)
                 .code(errorCode.name())
@@ -95,12 +104,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
     }
 
-    private ResponseEntity<Object> handleExceptionInternal(final ErrorCode errorCode, final String message) {
+    private ResponseEntity<Object> handleExceptionInternal(ErrorCode errorCode, String message) {
         return ResponseEntity.status(errorCode.getHttpStatus())
                 .body(makeErrorResponse(errorCode, message));
     }
 
-    private ErrorResponse makeErrorResponse(final ErrorCode errorCode, final String message) {
+    private ErrorResponse makeErrorResponse(ErrorCode errorCode, String message) {
         return ErrorResponse.builder()
                 .isSuccess(false)
                 .code(errorCode.name())
@@ -109,12 +118,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
     }
 
-    private ResponseEntity<Object> handleExceptionInternal(final BindException e, final ErrorCode errorCode) {
+    private ResponseEntity<Object> handleExceptionInternal(BindException e, ErrorCode errorCode) {
         return ResponseEntity.status(errorCode.getHttpStatus())
                 .body(makeErrorResponse(e, errorCode));
     }
 
-    private ErrorResponse makeErrorResponse(final BindException e, final ErrorCode errorCode) {
+    private ErrorResponse makeErrorResponse(BindException e, ErrorCode errorCode) {
         final List<ValidationError> validationErrorList = e.getBindingResult()
                 .getFieldErrors()
                 .stream()
@@ -127,5 +136,38 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .message(errorCode.getMessage())
                 .results(new ValidationErrors(validationErrorList))
                 .build();
+    }
+
+    private void logInfo(ErrorCode ec, Exception e, HttpServletRequest request) {
+        log.info(LOG_FORMAT_INFO, request.getMethod(), request.getRequestURI(), getUserId(),
+                getRole(), ec.getHttpStatus(), e.getClass().getName(), e.getMessage());
+    }
+
+    private void logWarn(Exception e, HttpServletRequest request) {
+        log.warn(LOG_FORMAT_WARN, request.getMethod(), request.getRequestURI(), getUserId(), getRole(), e);
+    }
+
+    private void logError(Exception e, HttpServletRequest request) {
+        log.error(LOG_FORMAT_ERROR, request.getMethod(), request.getRequestURI(), getUserId(), getRole(), e);
+    }
+
+    private String getUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            return authentication.getName(); // 사용자의 id
+        } else {
+            return "anonymous";
+        }
+    }
+
+    private String getRole() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            return authentication.getAuthorities().toString(); // 사용자의 role
+        } else {
+            return "anonymous";
+        }
     }
 }
