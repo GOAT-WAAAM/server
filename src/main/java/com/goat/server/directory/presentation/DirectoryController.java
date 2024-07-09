@@ -56,7 +56,7 @@ public class DirectoryController {
     @PostMapping
     public ResponseEntity<ResponseTemplate<Object>> initDirectory(
             @AuthenticationPrincipal Long userId,
-            @RequestBody DirectoryInitRequest directoryInitRequest) {
+            @Valid @RequestBody DirectoryInitRequest directoryInitRequest) {
 
         directoryService.initDirectory(userId, directoryInitRequest);
 

@@ -13,6 +13,7 @@ import com.goat.server.mypage.application.UserService;
 import com.goat.server.mypage.domain.User;
 import com.goat.server.review.application.ReviewService;
 import com.goat.server.review.dto.response.ReviewSimpleResponse;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -86,7 +87,7 @@ public class DirectoryService {
      * 폴더 생성
      */
     @Transactional
-    public void initDirectory(Long userId, DirectoryInitRequest directoryInitRequest) {
+    public void initDirectory(Long userId, @Valid DirectoryInitRequest directoryInitRequest) {
 
         User user = userService.findUser(userId);
         Directory parentDirectory = getParentDirectory(directoryInitRequest);

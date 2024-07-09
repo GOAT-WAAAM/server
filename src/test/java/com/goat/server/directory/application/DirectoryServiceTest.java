@@ -59,8 +59,10 @@ class DirectoryServiceTest {
         //given
         given(directoryRepository.existsById(PARENT_DIRECTORY1.getId()))
                 .willReturn(true);
-        given(directoryRepository.findAllDirectoryResponseBySortAndSearch(eq(USER_USER.getUserId()), eq(PARENT_DIRECTORY1.getId()), any(), any()))
-                .willReturn(List.of(DirectoryResponse.from(CHILD_DIRECTORY1), DirectoryResponse.from(CHILD_DIRECTORY2)));
+        given(directoryRepository.findAllDirectoryResponseBySortAndSearch(eq(USER_USER.getUserId()),
+                eq(PARENT_DIRECTORY1.getId()), any(), any()))
+                .willReturn(
+                        List.of(DirectoryResponse.from(CHILD_DIRECTORY1), DirectoryResponse.from(CHILD_DIRECTORY2)));
         given(reviewService.getReviewSimpleResponseList(any(), eq(PARENT_DIRECTORY1.getId()), any(), any())).willReturn(
                 List.of(ReviewSimpleResponse.from(DUMMY_REVIEW1), ReviewSimpleResponse.from(DUMMY_REVIEW2)));
 
@@ -82,8 +84,10 @@ class DirectoryServiceTest {
     @DisplayName("과목과 폴더 가져 오기 테스트 - 루트 폴더")
     void getDirectoryListTest2() {
         //given
-        given(directoryRepository.findAllDirectoryResponseBySortAndSearch(eq(USER_USER.getUserId()), eq(0L), any(), any()))
-                .willReturn(List.of(DirectoryResponse.from(PARENT_DIRECTORY1), DirectoryResponse.from(PARENT_DIRECTORY2)));
+        given(directoryRepository.findAllDirectoryResponseBySortAndSearch(eq(USER_USER.getUserId()), eq(0L), any(),
+                any()))
+                .willReturn(
+                        List.of(DirectoryResponse.from(PARENT_DIRECTORY1), DirectoryResponse.from(PARENT_DIRECTORY2)));
 
         //when
         DirectoryTotalShowResponse directorySubList =
@@ -118,7 +122,7 @@ class DirectoryServiceTest {
     void initDirectoryTest() {
         //given
         DirectoryInitRequest directoryInitRequest =
-                new DirectoryInitRequest("폴더", 0L, "#FF0000");
+                new DirectoryInitRequest("폴더", 0L, "BLUE", "PENCIL", "description");
 
         given(userService.findUser(USER_USER.getUserId())).willReturn(USER_USER);
 
@@ -131,7 +135,7 @@ class DirectoryServiceTest {
         Directory savedDirectory = directoryCaptor.getValue();
         assertThat(savedDirectory.getTitle()).isEqualTo(directoryInitRequest.directoryName());
         assertThat(savedDirectory.getParentDirectory()).isNull();
-        assertThat(savedDirectory.getDirectoryColor()).isEqualTo(directoryInitRequest.directoryColor());
+        assertThat(savedDirectory.getDirectoryColor().toString()).isEqualTo(directoryInitRequest.directoryColor());
     }
 
     @Test
@@ -139,7 +143,7 @@ class DirectoryServiceTest {
     void initDirectoryTest2() {
         //given
         DirectoryInitRequest directoryInitRequest =
-                new DirectoryInitRequest("폴더", PARENT_DIRECTORY1.getId(), "#FF0000");
+                new DirectoryInitRequest("폴더", PARENT_DIRECTORY1.getId(), "BLUE", "PENCIL", "description");
 
         given(userService.findUser(USER_USER.getUserId())).willReturn(USER_USER);
         given(directoryRepository.findById(PARENT_DIRECTORY1.getId()))
@@ -154,7 +158,7 @@ class DirectoryServiceTest {
         Directory savedDirectory = directoryCaptor.getValue();
         assertThat(savedDirectory.getTitle()).isEqualTo(directoryInitRequest.directoryName());
         assertThat(savedDirectory.getParentDirectory()).isEqualTo(PARENT_DIRECTORY1);
-        assertThat(savedDirectory.getDirectoryColor()).isEqualTo(directoryInitRequest.directoryColor());
+        assertThat(savedDirectory.getDirectoryColor().toString()).isEqualTo(directoryInitRequest.directoryColor());
     }
 
     @Test
