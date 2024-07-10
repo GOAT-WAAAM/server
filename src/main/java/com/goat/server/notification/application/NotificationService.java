@@ -20,6 +20,7 @@ import static com.goat.server.mypage.exception.errorcode.MypageErrorCode.USER_NO
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
@@ -33,7 +34,6 @@ public class NotificationService {
         notificationRepository.save(notification);
     }
 
-    @Transactional
     public NotificationResponse getNotifications(Long userId) {
 
             log.info("[NotificationService.getNotifications]");

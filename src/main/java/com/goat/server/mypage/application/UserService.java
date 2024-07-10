@@ -10,6 +10,8 @@ import com.goat.server.mypage.domain.type.Role;
 import com.goat.server.mypage.exception.UserNotFoundException;
 import com.goat.server.mypage.exception.errorcode.MypageErrorCode;
 import com.goat.server.mypage.repository.UserRepository;
+import com.goat.server.notification.domain.NotificationSetting;
+import com.goat.server.notification.repository.NotificationSettingRepository;
 import com.goat.server.review.domain.Review;
 import com.goat.server.review.dto.request.ReviewUpdateRequest;
 import com.goat.server.review.exception.ReviewNotFoundException;
@@ -29,6 +31,7 @@ public class UserService {
     private final DirectoryRepository directoryRepository;
     private final UserRepository userRepository;
     private final S3Uploader s3Uploader;
+    private final NotificationSettingRepository notificationSettingRepository;
 
     /**
      * 유저 회원가입
@@ -53,6 +56,15 @@ public class UserService {
                 .depth(1L)
                 .build();
 
+        NotificationSetting notificationSetting = NotificationSetting.builder()
+                .user(user)
+                .isCommentNoti(false)
+                .isPostNoti(false)
+                .isReviewNoti(false)
+                .build();
+
+
+        notificationSettingRepository.save(notificationSetting);
         directoryRepository.save(trashDirectory);
         directoryRepository.save(storageDirectory);
 
