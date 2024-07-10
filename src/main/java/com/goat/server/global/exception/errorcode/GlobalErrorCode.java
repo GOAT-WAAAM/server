@@ -14,6 +14,7 @@ public enum GlobalErrorCode implements ErrorCode {
     INVALID_PARAMETER(HttpStatus.BAD_REQUEST, "Invalid parameter included"),
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "Resource not exists"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error"),
+    INVALID_METHOD(HttpStatus.METHOD_NOT_ALLOWED, "Invalid Method"),
     ;
 
     private final HttpStatus httpStatus;
