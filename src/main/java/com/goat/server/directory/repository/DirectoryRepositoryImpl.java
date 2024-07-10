@@ -27,7 +27,8 @@ public class DirectoryRepositoryImpl implements DirectoryRepositoryCustom {
                 .select(Projections.constructor(DirectoryResponse.class,
                         directory.id,
                         directory.title,
-                        directory.directoryColor))
+                        directory.directoryColor,
+                        directory.directoryIcon))
                 .from(directory)
                 .where(directory.user.userId.eq(userId), isSearchExpression(parentDirectoryId, search))
                 .orderBy(sortExpression(sort))
