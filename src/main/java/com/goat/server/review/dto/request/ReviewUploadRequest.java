@@ -24,8 +24,7 @@ public record ReviewUploadRequest(
         List<String> reviewDates,
         @Schema(example = "15:00", type = "string") LocalTime remindTime,
         LocalDate reviewStartDate,
-        LocalDate reviewEndDate,
-        Boolean postShare
+        LocalDate reviewEndDate
 ) {
     public Review toReview(User user, Directory directory){
         Review review = Review.builder()
@@ -38,7 +37,6 @@ public record ReviewUploadRequest(
                 .remindTime(remindTime)
                 .reviewStartDate(reviewStartDate)
                 .reviewEndDate(reviewEndDate)
-                .isPostShare(postShare)
                 .build();
 
         if (reviewDates != null && !reviewDates.isEmpty()) {

@@ -17,7 +17,6 @@ public record ReviewUpdateRequest(
         List<String> reviewDates,
         @Schema(example = "15:00", type = "string") LocalTime remindTime,
         LocalDate reviewStartDate,
-        LocalDate reviewEndDate,
-        Boolean postShare
+        LocalDate reviewEndDate
 ) {
 }
