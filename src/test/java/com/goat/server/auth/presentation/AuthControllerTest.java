@@ -94,7 +94,7 @@ class AuthControllerTest extends CommonControllerTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.patch("/goat/auth/info")
-                .content(objectMapper.writeValueAsString(new OnBoardingRequest("nickname", "안녕하세요!")))
+                .content(objectMapper.writeValueAsString(new OnBoardingRequest("nickname", "안녕하세요!", "fcmToken")))
                 .contentType("application/json"));
 
         //then

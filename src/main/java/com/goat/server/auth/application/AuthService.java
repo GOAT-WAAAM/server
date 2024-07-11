@@ -50,6 +50,10 @@ public class AuthService {
 
         user.updateOnBoardingInfo(onBoardingRequest.nickname(), onBoardingRequest.goal());
 
+        if(!onBoardingRequest.fcmToken().isBlank()) {
+            user.updateFcmToken(onBoardingRequest.fcmToken());
+        }
+
         userRepository.save(user);
     }
 }
