@@ -41,7 +41,7 @@ public class AuthController {
     }
 
     @Operation(summary = "회원탈퇴", description = "회원탈퇴")
-    @GetMapping("/deregister")
+    @DeleteMapping("/deregister")
     public ResponseEntity<ResponseTemplate<Object>> deregister(@AuthenticationPrincipal Long userId) {
 
         log.info("[AuthController.deregister]");
