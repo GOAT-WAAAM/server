@@ -1,10 +1,10 @@
 package com.goat.server.auth.presentation;
 
 import com.goat.server.auth.application.AuthService;
-import com.goat.server.auth.dto.OnBoardingRequest;
+import com.goat.server.auth.dto.request.OnBoardingRequest;
 import com.goat.server.auth.dto.response.ReIssueSuccessResponse;
 import com.goat.server.global.dto.ResponseTemplate;
-import com.goat.server.auth.application.KakaoSocialService;
+import com.goat.server.auth.application.OAuthLoginService;
 import com.goat.server.auth.dto.response.SignUpSuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,21 +23,22 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/goat/auth")
 public class AuthController {
 
-    private final KakaoSocialService kakaoSocialService;
+    private final OAuthLoginService OAuthLoginService;
     private final AuthService authService;
 
     @Operation(summary = "소셜로그인", description = "소셜 로그인/ 회원가입")
     @GetMapping("/login/{provider}")
-    public ResponseEntity<ResponseTemplate<Object>> socialLogin(@PathVariable(value = "provider") String provider,
-                                                                @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String kakaoAccessToken) {
+    public ResponseEntity<ResponseTemplate<Object>> kakaoSocialLogin(@PathVariable(value = "provider") String provider,
+                                                                     @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String SocialAccessToken) {
 
-        log.info("[AuthController.signup] provider: {}, kakaoAccessToken: {}", provider, kakaoAccessToken);
+        log.info("[AuthController.signup] provider: {}, SocialAccessToken: {}", provider, SocialAccessToken);
 
-        SignUpSuccessResponse response = kakaoSocialService.socialLogin(kakaoAccessToken);
+        SignUpSuccessResponse response = OAuthLoginService.socialLogin(provider, SocialAccessToken);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ResponseTemplate.from(response));
+
     }
 
     @Operation(summary = "회원탈퇴", description = "회원탈퇴")
