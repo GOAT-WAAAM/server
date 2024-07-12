@@ -5,6 +5,7 @@ import com.goat.server.review.application.ReviewService;
 import com.goat.server.review.dto.request.ReviewMoveRequest;
 import com.goat.server.review.dto.request.ReviewUpdateRequest;
 import com.goat.server.review.dto.request.ReviewUploadRequest;
+import com.goat.server.review.dto.response.RandomReviewResponseList;
 import com.goat.server.review.dto.response.ReviewDetailResponse;
 import com.goat.server.review.dto.response.ReviewHomeResponseList;
 import io.swagger.v3.oas.annotations.Operation;
@@ -146,5 +147,18 @@ public class ReviewController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ResponseTemplate.EMPTY_RESPONSE);
+    }
+
+    @Operation(summary = "랜덤 복습", description = "랜덤 복습")
+    @GetMapping("/review/random")
+    public ResponseEntity<ResponseTemplate<Object>> getRandomReview(
+            @AuthenticationPrincipal Long userId,
+            @RequestParam(defaultValue = "0") int page) {
+
+        RandomReviewResponseList response = reviewService.getRandomReview(userId, page);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ResponseTemplate.from(response));
     }
 }

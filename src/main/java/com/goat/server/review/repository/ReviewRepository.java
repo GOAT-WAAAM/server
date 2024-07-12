@@ -8,6 +8,7 @@ import java.util.Optional;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -32,4 +33,16 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRep
     Long sumReviewCntByUser(Long userId);
 
     List<Review> findAll();
+
+    @Query("SELECT COUNT(r) FROM Review r " +
+            "WHERE r.user.userId = :userId " +
+            "AND r.directory.title != 'trash_directory' " +
+            "AND r.reviewEndDate >= CURRENT_DATE")
+    int countActiveReviewsByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT r FROM Review r " +
+            "WHERE r.user.userId = :userId " +
+            "AND r.directory.title != 'trash_directory' " +
+            "AND r.reviewEndDate >= CURRENT_DATE")
+    Slice<Review> findSingleReviewByUser(@Param("userId") Long userId, Pageable pageable);
 }
