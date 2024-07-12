@@ -6,7 +6,6 @@ import com.goat.server.directory.domain.Directory;
 import com.goat.server.directory.fixture.DirectoryFixture;
 import com.goat.server.directory.repository.DirectoryRepository;
 import com.goat.server.global.application.S3Uploader;
-import com.goat.server.global.domain.ImageInfo;
 import com.goat.server.global.util.jwt.JwtUserDetails;
 import com.goat.server.global.util.jwt.Tokens;
 import com.goat.server.global.util.jwt.JwtTokenProvider;
@@ -86,50 +85,15 @@ class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("회원탈퇴 테스트_리뷰와_폴더가_없는_경우")
-    void deregister() {
+    @DisplayName("회원탈퇴 테스트")
+    void withdraw() {
         // given
-        given(userRepository.findById(2L)).willReturn(Optional.of(USER_USER));
+        given(userRepository.findById(USER_USER.getUserId())).willReturn(Optional.of(USER_USER));
 
         // when
-        authService.deregister(2L);
+        authService.withdraw(USER_USER.getUserId());
 
         // then
-        verify(reviewRepository).findAllByUser(USER_USER);
-
-        verify(directoryRepository).findAllByUser(USER_USER);
-
-        verify(userRepository).deleteById(2L);
-        verify(s3Uploader).deleteImage(USER_USER.getImageInfo());
-
-        verifyNoMoreInteractions(reviewRepository, directoryRepository);
+        verify(userRepository).deleteById(USER_USER.getUserId());
     }
-
-    @Test
-    @DisplayName("회원탈퇴 테스트_리뷰와_폴더가_있는_경우")
-    void deregisterWithReviewsAndDirectories() {
-        // given
-        List<Review> reviews = List.of(ReviewFixture.DUMMY_REVIEW3);
-        List<Directory> directories = List.of(DirectoryFixture.PARENT_DIRECTORY1, DirectoryFixture.TRASH_DIRECTORY);
-
-        given(userRepository.findById(2L)).willReturn(Optional.of(USER_USER));
-        given(reviewRepository.findAllByUser(USER_USER)).willReturn(reviews);
-        given(directoryRepository.findAllByUser(USER_USER)).willReturn(directories);
-
-        // when
-        authService.deregister(2L);
-
-        // then
-        verify(reviewRepository).findAllByUser(USER_USER);
-        verify(reviewRepository).deleteAll(reviews);
-        verify(s3Uploader).deleteImage(ReviewFixture.DUMMY_REVIEW3.getImageInfo());
-
-        verify(directoryRepository).findAllByUser(USER_USER);
-        verify(directoryRepository).deleteAll(directories);
-
-
-        verify(userRepository).deleteById(2L);
-        verify(s3Uploader).deleteImage(USER_USER.getImageInfo());
-    }
-
 }

@@ -46,7 +46,7 @@ public class AuthController {
 
         log.info("[AuthController.deregister]");
 
-        authService.deregister(userId);
+        authService.withdraw(userId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

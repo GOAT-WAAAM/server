@@ -67,25 +67,14 @@ public class AuthService {
         userRepository.save(user);
     }
 
-    public void deregister(Long userId) {
+    public void withdraw(Long userId) {
 
-        log.info("[AuthService.deregister]");
+        log.info("[AuthService.withdraw]");
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 
         s3Uploader.deleteImage(user.getImageInfo());
-
-        List<Review> reviews = reviewRepository.findAllByUser(user);
-        if(!reviews.isEmpty()) {
-            reviews.forEach(review -> s3Uploader.deleteImage(review.getImageInfo()));
-            reviewRepository.deleteAll(reviews);
-        }
-
-        List<Directory> directories = directoryRepository.findAllByUser(user);
-        if(!directories.isEmpty()) {
-            directoryRepository.deleteAll(directories);
-        }
 
         userRepository.deleteById(userId);
     }
