@@ -1,5 +1,6 @@
 package com.goat.server.mypage.fixture;
 
+import com.goat.server.global.domain.ImageInfo;
 import com.goat.server.global.domain.type.OauthProvider;
 import com.goat.server.mypage.domain.User;
 import com.goat.server.mypage.domain.type.Grade;
@@ -24,6 +25,7 @@ public class UserFixture {
             .goal("user go home")
             .provider(OauthProvider.KAKAO)
             .fcmToken("c5z1BZ-J4UIEv58an4DPTK:APA91bGBItmR0XevTVL4wUJqOTW4vESdyhpkdrNu1scBDPV-rBAc31GsASTvK3hSSGrIGs9X9zijLdJqpe9dZbHI2oTdQHyZLNlhxFCJYb08L99vJMWPYsoaJQux88SKKQWoXYRuzVZf")
+            .imageInfo(new ImageInfo("imageFileName", "imageFolderName", "imageUrl"))
             .build();
 
     public static final User USER_ADMIN = User.builder()

@@ -1,5 +1,6 @@
 package com.goat.server.review.repository;
 
+import com.goat.server.mypage.domain.User;
 import com.goat.server.review.domain.Review;
 
 import java.util.List;
@@ -32,4 +33,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRep
     Long sumReviewCntByUser(Long userId);
 
     List<Review> findAll();
+
+    List<Review> findAllByUser(User user);
 }
