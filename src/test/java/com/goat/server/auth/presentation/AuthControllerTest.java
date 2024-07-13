@@ -105,9 +105,9 @@ class AuthControllerTest extends CommonControllerTest {
 
     @Test
     @DisplayName("회원탈퇴 테스트")
-    void deregister() throws Exception {
+    void withdraw() throws Exception {
         //when
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.delete("/goat/auth/deregister")
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.delete("/goat/auth/withdraw")
                 .header("Authorization", "accessToken"));
 
         //then

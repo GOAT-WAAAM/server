@@ -2,14 +2,12 @@ package com.goat.server.auth.application;
 
 import com.goat.server.auth.dto.request.OnBoardingRequest;
 import com.goat.server.auth.dto.response.ReIssueSuccessResponse;
-import com.goat.server.directory.repository.DirectoryRepository;
 import com.goat.server.global.application.S3Uploader;
 import com.goat.server.global.util.jwt.JwtUserDetails;
 import com.goat.server.global.util.jwt.Tokens;
 import com.goat.server.global.util.jwt.JwtTokenProvider;
 import com.goat.server.mypage.domain.type.Role;
 import com.goat.server.mypage.repository.UserRepository;
-import com.goat.server.review.repository.ReviewRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
