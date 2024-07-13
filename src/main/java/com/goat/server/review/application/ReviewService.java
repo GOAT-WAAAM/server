@@ -30,7 +30,10 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.SchedulerException;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -251,17 +254,15 @@ public class ReviewService {
     /**
      * 랜덤 복습자료 보여주기
      */
-    public RandomReviewResponseList getRandomReview(Long userId, int page){
-        User user = userService.findUser(userId);
-        int totalActiveReviewNum = reviewRepository.countActiveReviewsByUserId(user.getUserId());
+    public RandomReviewResponseList getRandomReview(Long userId, int page) {
+        int totalActiveReviewNum = reviewRepository.countActiveReviewsByUserId(userId);
         int totalPages = totalActiveReviewNum;
 
         if (page >= totalPages) {
             return RandomReviewResponseList.from(Collections.emptyList());
         }
 
-        int idx = (int)(Math.random() * totalActiveReviewNum);
-        Slice<Review> reviews = reviewRepository.findSingleReviewByUser(user.getUserId(), PageRequest.of(idx, 1));
+        List<Review> reviews = reviewRepository.findRandomActiveReviewByUserId(userId);
 
         List<RandomReviewResponse> randomReviewResponses = reviews.stream()
                 .map(RandomReviewResponse::from)
