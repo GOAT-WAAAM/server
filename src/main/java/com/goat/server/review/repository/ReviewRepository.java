@@ -1,5 +1,6 @@
 package com.goat.server.review.repository;
 
+import com.goat.server.mypage.domain.User;
 import com.goat.server.review.domain.Review;
 
 import java.util.List;
@@ -52,4 +53,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRep
             "AND r.directory.title != 'trash_directory' " +
             "AND r.reviewEndDate >= CURRENT_DATE")
     List<Review> findActiveReviewsByUserId(@Param("userId") Long userId);
+
+    List<Review> findAllByUser(User user);
 }

@@ -40,6 +40,19 @@ public class AuthController {
                 .body(ResponseTemplate.from(response));
     }
 
+    @Operation(summary = "회원탈퇴", description = "회원탈퇴")
+    @DeleteMapping("/deregister")
+    public ResponseEntity<ResponseTemplate<Object>> deregister(@AuthenticationPrincipal Long userId) {
+
+        log.info("[AuthController.deregister]");
+
+        authService.withdraw(userId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ResponseTemplate.from(ResponseTemplate.EMPTY_RESPONSE));
+    }
+
     @Operation(summary = "토큰 재발급", description = "토큰 재발급")
     @GetMapping("/refresh-token")
     public ResponseEntity<ResponseTemplate<Object>> reIssueToken(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String refreshToken) {

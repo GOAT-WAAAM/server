@@ -35,7 +35,8 @@ public class SecurityConfig {
                 "/v3/api-docs/**",
                 "/goat/auth/login/**",
                 "/goat/auth/test-token",
-                "/goat/global/health-check");
+                "/goat/global/health-check",
+                "/actuator/**");
     }
 
     @Bean

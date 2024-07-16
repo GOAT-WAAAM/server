@@ -2,6 +2,7 @@ package com.goat.server.auth.dto;
 
 public record OnBoardingRequest(
         String nickname,
-        String goal
+        String goal,
+        String fcmToken
 ) {
 }

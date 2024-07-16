@@ -12,6 +12,9 @@ java {
 }
 
 configurations {
+	configureEach {
+		exclude group: 'commons-logging', module: 'commons-logging'
+	}
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
@@ -61,6 +64,10 @@ dependencies {
 	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
 	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
 	annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+
+	//prometheus, actuator
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'io.micrometer:micrometer-registry-prometheus'
 
 	//firebase
 	implementation 'com.google.firebase:firebase-admin:9.2.0'

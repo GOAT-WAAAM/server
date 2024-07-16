@@ -3,6 +3,7 @@ package com.goat.server.auth.application;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.goat.server.directory.repository.DirectoryRepository;
 import com.goat.server.mypage.repository.UserRepository;
 import com.goat.server.notification.application.FcmServiceImpl;
 import org.junit.jupiter.api.AfterEach;
@@ -16,6 +17,8 @@ import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 import java.util.Map;
 
@@ -43,6 +46,9 @@ class KakaoSocialServiceTest {
     private FcmServiceImpl fcmService;
 
     private ObjectMapper objectMapper = new ObjectMapper();
+
+    @Autowired
+    private DirectoryRepository directoryRepository;
 
     @BeforeEach
     void setUp() {
@@ -84,6 +90,8 @@ class KakaoSocialServiceTest {
 
         //then
         assertNotNull(userRepository.findBySocialId(String.valueOf(1231241)));
+        assertThat(directoryRepository.findTrashDirectoryByUser(1L).get().getTitle()).isEqualTo("trash_directory");
+        assertThat(directoryRepository.findStorageDirectoryByUser(1L).get().getTitle()).isEqualTo("storage_directory");
     }
 
 }

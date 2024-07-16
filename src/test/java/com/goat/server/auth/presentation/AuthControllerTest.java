@@ -7,6 +7,7 @@ import com.goat.server.auth.dto.OnBoardingRequest;
 import com.goat.server.auth.dto.response.ReIssueSuccessResponse;
 import com.goat.server.auth.dto.response.SignUpSuccessResponse;
 import com.goat.server.global.CommonControllerTest;
+import com.goat.server.global.application.S3Uploader;
 import com.goat.server.global.util.jwt.Tokens;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -94,8 +95,20 @@ class AuthControllerTest extends CommonControllerTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.patch("/goat/auth/info")
-                .content(objectMapper.writeValueAsString(new OnBoardingRequest("nickname", "안녕하세요!")))
+                .content(objectMapper.writeValueAsString(new OnBoardingRequest("nickname", "안녕하세요!", "fcmToken")))
                 .contentType("application/json"));
+
+        //then
+        resultActions
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("회원탈퇴 테스트")
+    void deregister() throws Exception {
+        //when
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.delete("/goat/auth/deregister")
+                .header("Authorization", "accessToken"));
 
         //then
         resultActions

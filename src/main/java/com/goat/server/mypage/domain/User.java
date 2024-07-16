@@ -1,5 +1,6 @@
 package com.goat.server.mypage.domain;
 
+import com.goat.server.directory.domain.Directory;
 import com.goat.server.global.domain.BaseTimeEntity;
 import com.goat.server.global.domain.ImageInfo;
 import com.goat.server.global.domain.type.OauthProvider;
@@ -8,6 +9,8 @@ import com.goat.server.mypage.domain.type.Role;
 import com.goat.server.mypage.domain.type.School;
 
 import com.goat.server.mypage.dto.request.MypageDetailsRequest;
+import com.goat.server.notification.domain.Notification;
+import com.goat.server.notification.domain.NotificationSetting;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -65,9 +68,19 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Major> majorList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Directory> directories = new ArrayList<>();
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private NotificationSetting notificationSetting;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Notification> notification;
+
     @Builder
     public User(School school, Grade grade, ImageInfo imageInfo, String nickname, Role role, String socialId,
-                String email, OauthProvider provider, String goal, String fcmToken, List<Major> majorList) {
+                String email, OauthProvider provider, String goal, String fcmToken, List<Major> majorList,
+                List<Directory> directories, NotificationSetting notificationSetting, List<Notification> notification) {
         this.school = school;
         this.grade = grade;
         this.imageInfo = imageInfo;
@@ -79,6 +92,9 @@ public class User extends BaseTimeEntity {
         this.goal = goal;
         this.fcmToken = fcmToken;
         this.majorList = majorList;
+        this.directories = directories;
+        this.notificationSetting = notificationSetting;
+        this.notification = notification;
     }
 
     //마이페이지 목표 업데이트
@@ -109,5 +125,9 @@ public class User extends BaseTimeEntity {
         this.nickname = nickname;
         this.goal = goal;
         this.role = Role.USER;
+    }
+
+    public void updateFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 }

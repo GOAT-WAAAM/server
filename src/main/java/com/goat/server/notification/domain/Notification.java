@@ -37,10 +37,18 @@ public class Notification extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Review review;
 
+    @Column(name = "is_read")
+    private Boolean isRead;
+
     @Builder
     public Notification(String content, User user, Review review) {
         this.content = content;
         this.user = user;
         this.review = review;
+        this.isRead = false;
+    }
+
+    public void read() {
+        this.isRead = true;
     }
 }
