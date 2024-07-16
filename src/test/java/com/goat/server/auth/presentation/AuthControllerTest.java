@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 
+import static com.goat.server.mypage.fixture.UserFixture.USER_USER;
 import static org.mockito.BDDMockito.given;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -50,7 +51,7 @@ class AuthControllerTest extends CommonControllerTest {
                 .willReturn(SignUpSuccessResponse.from(Tokens.builder()
                         .accessToken("accessToken")
                         .refreshToken("refreshToken")
-                        .build()));
+                        .build(), USER_USER));
 
         //when
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/goat/auth/login/{provider}", oauthProvider)

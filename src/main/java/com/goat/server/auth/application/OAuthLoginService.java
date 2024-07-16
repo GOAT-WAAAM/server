@@ -38,7 +38,7 @@ public class OAuthLoginService {
 
         JwtUserDetails jwtUserDetails = new JwtUserDetails(user.getUserId(), user.getRole());
 
-        return SignUpSuccessResponse.from(jwtTokenProvider.generateToken(jwtUserDetails));
+        return SignUpSuccessResponse.from(jwtTokenProvider.generateToken(jwtUserDetails), user);
 
     }
 
