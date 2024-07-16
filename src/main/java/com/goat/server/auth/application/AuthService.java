@@ -2,12 +2,14 @@ package com.goat.server.auth.application;
 
 import com.goat.server.auth.dto.request.OnBoardingRequest;
 import com.goat.server.auth.dto.response.ReIssueSuccessResponse;
+import com.goat.server.auth.dto.response.UserInfoResponse;
 import com.goat.server.global.application.S3Uploader;
 import com.goat.server.global.util.jwt.JwtUserDetails;
 import com.goat.server.global.util.jwt.JwtTokenProvider;
 import com.goat.server.mypage.domain.User;
 import com.goat.server.mypage.exception.UserNotFoundException;
 import com.goat.server.mypage.repository.UserRepository;
+import com.goat.server.review.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +46,7 @@ public class AuthService {
     }
 
     @Transactional
-    public void saveOnBoardingInfo(Long userId, OnBoardingRequest onBoardingRequest) {
+    public UserInfoResponse saveOnBoardingInfo(Long userId, OnBoardingRequest onBoardingRequest) {
         log.info("[AuthService.saveOnBoardingInfo]");
 
         User user = userRepository.findById(userId)
@@ -57,6 +59,8 @@ public class AuthService {
         }
 
         userRepository.save(user);
+
+        return UserInfoResponse.of(user, null);
     }
 
     public void withdraw(Long userId) {

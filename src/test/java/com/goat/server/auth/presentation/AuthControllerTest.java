@@ -3,7 +3,6 @@ package com.goat.server.auth.presentation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goat.server.auth.application.AuthService;
 import com.goat.server.auth.application.OAuthLoginService;
-import com.goat.server.auth.dto.request.KakaoLoginParams;
 import com.goat.server.auth.dto.request.OnBoardingRequest;
 import com.goat.server.auth.dto.response.ReIssueSuccessResponse;
 import com.goat.server.auth.dto.response.SignUpSuccessResponse;
@@ -48,10 +47,10 @@ class AuthControllerTest extends CommonControllerTest {
         final String kakaoAccessToken = "thisIsmockAccessToken";
 
         given(OAuthLoginService.socialLogin(oauthProvider, kakaoAccessToken))
-                .willReturn(SignUpSuccessResponse.from(Tokens.builder()
+                .willReturn(SignUpSuccessResponse.of(Tokens.builder()
                         .accessToken("accessToken")
                         .refreshToken("refreshToken")
-                        .build(), USER_USER));
+                        .build(), USER_USER, 0L));
 
         //when
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/goat/auth/login/{provider}", oauthProvider)

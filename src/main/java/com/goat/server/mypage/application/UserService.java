@@ -1,6 +1,7 @@
 package com.goat.server.mypage.application;
 
 import com.goat.server.auth.dto.response.OAuthInfoResponse;
+import com.goat.server.auth.dto.response.UserInfoResponse;
 import com.goat.server.directory.domain.Directory;
 import com.goat.server.directory.repository.DirectoryRepository;
 import com.goat.server.global.application.S3Uploader;
@@ -12,6 +13,7 @@ import com.goat.server.mypage.exception.errorcode.MypageErrorCode;
 import com.goat.server.mypage.repository.UserRepository;
 import com.goat.server.notification.domain.NotificationSetting;
 import com.goat.server.notification.repository.NotificationSettingRepository;
+import com.goat.server.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final S3Uploader s3Uploader;
     private final NotificationSettingRepository notificationSettingRepository;
+    private final ReviewRepository reviewRepository;
 
     /**
      * 유저 회원가입
@@ -76,7 +79,7 @@ public class UserService {
      * 프로필 이미지 업데이트
      */
     @Transactional
-    public void updateProfileImage(Long userId, MultipartFile multipartFile) {
+    public UserInfoResponse updateProfileImage(Long userId, MultipartFile multipartFile) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(MypageErrorCode.USER_NOT_FOUND));
@@ -95,5 +98,9 @@ public class UserService {
         }
 
         user.updateProfileImage(imageInfo);
+
+        Long totalReviewCnt = reviewRepository.sumReviewCntByUser(user.getUserId());
+
+        return UserInfoResponse.of(user, totalReviewCnt);
     }
 }

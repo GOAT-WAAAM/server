@@ -9,6 +9,7 @@ import com.goat.server.mypage.domain.User;
 import com.goat.server.mypage.repository.UserRepository;
 import com.goat.server.mypage.application.UserService;
 import com.goat.server.auth.dto.response.SignUpSuccessResponse;
+import com.goat.server.review.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ public class OAuthLoginService {
     private final RequestOAuthInfoService requestOAuthInfoService;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
+    private final ReviewRepository reviewRepository;
 
     @Transactional
     public SignUpSuccessResponse socialLogin(String provider, String accessToken) {
@@ -36,9 +38,11 @@ public class OAuthLoginService {
 
         User user = findOrCreateUser(infoResponse);
 
+        Long totalReviewCount = reviewRepository.sumReviewCntByUser(user.getUserId());
+
         JwtUserDetails jwtUserDetails = new JwtUserDetails(user.getUserId(), user.getRole());
 
-        return SignUpSuccessResponse.from(jwtTokenProvider.generateToken(jwtUserDetails), user);
+        return SignUpSuccessResponse.of(jwtTokenProvider.generateToken(jwtUserDetails), user, totalReviewCount);
 
     }
 

@@ -3,6 +3,7 @@ package com.goat.server.auth.presentation;
 import com.goat.server.auth.application.AuthService;
 import com.goat.server.auth.dto.request.OnBoardingRequest;
 import com.goat.server.auth.dto.response.ReIssueSuccessResponse;
+import com.goat.server.auth.dto.response.UserInfoResponse;
 import com.goat.server.global.dto.ResponseTemplate;
 import com.goat.server.auth.application.OAuthLoginService;
 import com.goat.server.auth.dto.response.SignUpSuccessResponse;
@@ -83,10 +84,10 @@ public class AuthController {
 
         log.info("[AuthController.saveOnBoardingInfo]");
 
-        authService.saveOnBoardingInfo(userId, onBoardingRequest);
+        UserInfoResponse response = authService.saveOnBoardingInfo(userId, onBoardingRequest);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(ResponseTemplate.from(ResponseTemplate.EMPTY_RESPONSE));
+                .body(ResponseTemplate.from(response));
     }
 }

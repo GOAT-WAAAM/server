@@ -8,31 +8,13 @@ import lombok.Builder;
 public record SignUpSuccessResponse(
         String accessToken,
         String refreshToken,
-        UserInfo userInfo
+        UserInfoResponse userInfo
 ) {
-    @Builder
-    public record UserInfo(
-            Long userId,
-            String nickname,
-            String goal,
-            String profileImgUrl
-
-    ) {
-        public static UserInfo from(User user) {
-            return UserInfo.builder()
-                    .userId(user.getUserId())
-                    .nickname(user.getNickname())
-                    .goal(user.getGoal())
-                    .profileImgUrl(user.getProfileImageUrl())
-                    .build();
-        }
-    }
-
-    public static SignUpSuccessResponse from(Tokens token, User user) {
+    public static SignUpSuccessResponse of(Tokens token, User user, Long totalReviewCnt) {
         return SignUpSuccessResponse.builder()
                 .accessToken(token.accessToken())
                 .refreshToken(token.refreshToken())
-                .userInfo(UserInfo.from(user))
+                .userInfo(UserInfoResponse.of(user, totalReviewCnt))
                 .build();
     }
 }
