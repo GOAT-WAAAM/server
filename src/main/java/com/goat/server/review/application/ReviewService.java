@@ -14,6 +14,8 @@ import com.goat.server.mypage.exception.errorcode.MypageErrorCode;
 import com.goat.server.mypage.repository.UserRepository;
 import com.goat.server.review.domain.Review;
 import com.goat.server.review.domain.ReviewDate;
+import com.goat.server.review.domain.ReviewShuffleStrategy;
+import com.goat.server.review.domain.UnViewedReview;
 import com.goat.server.review.dto.request.ReviewMoveRequest;
 import com.goat.server.review.dto.request.ReviewUpdateRequest;
 import com.goat.server.review.dto.request.ReviewUploadRequest;
@@ -27,6 +29,7 @@ import com.goat.server.review.repository.ReviewRepository;
 import java.util.Collections;
 import java.util.List;
 
+import com.goat.server.review.repository.UnViewedReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.SchedulerException;
@@ -52,6 +55,9 @@ public class ReviewService {
     private final UserService userService;
 
     private final SchedulerConfiguration schedulerConfiguration;
+
+    private final ReviewShuffleStrategy reviewShuffleStrategy;
+    private final UnViewedReviewRepository unViewedReviewRepository;
 
     private static final int PAGE_SIZE_HOME = 4;
 
@@ -269,5 +275,57 @@ public class ReviewService {
                 .toList();
 
         return RandomReviewResponseList.from(randomReviewResponses);
+    }
+
+    /**
+     * 랜덤리뷰 전체 불러오기
+     */
+    @Transactional
+    public void loadRandomReviews(Long userId) {
+        User user = userService.findUser(userId);
+        List<UnViewedReview> unviewedReviews = unViewedReviewRepository.findAllByUserId(userId);
+
+        if (unviewedReviews.isEmpty()){
+            List<Review> shuffledReviews = reviewShuffleStrategy.shuffle(reviewRepository.findActiveReviewsByUserId(userId));
+            saveUnViewedReviews(shuffledReviews, user);
+        }
+    }
+
+    @Transactional
+    public void saveUnViewedReviews(final List<Review> reviews, final User user) {
+        List<UnViewedReview> unViewedReviews = reviews.stream()
+                .map(review -> new UnViewedReview(review, user))
+                .toList();
+        unViewedReviewRepository.saveAll(unViewedReviews);
+    }
+
+    /**
+     * 랜덤리뷰 하나씩 불러오기
+     */
+    @Transactional
+    public RandomReviewsResponseList getRandomReview6(Long userId) {
+        List<UnViewedReview> savedReviews = unViewedReviewRepository.findAllByUserId(userId);
+
+        if (savedReviews.isEmpty()){
+            return RandomReviewsResponseList.from(Collections.emptyList());
+        }
+
+        Review review = reviewRepository.findById(savedReviews.get(0).getReview().getId())
+                .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
+        unViewedReviewRepository.delete(savedReviews.get(0));
+
+        RandomReviewsResponse randomReviewResponse = RandomReviewsResponse.from(review);
+        List<RandomReviewsResponse> randomReviewResponses = Collections.singletonList(randomReviewResponse);
+
+        return RandomReviewsResponseList.from(randomReviewResponses);
+    }
+
+    /**
+     * 매일 새벽 0시에 모든 unviewed 리뷰를 삭제
+     */
+    @Scheduled(cron = "0 0 0 * * *") // 매일 새벽 0시에 실행
+    @Transactional
+    public void deleteAllUnViewedReviews() {
+        unViewedReviewRepository.deleteAll();
     }
 }

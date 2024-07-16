@@ -5,9 +5,7 @@ import com.goat.server.review.application.ReviewService;
 import com.goat.server.review.dto.request.ReviewMoveRequest;
 import com.goat.server.review.dto.request.ReviewUpdateRequest;
 import com.goat.server.review.dto.request.ReviewUploadRequest;
-import com.goat.server.review.dto.response.RandomReviewResponseList;
-import com.goat.server.review.dto.response.ReviewDetailResponse;
-import com.goat.server.review.dto.response.ReviewHomeResponseList;
+import com.goat.server.review.dto.response.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Optional;
 
 
 @Tag(name = "ReviewController", description = "ReviewController 관련 API")
@@ -156,6 +156,30 @@ public class ReviewController {
             @RequestParam(defaultValue = "0") int page) {
 
         RandomReviewResponseList response = reviewService.getRandomReview(userId, page);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ResponseTemplate.from(response));
+    }
+
+    @Operation(summary = "바로 복습 누르기", description = "바로 복습 누르기")
+    @GetMapping("/loading/random-reviews")
+    public ResponseEntity<ResponseTemplate<Object>> loadRandomReviews(
+            @AuthenticationPrincipal Long userId) {
+
+        reviewService.loadRandomReviews(userId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ResponseTemplate.EMPTY_RESPONSE);
+    }
+
+    @Operation(summary = "바로 복습 들어가서 랜덤 복습자료 보여주기", description = "바로 복습 들어가서 랜덤 복습자료 하나씩 보여주기")
+    @GetMapping("/random-review")
+    public ResponseEntity<ResponseTemplate<Object>> getRandomReview6(
+            @AuthenticationPrincipal Long userId) {
+
+        RandomReviewsResponseList response = reviewService.getRandomReview6(userId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
