@@ -1,4 +1,4 @@
-package com.goat.server.auth.dto;
+package com.goat.server.auth.dto.request;
 
 public record OnBoardingRequest(
         String nickname,

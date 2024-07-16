@@ -1,9 +1,9 @@
 package com.goat.server.mypage.domain;
 
 import com.goat.server.directory.domain.Directory;
+import com.goat.server.auth.domain.type.OAuthProvider;
 import com.goat.server.global.domain.BaseTimeEntity;
 import com.goat.server.global.domain.ImageInfo;
-import com.goat.server.global.domain.type.OauthProvider;
 import com.goat.server.mypage.domain.type.Grade;
 import com.goat.server.mypage.domain.type.Role;
 import com.goat.server.mypage.domain.type.School;
@@ -57,7 +57,7 @@ public class User extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "provider")
-    private OauthProvider provider;
+    private OAuthProvider provider;
 
     @Column(name = "goal", length = 50)
     private String goal;
@@ -79,7 +79,7 @@ public class User extends BaseTimeEntity {
 
     @Builder
     public User(School school, Grade grade, ImageInfo imageInfo, String nickname, Role role, String socialId,
-                String email, OauthProvider provider, String goal, String fcmToken, List<Major> majorList,
+                String email, OAuthProvider provider, String goal, String fcmToken, List<Major> majorList,
                 List<Directory> directories, NotificationSetting notificationSetting, List<Notification> notification) {
         this.school = school;
         this.grade = grade;

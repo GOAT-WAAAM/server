@@ -250,4 +250,11 @@ public class ReviewService {
             review.resetReviewCnt();
         }
     }
+
+    /**
+     * 유저의 총 리뷰 개수 계산
+     */
+    public Long calculateReviewCount(Long userId) {
+        return reviewRepository.sumReviewCntByUser(userId);
+    }
 }

@@ -1,6 +1,6 @@
 package com.goat.server.mypage.repository.init;
 
-import com.goat.server.global.domain.type.OauthProvider;
+import com.goat.server.auth.domain.type.OAuthProvider;
 import com.goat.server.global.util.LocalDummyDataInit;
 import com.goat.server.mypage.domain.User;
 import com.goat.server.mypage.domain.type.Role;
@@ -34,7 +34,7 @@ public class UserInitializer implements ApplicationRunner {
                     .role(Role.GUEST)
                     .nickname("guest")
                     .goal("guest go home")
-                    .provider(OauthProvider.KAKAO)
+                    .provider(OAuthProvider.KAKAO)
                     .build();
 
             User DUMMY_USER = User.builder()
@@ -43,7 +43,7 @@ public class UserInitializer implements ApplicationRunner {
                     .nickname("user")
                     .goal("user go home")
                     .fcmToken("c5z1BZ-J4UIEv58an4DPTK:APA91bGBItmR0XevTVL4wUJqOTW4vESdyhpkdrNu1scBDPV-rBAc31GsASTvK3hSSGrIGs9X9zijLdJqpe9dZbHI2oTdQHyZLNlhxFCJYb08L99vJMWPYsoaJQux88SKKQWoXYRuzVZf")
-                    .provider(OauthProvider.KAKAO)
+                    .provider(OAuthProvider.KAKAO)
                     .build();
 
             User DUMMY_ADMIN = User.builder()
@@ -51,7 +51,7 @@ public class UserInitializer implements ApplicationRunner {
                     .role(Role.ADMIN)
                     .nickname("admin")
                     .goal("admin go home")
-                    .provider(OauthProvider.KAKAO)
+                    .provider(OAuthProvider.KAKAO)
                     .build();
 
             memberList.add(DUMMY_GUEST);
