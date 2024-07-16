@@ -20,4 +20,15 @@ public record UserInfoResponse(
                 .totalReviewCnt(totalReviewCnt)
                 .build();
     }
+
+    public static UserInfoResponse from(User user) {
+        return UserInfoResponse.builder()
+                .userId(user.getUserId())
+                .nickname(user.getNickname())
+                .goal(user.getGoal())
+                .profileImgUrl(user.getProfileImageUrl())
+                .totalReviewCnt(0L)
+                .build();
+    }
+
 }

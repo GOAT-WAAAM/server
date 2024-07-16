@@ -15,9 +15,4 @@ public record KakaoLoginParams(
     public String accessToken() {
         return kakaoAccessToken;
     }
-
-    @Override
-    public MultiValueMap<String, String> makeBody() {
-        return null;
-    }
 }

@@ -60,7 +60,7 @@ public class AuthService {
 
         userRepository.save(user);
 
-        return UserInfoResponse.of(user, null);
+        return UserInfoResponse.from(user);
     }
 
     public void withdraw(Long userId) {

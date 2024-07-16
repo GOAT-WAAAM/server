@@ -29,10 +29,10 @@ public class AuthController {
 
     @Operation(summary = "소셜로그인", description = "소셜 로그인/ 회원가입")
     @GetMapping("/login/{provider}")
-    public ResponseEntity<ResponseTemplate<Object>> kakaoSocialLogin(@PathVariable(value = "provider") String provider,
-                                                                     @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String SocialAccessToken) {
+    public ResponseEntity<ResponseTemplate<Object>> socialLogin(@PathVariable(value = "provider") String provider,
+                                                                @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String SocialAccessToken) {
 
-        log.info("[AuthController.signup] provider: {}, SocialAccessToken: {}", provider, SocialAccessToken);
+        log.info("[AuthController.socialLogin] provider: {}, SocialAccessToken: {}", provider, SocialAccessToken);
 
         SignUpSuccessResponse response = OAuthLoginService.socialLogin(provider, SocialAccessToken);
 
@@ -46,7 +46,7 @@ public class AuthController {
     @DeleteMapping("/withdraw")
     public ResponseEntity<ResponseTemplate<Object>> withdraw(@AuthenticationPrincipal Long userId) {
 
-        log.info("[AuthController.withdraw]");
+        log.info("[AuthController.withdraw] userId: {}", userId);
 
         authService.withdraw(userId);
 

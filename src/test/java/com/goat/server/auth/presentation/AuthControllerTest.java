@@ -41,7 +41,7 @@ class AuthControllerTest extends CommonControllerTest {
 
     @Test
     @DisplayName("카카오 소셜 로그인 테스트")
-    void kakaoSocialLogin() throws Exception {
+    void socialLogin() throws Exception {
         //given
         final String oauthProvider = "KAKAO";
         final String kakaoAccessToken = "thisIsmockAccessToken";

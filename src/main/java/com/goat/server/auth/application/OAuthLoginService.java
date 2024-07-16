@@ -6,10 +6,9 @@ import com.goat.server.auth.dto.response.OAuthInfoResponse;
 import com.goat.server.global.util.jwt.JwtUserDetails;
 import com.goat.server.global.util.jwt.JwtTokenProvider;
 import com.goat.server.mypage.domain.User;
-import com.goat.server.mypage.repository.UserRepository;
 import com.goat.server.mypage.application.UserService;
 import com.goat.server.auth.dto.response.SignUpSuccessResponse;
-import com.goat.server.review.repository.ReviewRepository;
+import com.goat.server.review.application.ReviewService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,11 +20,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OAuthLoginService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
+    private final ReviewService reviewService;
     private final RequestOAuthInfoService requestOAuthInfoService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserService userService;
-    private final ReviewRepository reviewRepository;
 
     @Transactional
     public SignUpSuccessResponse socialLogin(String provider, String accessToken) {
@@ -36,9 +34,9 @@ public class OAuthLoginService {
 
         OAuthInfoResponse infoResponse = requestOAuthInfoService.request(oAuthLoginParams);
 
-        User user = findOrCreateUser(infoResponse);
+        User user = userService.findOrCreateUser(infoResponse);
 
-        Long totalReviewCount = reviewRepository.sumReviewCntByUser(user.getUserId());
+        Long totalReviewCount = reviewService.calculateReviewCount(user.getUserId());
 
         JwtUserDetails jwtUserDetails = new JwtUserDetails(user.getUserId(), user.getRole());
 
@@ -58,8 +56,4 @@ public class OAuthLoginService {
         throw new IllegalArgumentException("Invalid provider: " + provider);
     }
 
-    private User findOrCreateUser(OAuthInfoResponse infoResponse) {
-        return userRepository.findBySocialId(infoResponse.getId().toString())
-                .orElseGet(() -> userService.createUser(infoResponse));
-    }
 }

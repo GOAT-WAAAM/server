@@ -103,4 +103,12 @@ public class UserService {
 
         return UserInfoResponse.of(user, totalReviewCnt);
     }
+
+    /**
+     * OAuth의 응답 정보를 통해 유저를 찾거나 생성
+     */
+    public User findOrCreateUser(OAuthInfoResponse infoResponse) {
+        return userRepository.findBySocialId(infoResponse.getId().toString())
+                .orElseGet(() -> createUser(infoResponse));
+    }
 }
