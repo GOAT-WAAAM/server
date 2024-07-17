@@ -1,5 +1,6 @@
 package com.goat.server.mypage.presentation;
 
+import com.goat.server.auth.dto.response.UserInfoResponse;
 import com.goat.server.global.dto.ResponseTemplate;
 import com.goat.server.mypage.application.MypageService;
 import com.goat.server.mypage.application.UserService;
@@ -29,27 +30,27 @@ public class MypageController {
     private final MypageService mypageService;
     private final UserService userService;
 
-    @Operation(summary = "마이페이지 첫화면 정보 보기", description = "마이페이지에서 프로필이미지, 닉네임, 목표, 복습횟수 정보 보기")
-    @GetMapping("/info")
-    public ResponseEntity<ResponseTemplate<Object>> getMypageAllDetail(@AuthenticationPrincipal Long userId) {
-
-        MypageHomeResponse mypageHomeResponse = mypageService.getMypageHome(userId);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(ResponseTemplate.from(mypageHomeResponse));
-    }
-
-    @Operation(summary = "마이페이지 세부 정보 보기", description = "마이페이지에서 프로필이미지, 닉네임 보기")
-    @GetMapping("/info/details")
-    public ResponseEntity<ResponseTemplate<Object>> getMypageDetails(@AuthenticationPrincipal Long userId) {
-
-        MypageDetailsResponse mypageDetailsResponse = mypageService.getMypageDetails(userId);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(ResponseTemplate.from(mypageDetailsResponse));
-    }
+//    @Operation(summary = "마이페이지 첫화면 정보 보기", description = "마이페이지에서 프로필이미지, 닉네임, 목표, 복습횟수 정보 보기")
+//    @GetMapping("/info")
+//    public ResponseEntity<ResponseTemplate<Object>> getMypageAllDetail(@AuthenticationPrincipal Long userId) {
+//
+//        UserInfoResponse mypageHomeResponse = mypageService.getMypageHome(userId);
+//
+//        return ResponseEntity
+//                .status(HttpStatus.OK)
+//                .body(ResponseTemplate.from(mypageHomeResponse));
+//    }
+//
+//    @Operation(summary = "마이페이지 세부 정보 보기", description = "마이페이지에서 프로필이미지, 닉네임 보기")
+//    @GetMapping("/info/details")
+//    public ResponseEntity<ResponseTemplate<Object>> getMypageDetails(@AuthenticationPrincipal Long userId) {
+//
+//        MypageDetailsResponse mypageDetailsResponse = mypageService.getMypageDetails(userId);
+//
+//        return ResponseEntity
+//                .status(HttpStatus.OK)
+//                .body(ResponseTemplate.from(mypageDetailsResponse));
+//    }
 
     @Operation(summary = "마이페이지 세부 정보 수정하기", description = "마이페이지에서 닉네임 수정하기")
     @PutMapping("/info/details")
@@ -57,11 +58,11 @@ public class MypageController {
             @AuthenticationPrincipal Long userId,
             @RequestBody MypageDetailsRequest request) {
 
-        mypageService.updateMypageDetails(userId, request);
+        UserInfoResponse response = mypageService.updateMypageDetails(userId, request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(ResponseTemplate.EMPTY_RESPONSE);
+                .body(ResponseTemplate.from(response));
     }
 
     @Operation(summary = "마이페이지 프로필 이미지 수정하기", description = "마이페이지에서 프로필 이미지 수정하기")
@@ -70,11 +71,11 @@ public class MypageController {
             @AuthenticationPrincipal Long userId,
             @RequestPart MultipartFile multipartFile) {
 
-        userService.updateProfileImage(userId, multipartFile);
+        UserInfoResponse response = userService.updateProfileImage(userId, multipartFile);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(ResponseTemplate.EMPTY_RESPONSE);
+                .body(ResponseTemplate.from(response));
     }
 
     @Operation(summary = "마이페이지 목표 수정하기", description = "마이페이지 목표 수정하기")
@@ -83,10 +84,10 @@ public class MypageController {
             @AuthenticationPrincipal Long userId,
             @RequestBody GoalRequest goalRequest) {
 
-        mypageService.updateGoal(userId, goalRequest);
+        UserInfoResponse response = mypageService.updateGoal(userId, goalRequest);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(ResponseTemplate.EMPTY_RESPONSE);
+                .body(ResponseTemplate.from(response));
     }
 }

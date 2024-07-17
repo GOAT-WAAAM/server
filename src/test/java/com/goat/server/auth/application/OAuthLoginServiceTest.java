@@ -31,10 +31,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
         "oauth.kakao.service.api_url=http://localhost:${wiremock.server.port}"
 })
 @DisplayName("OAuth 로그인 테스트")
-class KakaoSocialServiceTest {
+class OAuthLoginServiceTest {
 
     @Autowired
-    private KakaoSocialService kakaoSocialService;
+    private OAuthLoginService OAuthLoginService;
 
     @Autowired
     private UserRepository userRepository;
@@ -45,7 +45,8 @@ class KakaoSocialServiceTest {
     @MockBean
     private FcmServiceImpl fcmService;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private DirectoryRepository directoryRepository;
@@ -65,13 +66,15 @@ class KakaoSocialServiceTest {
     @DisplayName("카카오_소셜로그인_테스트")
     void socialLoginTest() throws JsonProcessingException {
         //given
+        final String oauthProvider = "KAKAO";
         final String kakaoAccessToken = "thisIsmockAccessToken";
         final String expectedResponse = objectMapper.writeValueAsString(
                 Map.of(
                         "id", 1231241,
                         "kakao_account", Map.of(
                                 "profile", Map.of(
-                                        "nickname", "nickname"
+                                        "nickname", "nickname",
+                                        "profile_image_url", "http://example.com/profile.jpg"
                                 )
                         )
                 )
@@ -85,8 +88,9 @@ class KakaoSocialServiceTest {
                         .withBody(expectedResponse))
         );
 
+
         //when
-        kakaoSocialService.socialLogin(kakaoAccessToken);
+        OAuthLoginService.socialLogin(oauthProvider, kakaoAccessToken);
 
         //then
         assertNotNull(userRepository.findBySocialId(String.valueOf(1231241)));
