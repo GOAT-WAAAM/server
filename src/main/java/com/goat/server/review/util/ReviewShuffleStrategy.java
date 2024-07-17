@@ -1,5 +1,6 @@
-package com.goat.server.review.domain;
+package com.goat.server.review.util;
 
+import com.goat.server.review.domain.Review;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

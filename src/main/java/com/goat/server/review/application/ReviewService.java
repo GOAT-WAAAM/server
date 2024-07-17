@@ -14,7 +14,6 @@ import com.goat.server.mypage.exception.errorcode.MypageErrorCode;
 import com.goat.server.mypage.repository.UserRepository;
 import com.goat.server.review.domain.Review;
 import com.goat.server.review.domain.ReviewDate;
-import com.goat.server.review.domain.ReviewShuffleStrategy;
 import com.goat.server.review.domain.UnViewedReview;
 import com.goat.server.review.dto.request.ReviewMoveRequest;
 import com.goat.server.review.dto.request.ReviewUpdateRequest;
@@ -30,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.goat.server.review.repository.UnViewedReviewRepository;
+import com.goat.server.review.util.ReviewShuffleStrategy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.SchedulerException;
