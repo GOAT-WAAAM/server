@@ -180,6 +180,7 @@ public class ReviewService {
         Review review = reviewRepository.findByIdAndUser_UserId(reviewId, userId)
                 .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
 
+        unViewedReviewRepository.deleteByReviewId(reviewId);
         reviewRepository.delete(review);
     }
 
@@ -209,6 +210,7 @@ public class ReviewService {
                 .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
         review.updateDirectory(trashDirectory);
+        unViewedReviewRepository.deleteByReviewId(reviewId);
     }
 
     /**

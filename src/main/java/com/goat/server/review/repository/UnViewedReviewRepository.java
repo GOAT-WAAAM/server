@@ -14,4 +14,6 @@ public interface UnViewedReviewRepository extends JpaRepository<UnViewedReview, 
     @Query("SELECT u FROM UnViewedReview u " +
             "WHERE u.user.userId = :userId ")
     List<UnViewedReview> findAllByUserId(@Param("userId") Long userId);
+
+    void deleteByReviewId(Long reviewId);
 }
