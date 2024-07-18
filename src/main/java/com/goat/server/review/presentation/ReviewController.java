@@ -149,19 +149,6 @@ public class ReviewController {
                 .body(ResponseTemplate.EMPTY_RESPONSE);
     }
 
-    @Operation(summary = "랜덤 복습", description = "랜덤 복습")
-    @GetMapping("/review/random")
-    public ResponseEntity<ResponseTemplate<Object>> getRandomReview(
-            @AuthenticationPrincipal Long userId,
-            @RequestParam(defaultValue = "0") int page) {
-
-        RandomReviewResponseList response = reviewService.getRandomReview(userId, page);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(ResponseTemplate.from(response));
-    }
-
     @Operation(summary = "바로 복습 누르기", description = "바로 복습 누르기")
     @GetMapping("/loading/random-reviews")
     public ResponseEntity<ResponseTemplate<Object>> loadRandomReviews(
@@ -176,10 +163,10 @@ public class ReviewController {
 
     @Operation(summary = "바로 복습 들어가서 랜덤 복습자료 보여주기", description = "바로 복습 들어가서 랜덤 복습자료 하나씩 보여주기")
     @GetMapping("/random-review")
-    public ResponseEntity<ResponseTemplate<Object>> getRandomReview6(
+    public ResponseEntity<ResponseTemplate<Object>> getRandomReview(
             @AuthenticationPrincipal Long userId) {
 
-        RandomReviewsResponseList response = reviewService.getRandomReview6(userId);
+        RandomReviewsResponse response = reviewService.getRandomReview(userId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

@@ -6,14 +6,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UnViewedReviewRepository extends JpaRepository<UnViewedReview, Long> {
 
-    @Query("SELECT u FROM UnViewedReview u " +
-            "WHERE u.user.userId = :userId ")
-    List<UnViewedReview> findAllByUserId(@Param("userId") Long userId);
-
     void deleteByReviewId(Long reviewId);
+
+    @Query("SELECT u FROM UnViewedReview u WHERE u.user.userId = :userId ORDER BY u.id ASC LIMIT 1")
+    Optional<UnViewedReview> findFirstByUserId(@Param("userId") Long userId);
 }

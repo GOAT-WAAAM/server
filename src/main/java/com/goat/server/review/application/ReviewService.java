@@ -25,7 +25,6 @@ import com.goat.server.directory.application.type.SortType;
 import com.goat.server.review.dto.response.ReviewSimpleResponse;
 import com.goat.server.review.repository.ReviewRepository;
 
-import java.util.Collections;
 import java.util.List;
 
 import com.goat.server.review.repository.UnViewedReviewRepository;
@@ -260,37 +259,19 @@ public class ReviewService {
     }
 
     /**
-     * 랜덤 복습자료 보여주기
-     */
-    public RandomReviewResponseList getRandomReview(Long userId, int page) {
-        int totalActiveReviewNum = reviewRepository.countActiveReviewsByUserId(userId);
-        int totalPages = totalActiveReviewNum;
-
-        if (page >= totalPages) {
-            return RandomReviewResponseList.from(Collections.emptyList());
-        }
-
-        List<Review> reviews = reviewRepository.findRandomActiveReviewByUserId(userId);
-
-        List<RandomReviewResponse> randomReviewResponses = reviews.stream()
-                .map(RandomReviewResponse::from)
-                .toList();
-
-        return RandomReviewResponseList.from(randomReviewResponses);
-    }
-
-    /**
-     * 랜덤리뷰 전체 불러오기
+     * 랜덤리뷰 전체 불러오기 (바로복습 누르기)
      */
     @Transactional
     public void loadRandomReviews(Long userId) {
         User user = userService.findUser(userId);
-        List<UnViewedReview> unviewedReviews = unViewedReviewRepository.findAllByUserId(userId);
-
-        if (unviewedReviews.isEmpty()){
-            List<Review> shuffledReviews = reviewShuffleStrategy.shuffle(reviewRepository.findActiveReviewsByUserId(userId));
-            saveUnViewedReviews(shuffledReviews, user);
-        }
+        unViewedReviewRepository.findFirstByUserId(userId)
+                .ifPresentOrElse(
+                        unviewedReview -> {},
+                        () -> {
+                            List<Review> shuffledReviews = reviewShuffleStrategy.shuffle(reviewRepository.findActiveReviewsByUserId(userId));
+                            saveUnViewedReviews(shuffledReviews, user);
+                        }
+                );
     }
 
     @Transactional
@@ -302,24 +283,19 @@ public class ReviewService {
     }
 
     /**
-     * 랜덤리뷰 하나씩 불러오기
+     * 랜덤리뷰 하나씩 불러오기 (바로 복습에서 랜덤 리뷰 하나씩)
      */
     @Transactional
-    public RandomReviewsResponseList getRandomReview6(Long userId) {
-        List<UnViewedReview> savedReviews = unViewedReviewRepository.findAllByUserId(userId);
-
-        if (savedReviews.isEmpty()){
-            return RandomReviewsResponseList.from(Collections.emptyList());
-        }
-
-        Review review = reviewRepository.findById(savedReviews.get(0).getReview().getId())
-                .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
-        unViewedReviewRepository.delete(savedReviews.get(0));
-
-        RandomReviewsResponse randomReviewResponse = RandomReviewsResponse.from(review);
-        List<RandomReviewsResponse> randomReviewResponses = Collections.singletonList(randomReviewResponse);
-
-        return RandomReviewsResponseList.from(randomReviewResponses);
+    public RandomReviewsResponse getRandomReview(Long userId) {
+        return unViewedReviewRepository.findFirstByUserId(userId)
+                .map(unviewedReview -> {
+                    Long reviewId = unviewedReview.getReview().getId();
+                    Review review = reviewRepository.findById(reviewId)
+                            .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
+                    unViewedReviewRepository.delete(unviewedReview);
+                    return RandomReviewsResponse.from(review);
+                })
+                .orElseGet(RandomReviewsResponse::emptyResponse);
     }
 
     /**

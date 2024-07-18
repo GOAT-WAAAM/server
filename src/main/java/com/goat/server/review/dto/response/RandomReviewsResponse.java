@@ -1,10 +1,7 @@
 package com.goat.server.review.dto.response;
 
 import com.goat.server.review.domain.Review;
-import com.goat.server.review.domain.UnViewedReview;
 import lombok.Builder;
-
-import java.util.Optional;
 
 @Builder
 public record RandomReviewsResponse(
@@ -20,4 +17,11 @@ public record RandomReviewsResponse(
                 .build();
         }
 
+        public static RandomReviewsResponse emptyResponse() {
+                return RandomReviewsResponse.builder()
+                        .reviewId(null)
+                        .imageUrl("emptyImageUrl")
+                        .content("emptyContent")
+                        .build();
+        }
 }

@@ -34,20 +34,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRep
 
     List<Review> findAll();
 
-    @Query("SELECT COUNT(r) FROM Review r " +
-            "WHERE r.user.userId = :userId " +
-            "AND r.directory.title != 'trash_directory' " +
-            "AND r.reviewEndDate >= CURRENT_DATE")
-    int countActiveReviewsByUserId(@Param("userId") Long userId);
-
-    @Query(value = "SELECT r.* FROM review r " +
-            "JOIN users u ON r.user_id = u.user_id " +
-            "WHERE r.user_id = :userId " +
-            "AND r.directory_id NOT IN (SELECT d.directory_id FROM directory d WHERE d.directory_title = 'trash_directory') " +
-            "AND r.review_end_date >= CURRENT_DATE " +
-            "ORDER BY RAND() LIMIT 1", nativeQuery = true)
-    List<Review> findRandomActiveReviewByUserId(@Param("userId") Long userId);
-
     @Query("SELECT r FROM Review r " +
             "WHERE r.user.userId = :userId " +
             "AND r.directory.title != 'trash_directory' " +
