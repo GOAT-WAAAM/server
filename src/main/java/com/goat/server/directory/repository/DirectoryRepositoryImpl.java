@@ -12,7 +12,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 @Repository
 @RequiredArgsConstructor
@@ -37,7 +37,7 @@ public class DirectoryRepositoryImpl implements DirectoryRepositoryCustom {
 
     //search가 null이면 parentDirectoryId로 검색, 아니면 search로 검색 - search 존재 -> 전체 검색
     private BooleanExpression isSearchExpression(Long parentDirectoryId, String search) {
-        if (ObjectUtils.isEmpty(search)) {
+        if (StringUtils.hasLength(search)) {
             return parentDirectoryFindExpression(parentDirectoryId);
         } else {
             return directory.title.contains(search);
