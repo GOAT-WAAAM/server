@@ -14,6 +14,7 @@ import com.goat.server.mypage.exception.errorcode.MypageErrorCode;
 import com.goat.server.mypage.repository.UserRepository;
 import com.goat.server.review.domain.Review;
 import com.goat.server.review.domain.ReviewDate;
+import com.goat.server.review.domain.UnViewedReview;
 import com.goat.server.review.dto.request.ReviewMoveRequest;
 import com.goat.server.review.dto.request.ReviewUpdateRequest;
 import com.goat.server.review.dto.request.ReviewUploadRequest;
@@ -26,13 +27,15 @@ import com.goat.server.review.repository.ReviewRepository;
 
 import java.util.List;
 
+import com.goat.server.review.repository.UnViewedReviewRepository;
+import com.goat.server.review.util.ReviewShuffleStrategy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.SchedulerException;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,6 +54,9 @@ public class ReviewService {
     private final UserService userService;
 
     private final SchedulerConfiguration schedulerConfiguration;
+
+    private final ReviewShuffleStrategy reviewShuffleStrategy;
+    private final UnViewedReviewRepository unViewedReviewRepository;
 
     private static final int PAGE_SIZE_HOME = 4;
 
@@ -173,7 +179,7 @@ public class ReviewService {
         Review review = reviewRepository.findByIdAndUser_UserId(reviewId, userId)
                 .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
 
-        s3Uploader.deleteImage(review.getImageInfo());
+        unViewedReviewRepository.deleteByReviewId(reviewId);
         reviewRepository.delete(review);
     }
 
@@ -203,6 +209,7 @@ public class ReviewService {
                 .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
         review.updateDirectory(trashDirectory);
+        unViewedReviewRepository.deleteByReviewId(reviewId);
     }
 
     /**
@@ -241,7 +248,7 @@ public class ReviewService {
     /**
      * 모든 유저의 모든 리뷰의 reviewCnt를 매주 월요일 새벽 1시에 초기화
      */
-    @Scheduled(cron = "0 0 1 * * MON") // 매주 월요일 0시에 실행
+    @Scheduled(cron = "0 0 1 * * MON") // 매주 월요일 1시에 실행
     @Transactional
     public void initReviewCount() {
         List<Review> reviews = reviewRepository.findAll();
@@ -249,6 +256,55 @@ public class ReviewService {
         for (Review review : reviews) {
             review.resetReviewCnt();
         }
+    }
+
+    /**
+     * 랜덤리뷰 전체 불러오기 (바로복습 누르기)
+     */
+    @Transactional
+    public void loadRandomReviews(Long userId) {
+        User user = userService.findUser(userId);
+        unViewedReviewRepository.findFirstByUserId(userId)
+                .ifPresentOrElse(
+                        unviewedReview -> {},
+                        () -> {
+                            List<Review> shuffledReviews = reviewShuffleStrategy.shuffle(reviewRepository.findActiveReviewsByUserId(userId));
+                            saveUnViewedReviews(shuffledReviews, user);
+                        }
+                );
+    }
+
+    @Transactional
+    public void saveUnViewedReviews(final List<Review> reviews, final User user) {
+        List<UnViewedReview> unViewedReviews = reviews.stream()
+                .map(review -> new UnViewedReview(review, user))
+                .toList();
+        unViewedReviewRepository.saveAll(unViewedReviews);
+    }
+
+    /**
+     * 랜덤리뷰 하나씩 불러오기 (바로 복습에서 랜덤 리뷰 하나씩)
+     */
+    @Transactional
+    public RandomReviewsResponse getRandomReview(Long userId) {
+        return unViewedReviewRepository.findFirstByUserId(userId)
+                .map(unviewedReview -> {
+                    Long reviewId = unviewedReview.getReview().getId();
+                    Review review = reviewRepository.findById(reviewId)
+                            .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
+                    unViewedReviewRepository.delete(unviewedReview);
+                    return RandomReviewsResponse.from(review);
+                })
+                .orElseGet(RandomReviewsResponse::emptyResponse);
+    }
+
+    /**
+     * 매일 새벽 0시에 모든 unviewed 리뷰를 삭제
+     */
+    @Scheduled(cron = "0 0 0 * * *") // 매일 새벽 0시에 실행
+    @Transactional
+    public void deleteAllUnViewedReviews() {
+        unViewedReviewRepository.deleteAll();
     }
 
     /**

@@ -120,7 +120,6 @@ public class Review extends BaseTimeEntity {
         this.remindTime = reviewUpdateRequest.remindTime();
         this.reviewStartDate = reviewUpdateRequest.reviewStartDate();
         this.reviewEndDate = reviewUpdateRequest.reviewEndDate();
-        this.isPostShare = reviewUpdateRequest.postShare();
         this.imageInfo = imageInfo;
 
         if (!reviewUpdateRequest.autoRepeat()) {
