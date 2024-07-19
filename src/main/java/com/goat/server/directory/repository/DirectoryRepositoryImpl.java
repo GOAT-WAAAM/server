@@ -37,7 +37,7 @@ public class DirectoryRepositoryImpl implements DirectoryRepositoryCustom {
 
     //search가 null이면 parentDirectoryId로 검색, 아니면 search로 검색 - search 존재 -> 전체 검색
     private BooleanExpression isSearchExpression(Long parentDirectoryId, String search) {
-        if (StringUtils.hasLength(search)) {
+        if (!StringUtils.hasLength(search)) {
             return parentDirectoryFindExpression(parentDirectoryId);
         } else {
             return directory.title.contains(search);

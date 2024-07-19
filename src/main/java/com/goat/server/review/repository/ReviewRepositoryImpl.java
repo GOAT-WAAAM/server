@@ -37,7 +37,7 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
 
     //search가 null이면 parentDirectoryId로 검색, 아니면 search로 검색 - search 존재 -> 전체 검색
     private BooleanExpression searchExpression(Long parentDirectoryId, String search) {
-        if (StringUtils.hasLength(search)) {
+        if (!StringUtils.hasLength(search)) {
             return review.directory.id.eq(parentDirectoryId);
         } else {
             return review.title.contains(search);
