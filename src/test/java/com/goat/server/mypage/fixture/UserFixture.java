@@ -3,9 +3,7 @@ package com.goat.server.mypage.fixture;
 import com.goat.server.auth.domain.type.OAuthProvider;
 import com.goat.server.global.domain.ImageInfo;
 import com.goat.server.mypage.domain.User;
-import com.goat.server.mypage.domain.type.Grade;
 import com.goat.server.mypage.domain.type.Role;
-import com.goat.server.mypage.domain.type.School;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class UserFixture {
@@ -40,8 +38,6 @@ public class UserFixture {
             .email("mypagetestImail")
             .role(Role.USER)
             .nickname("mypagetestuser")
-            .grade(Grade.FIRST)
-            .school(School.ELEMENTARY)
             .goal("this is mypage test")
             .provider(OAuthProvider.KAKAO)
             .build();
