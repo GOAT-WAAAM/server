@@ -55,7 +55,7 @@ public class DirectoryService {
         Directory directory = directoryRepository.findById(directoryId)
                 .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
-        directory.validateUser(userId);
+        directory.validateUserDirectory(userId);
 
         directory.touchParentDirectories();
 
@@ -72,7 +72,7 @@ public class DirectoryService {
         Directory directory = directoryRepository.findById(directoryId)
                 .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
-        directory.validateUser(userId);
+        directory.validateUserDirectory(userId);
 
         directory.touchParentDirectories();
 
