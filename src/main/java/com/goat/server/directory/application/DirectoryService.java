@@ -46,6 +46,12 @@ public class DirectoryService {
         return DirectoryTotalShowResponse.of(directoryId, directoryResponseList, reviewSimpleResponseList);
     }
 
+    private void validateDirectory(Long directoryId) {
+        if (directoryId != 0 && !directoryRepository.existsById(directoryId)) {
+            throw new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND);
+        }
+    }
+
     /**
      * 폴더 임시 삭제
      */
@@ -60,7 +66,11 @@ public class DirectoryService {
         directory.touchParentDirectories();
 
         directoryRepository.findTrashDirectoryByUser(userId)
-                .ifPresent(directory::updateParentDirectory);
+                .ifPresentOrElse(
+                        directory::updateParentDirectory,
+                        () -> {
+                            throw new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND);
+                        });
     }
 
     /**
@@ -115,11 +125,5 @@ public class DirectoryService {
 
         moveDirectory.updateParentDirectory(targetDirectory);
         moveDirectory.touchParentDirectories(); //현재 부모 폴더들 touch
-    }
-
-    private void validateDirectory(Long directoryId) {
-        if (directoryId != 0 && !directoryRepository.existsById(directoryId)) {
-            throw new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND);
-        }
     }
 }
