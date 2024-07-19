@@ -1,6 +1,7 @@
 package com.goat.server.global.exception.handler;
 
 import com.goat.server.directory.exception.DirectoryCanNotDeleteException;
+import com.goat.server.directory.exception.DirectoryNotAuthException;
 import com.goat.server.directory.exception.DirectoryNotFoundException;
 import com.goat.server.mypage.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -59,6 +60,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(DirectoryCanNotDeleteException.class)
     public ResponseEntity<Object> handleDirectoryCanNotDelete(DirectoryCanNotDeleteException e,
                                                               HttpServletRequest request) {
+        logInfo(e.getErrorCode(), e, request);
+        ErrorCode errorCode = e.getErrorCode();
+        return handleExceptionInternal(errorCode);
+    }
+
+    @ExceptionHandler(DirectoryNotAuthException.class)
+    public ResponseEntity<Object> handleDirectoryNotAuth(DirectoryNotAuthException e, HttpServletRequest request) {
         logInfo(e.getErrorCode(), e, request);
         ErrorCode errorCode = e.getErrorCode();
         return handleExceptionInternal(errorCode);

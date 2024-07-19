@@ -2,6 +2,8 @@ package com.goat.server.directory.domain;
 
 import com.goat.server.directory.domain.type.DirectoryColor;
 import com.goat.server.directory.domain.type.DirectoryIcon;
+import com.goat.server.directory.exception.DirectoryNotAuthException;
+import com.goat.server.directory.exception.errorcode.DirectoryErrorCode;
 import com.goat.server.global.domain.BaseTimeEntity;
 import com.goat.server.mypage.domain.User;
 import com.goat.server.review.domain.Review;
@@ -92,9 +94,9 @@ public class Directory extends BaseTimeEntity {
         }
     }
 
-    public void validateUser(Long userId) {
+    public void validateUserDirectory(Long userId) {
         if (!this.getUser().getUserId().equals(userId)) {
-            throw new IllegalArgumentException("해당 폴더에 대한 권한이 없습니다.");
+            throw new DirectoryNotAuthException(DirectoryErrorCode.DIRECTORY_NOT_AUTH);
         }
     }
 }

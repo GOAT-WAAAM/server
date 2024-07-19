@@ -46,6 +46,12 @@ public class DirectoryService {
         return DirectoryTotalShowResponse.of(directoryId, directoryResponseList, reviewSimpleResponseList);
     }
 
+    private void validateDirectory(Long directoryId) {
+        if (directoryId != 0 && !directoryRepository.existsById(directoryId)) {
+            throw new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND);
+        }
+    }
+
     /**
      * 폴더 임시 삭제
      */
@@ -55,7 +61,7 @@ public class DirectoryService {
         Directory directory = directoryRepository.findById(directoryId)
                 .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
-        directory.validateUser(userId);
+        directory.validateUserDirectory(userId);
 
         directory.touchParentDirectories();
 
@@ -63,7 +69,6 @@ public class DirectoryService {
                 .ifPresentOrElse(
                         directory::updateParentDirectory,
                         () -> {
-                            log.error("trash directory not found");
                             throw new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND);
                         });
     }
@@ -77,9 +82,10 @@ public class DirectoryService {
         Directory directory = directoryRepository.findById(directoryId)
                 .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
-        directory.validateUser(userId);
+        directory.validateUserDirectory(userId);
 
         directory.touchParentDirectories();
+
         directoryRepository.delete(directory);
     }
 
@@ -99,6 +105,12 @@ public class DirectoryService {
         directoryRepository.save(directoryInitRequest.toEntity(user, parentDirectory));
     }
 
+    //parentDirectoryId가 0이면 directory 찾아오지 못해서 null - null 경우 루트 폴더로 생성
+    private Directory getParentDirectory(DirectoryInitRequest directoryInitRequest) {
+        return directoryRepository.findById(directoryInitRequest.parentDirectoryId())
+                .orElse(null);
+    }
+
     /**
      * 폴더 이동
      */
@@ -113,24 +125,5 @@ public class DirectoryService {
 
         moveDirectory.updateParentDirectory(targetDirectory);
         moveDirectory.touchParentDirectories(); //현재 부모 폴더들 touch
-    }
-
-    private Directory getParentDirectory(DirectoryInitRequest directoryInitRequest) {
-        Directory parentDirectory;
-
-        if (directoryInitRequest.parentDirectoryId() == 0) {
-            parentDirectory = null;
-        } else {
-            parentDirectory = directoryRepository.findById(directoryInitRequest.parentDirectoryId())
-                    .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
-        }
-
-        return parentDirectory;
-    }
-
-    private void validateDirectory(Long directoryId) {
-        if (directoryId != 0 && !directoryRepository.existsById(directoryId)) {
-            throw new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND);
-        }
     }
 }
