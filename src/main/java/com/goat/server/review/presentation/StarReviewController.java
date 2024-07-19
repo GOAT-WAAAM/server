@@ -2,7 +2,6 @@ package com.goat.server.review.presentation;
 
 import com.goat.server.global.dto.ResponseTemplate;
 import com.goat.server.review.application.StarReviewService;
-import com.goat.server.review.dto.response.StarReviewResponse;
 import com.goat.server.review.dto.response.StarReviewResponseList;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
