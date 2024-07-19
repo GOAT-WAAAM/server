@@ -59,6 +59,7 @@ public class ReviewService {
     private final UnViewedReviewRepository unViewedReviewRepository;
 
     private static final int PAGE_SIZE_HOME = 4;
+    private static final String FOLDER_NAME = "goat";
 
     /**
      * 폴더에 속한 리뷰 목록 조회
@@ -99,10 +100,8 @@ public class ReviewService {
 
         Review review = request.toReview(user, directory);
 
-
         if (multipartFile != null && !multipartFile.isEmpty()) {
-            String folderName = "goat";
-            ImageInfo imageInfo = s3Uploader.upload(multipartFile, folderName);
+            ImageInfo imageInfo = s3Uploader.upload(multipartFile, FOLDER_NAME);
             review.setImageInfo(imageInfo);
         }
         reviewRepository.save(review);
@@ -139,8 +138,7 @@ public class ReviewService {
      */
     @Transactional
     public ReviewDetailResponse getDetailReview(Long userId, Long reviewId) {
-        Review review = reviewRepository.findByIdAndUser_UserId(reviewId, userId)
-                .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
+        Review review = findReview(reviewId);
         review.increaseReviewCnt();
         return ReviewDetailResponse.from(review);
     }
@@ -150,19 +148,16 @@ public class ReviewService {
      */
     @Transactional
     public void updateReview(Long reviewId, MultipartFile multipartFile, ReviewUpdateRequest reviewUpdateRequest) {
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
+        Review review = findReview(reviewId);
 
         ImageInfo imageInfo = review.getImageInfo();
 
         if (multipartFile != null && !multipartFile.isEmpty()) {
             if (imageInfo != null) {
                 s3Uploader.deleteImage(review.getImageInfo());
-                String folderName = "goat";
-                imageInfo = s3Uploader.upload(multipartFile, folderName);
+                imageInfo = s3Uploader.upload(multipartFile, FOLDER_NAME);
             } else {
-                String folderName = "goat";
-                imageInfo = s3Uploader.upload(multipartFile, folderName);
+                imageInfo = s3Uploader.upload(multipartFile, FOLDER_NAME);
             }
         }
         Directory directory = directoryRepository.findById(reviewUpdateRequest.directoryId())
@@ -176,9 +171,7 @@ public class ReviewService {
      */
     @Transactional
     public void deleteReview(Long userId, Long reviewId) {
-        Review review = reviewRepository.findByIdAndUser_UserId(reviewId, userId)
-                .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
-
+        Review review = findReview(reviewId);
         unViewedReviewRepository.deleteByReviewId(reviewId);
         reviewRepository.delete(review);
     }
@@ -188,9 +181,7 @@ public class ReviewService {
      */
     @Transactional
     public void moveReviewToStorage(Long userId, Long reviewId) {
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
-
+        Review review = findReview(reviewId);
         Directory storageDirectory = directoryRepository.findStorageDirectoryByUser(userId)
                 .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
@@ -202,9 +193,7 @@ public class ReviewService {
      */
     @Transactional
     public void moveReviewToTrashCan(Long userId, Long reviewId) {
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
-
+        Review review = findReview(reviewId);
         Directory trashDirectory = directoryRepository.findTrashDirectoryByUser(userId)
                 .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
@@ -217,8 +206,7 @@ public class ReviewService {
      */
     @Transactional
     public void moveReviewDirectory(ReviewMoveRequest request) {
-        Review review = reviewRepository.findById(request.reviewId())
-                .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
+        Review review = findReview(request.reviewId());
         Directory targetDirectory = directoryRepository.findById(request.targetDirectoryId())
                 .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
@@ -234,8 +222,7 @@ public class ReviewService {
         Directory storageDirectory = directoryRepository.findStorageDirectoryByUser(userId)
                 .orElseThrow(() -> new DirectoryNotFoundException(DirectoryErrorCode.DIRECTORY_NOT_FOUND));
 
-        String folderName = "goat";
-        ImageInfo imageInfo = s3Uploader.upload(multipartFile, folderName);
+        ImageInfo imageInfo = s3Uploader.upload(multipartFile, FOLDER_NAME);
 
         Review review = Review.builder()
                 .imageInfo(imageInfo)
@@ -251,6 +238,7 @@ public class ReviewService {
     @Scheduled(cron = "0 0 1 * * MON") // 매주 월요일 1시에 실행
     @Transactional
     public void initReviewCount() {
+        log.info("[Starting Reviewcount Reset]");
         List<Review> reviews = reviewRepository.findAll();
 
         for (Review review : reviews) {
@@ -290,8 +278,7 @@ public class ReviewService {
         return unViewedReviewRepository.findFirstByUserId(userId)
                 .map(unviewedReview -> {
                     Long reviewId = unviewedReview.getReview().getId();
-                    Review review = reviewRepository.findById(reviewId)
-                            .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
+                    Review review = findReview(reviewId);
                     unViewedReviewRepository.delete(unviewedReview);
                     return RandomReviewsResponse.from(review);
                 })
@@ -312,5 +299,10 @@ public class ReviewService {
      */
     public Long calculateReviewCount(Long userId) {
         return reviewRepository.sumReviewCntByUser(userId);
+    }
+
+    public Review findReview(final Long reviewId) {
+        return reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
     }
 }
