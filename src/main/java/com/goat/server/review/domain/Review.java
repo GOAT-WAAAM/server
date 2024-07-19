@@ -38,9 +38,6 @@ public class Review extends BaseTimeEntity {
     @Column(name = "review_title", length = 50)
     private String title;
 
-    @Column(name = "is_image_enroll")
-    private Boolean isImageEnroll;
-
     @Column(name = "content", length = 512)
     private String content;
 
@@ -65,9 +62,6 @@ public class Review extends BaseTimeEntity {
     @Column(name = "review_end_date")
     private LocalDate reviewEndDate;
 
-    @Column(name = "is_post_share")
-    private Boolean isPostShare;
-
     @JoinColumn(name = "directory_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Directory directory;
@@ -80,19 +74,17 @@ public class Review extends BaseTimeEntity {
     private Long reviewCnt;
 
     @Builder
-    public Review(ImageInfo imageInfo, String title, Boolean isImageEnroll, String content, Boolean isRepeatable,
-                  Boolean isAutoRepeat, LocalTime remindTime, LocalDate reviewStartDate, LocalDate reviewEndDate, Boolean isPostShare,
+    public Review(ImageInfo imageInfo, String title, String content, Boolean isRepeatable,
+                  Boolean isAutoRepeat, LocalTime remindTime, LocalDate reviewStartDate, LocalDate reviewEndDate,
                   Directory directory, User user, Long reviewCnt) {
         this.imageInfo = imageInfo;
         this.title = title;
-        this.isImageEnroll = isImageEnroll;
         this.content = content;
         this.isRepeatable = isRepeatable;
         this.isAutoRepeat = isAutoRepeat;
         this.remindTime = remindTime;
         this.reviewStartDate = reviewStartDate;
         this.reviewEndDate = reviewEndDate;
-        this.isPostShare = isPostShare;
         this.directory = directory;
         this.user = user;
         this.reviewCnt = (reviewCnt != null) ? reviewCnt : 0L;

@@ -10,10 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-
-    @Query("select u from User u left join fetch u.majorList where u.userId = :userId")
-    Optional<User> findUserWithMajors(@Param("userId") Long userId);
-
     Optional<User> findBySocialId(String string);
 
     Optional<User> findByEmail(String email);
