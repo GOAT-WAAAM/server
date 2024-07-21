@@ -9,4 +9,6 @@ import java.util.List;
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
     List<Notification> findAllByUser(User user);
+
+    List<Notification> findAllByUserAndIsRead(User user, Boolean isRead);
 }

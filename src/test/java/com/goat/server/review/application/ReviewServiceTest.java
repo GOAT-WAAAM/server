@@ -29,7 +29,7 @@ public class ReviewServiceTest {
     @DisplayName("놓친 복습 조회 테스트")
     void getMissedReviewTest() {
         //given
-        given(notificationService.findAllByUserId(USER_USER.getUserId())).willReturn(List.of(DUMMY_NOTIFICATION1, DUMMY_NOTIFICATION2, DUMMY_NOTIFICATION3));
+        given(notificationService.getUnreadNotifications(USER_USER.getUserId())).willReturn(List.of(DUMMY_NOTIFICATION1, DUMMY_NOTIFICATION2, DUMMY_NOTIFICATION3));
 
         //when
         MissedReviewResponse response = reviewService.getMissedReview(USER_USER.getUserId());
