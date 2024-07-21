@@ -107,7 +107,7 @@ public class ReviewService {
         }
         reviewRepository.save(review);
 
-        if(review.getIsAutoRepeat() || review.getIsRepeatable() || !review.getReviewDates().isEmpty()) {
+        if(review.getIsRepeatable()) {
             registerNotification(review);
         }
     }
@@ -123,6 +123,7 @@ public class ReviewService {
             } catch (SchedulerException e) {
                 throw new RuntimeException(e);
             }
+            return;
         }
 
         for (ReviewDate date : review.getReviewDates()) {
