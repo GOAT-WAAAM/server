@@ -16,7 +16,8 @@
 </table>
 
 ### ERD
-![erd](https://github.com/user-attachments/assets/da887561-6803-4ca4-93b3-57d4ba96030f)
+![goat-ERD](https://github.com/user-attachments/assets/1d8123ba-68d0-43c0-bad2-26bb56472cd7)
+
 
 ### Infra Structure
 ![goat-infra](https://github.com/user-attachments/assets/8b4d4070-8dbb-4624-9a01-4d7ca0d50faf)

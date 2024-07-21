@@ -12,6 +12,8 @@ import com.goat.server.mypage.domain.User;
 import com.goat.server.mypage.exception.UserNotFoundException;
 import com.goat.server.mypage.exception.errorcode.MypageErrorCode;
 import com.goat.server.mypage.repository.UserRepository;
+import com.goat.server.notification.application.NotificationService;
+import com.goat.server.notification.domain.Notification;
 import com.goat.server.review.domain.Review;
 import com.goat.server.review.domain.ReviewDate;
 import com.goat.server.review.domain.UnViewedReview;
@@ -22,6 +24,7 @@ import com.goat.server.review.dto.response.ReviewDetailResponse;
 import com.goat.server.review.dto.response.RandomReviewsResponse;
 import com.goat.server.review.dto.response.ReviewHomeResponse;
 import com.goat.server.review.dto.response.ReviewHomeResponseList;
+import com.goat.server.review.dto.response.MissedReviewResponse;
 import com.goat.server.review.exception.ReviewNotFoundException;
 import com.goat.server.review.exception.errorcode.ReviewErrorCode;
 import com.goat.server.directory.application.type.SortType;
@@ -55,6 +58,7 @@ public class ReviewService {
     private final DirectoryRepository directoryRepository;
     private final S3Uploader s3Uploader;
     private final UserService userService;
+    private final NotificationService notificationService;
 
     private final SchedulerConfiguration schedulerConfiguration;
 
@@ -109,7 +113,7 @@ public class ReviewService {
         }
         reviewRepository.save(review);
 
-        if(review.getIsAutoRepeat() || review.getIsRepeatable() || !review.getReviewDates().isEmpty()) {
+        if(review.getIsRepeatable()) {
             registerNotification(review);
         }
     }
@@ -125,6 +129,7 @@ public class ReviewService {
             } catch (SchedulerException e) {
                 throw new RuntimeException(e);
             }
+            return;
         }
 
         for (ReviewDate date : review.getReviewDates()) {
@@ -307,5 +312,20 @@ public class ReviewService {
     public Review findReview(final Long reviewId) {
         return reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
+    }
+
+    /**
+     * 놓친 복습 불러오기
+     */
+    public MissedReviewResponse getMissedReview(Long userId) {
+
+        List<Notification> unreadNotifications = notificationService.getUnreadNotifications(userId);
+
+        List<ReviewSimpleResponse> missedReviews = unreadNotifications.stream()
+                .map(Notification::getReview)
+                .map(ReviewSimpleResponse::from)
+                .toList();
+
+        return MissedReviewResponse.from(missedReviews);
     }
 }

@@ -171,4 +171,16 @@ public class ReviewController {
                 .status(HttpStatus.OK)
                 .body(ResponseTemplate.from(response));
     }
+
+    @Operation(summary = "놓친 복습 조회", description = "확인하지 않은 push 알림의 복습 조회")
+    @GetMapping("/missed-review")
+    public ResponseEntity<ResponseTemplate<Object>> getMissedReview(
+            @AuthenticationPrincipal Long userId) {
+
+        MissedReviewResponse response = reviewService.getMissedReview(userId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ResponseTemplate.from(response));
+    }
 }

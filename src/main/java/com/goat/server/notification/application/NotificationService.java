@@ -1,9 +1,8 @@
 package com.goat.server.notification.application;
 
 import com.goat.server.global.exception.AccessDeniedException;
+import com.goat.server.mypage.application.UserService;
 import com.goat.server.mypage.domain.User;
-import com.goat.server.mypage.exception.UserNotFoundException;
-import com.goat.server.mypage.repository.UserRepository;
 import com.goat.server.notification.domain.Notification;
 import com.goat.server.notification.dto.response.NotificationResponse;
 import com.goat.server.notification.repository.NotificationRepository;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.goat.server.global.exception.errorcode.GlobalErrorCode.ACCESS_DENIED;
-import static com.goat.server.mypage.exception.errorcode.MypageErrorCode.USER_NOT_FOUND;
 
 @Slf4j
 @Service
@@ -24,7 +22,7 @@ import static com.goat.server.mypage.exception.errorcode.MypageErrorCode.USER_NO
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Transactional
     public void saveNotification(Notification notification) {
@@ -38,8 +36,7 @@ public class NotificationService {
 
             log.info("[NotificationService.getNotifications]");
 
-            User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+            User user = userService.findUser(userId);
 
             List<Notification> notifications = notificationRepository.findAllByUser(user);
 
@@ -65,5 +62,12 @@ public class NotificationService {
         notification.read();
 
         notificationRepository.save(notification);
+    }
+
+    public List<Notification> getUnreadNotifications(Long userId) {
+
+            log.info("[NotificationService.getNotReadNotifications] userId: {}", userId);
+
+            return notificationRepository.findAllByUserIdAndIsRead(userId, false);
     }
 }
