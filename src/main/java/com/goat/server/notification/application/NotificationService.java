@@ -3,8 +3,6 @@ package com.goat.server.notification.application;
 import com.goat.server.global.exception.AccessDeniedException;
 import com.goat.server.mypage.application.UserService;
 import com.goat.server.mypage.domain.User;
-import com.goat.server.mypage.exception.UserNotFoundException;
-import com.goat.server.mypage.repository.UserRepository;
 import com.goat.server.notification.domain.Notification;
 import com.goat.server.notification.dto.response.NotificationResponse;
 import com.goat.server.notification.repository.NotificationRepository;
@@ -16,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.goat.server.global.exception.errorcode.GlobalErrorCode.ACCESS_DENIED;
-import static com.goat.server.mypage.exception.errorcode.MypageErrorCode.USER_NOT_FOUND;
 
 @Slf4j
 @Service
@@ -67,12 +64,10 @@ public class NotificationService {
         notificationRepository.save(notification);
     }
 
-    public List<Notification> findAllByUserId(Long userId) {
+    public List<Notification> getUnreadNotifications(Long userId) {
 
-            log.info("[NotificationService.findAllByUserId]");
+            log.info("[NotificationService.getNotReadNotifications] userId: {}", userId);
 
-            User user = userService.findUser(userId);
-
-            return notificationRepository.findAllByUser(user);
+            return notificationRepository.findAllByUserIdAndIsRead(userId, false);
     }
 }

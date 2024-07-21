@@ -323,9 +323,9 @@ public class ReviewService {
      */
     public MissedReviewResponse getMissedReview(Long userId) {
 
-        List<Notification> notifications = notificationService.findAllByUserId(userId);
+        List<Notification> unreadNotifications = notificationService.getUnreadNotifications(userId);
 
-        List<ReviewSimpleResponse> missedReviews = notifications.stream()
+        List<ReviewSimpleResponse> missedReviews = unreadNotifications.stream()
                 .map(Notification::getReview)
                 .map(ReviewSimpleResponse::from)
                 .toList();
