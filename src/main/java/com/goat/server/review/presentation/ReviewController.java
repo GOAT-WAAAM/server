@@ -8,6 +8,7 @@ import com.goat.server.review.dto.request.ReviewUploadRequest;
 import com.goat.server.review.dto.response.ReviewHomeResponseList;
 import com.goat.server.review.dto.response.ReviewDetailResponse;
 import com.goat.server.review.dto.response.RandomReviewsResponse;
+import com.goat.server.review.dto.response.MissedReviewResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

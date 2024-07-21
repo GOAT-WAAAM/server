@@ -146,7 +146,8 @@ public class ReviewService {
      */
     @Transactional
     public ReviewDetailResponse getDetailReview(Long userId, Long reviewId) {
-        Review review = findReview(reviewId);
+        Review review = reviewRepository.findByIdAndUser_UserId(reviewId, userId)
+                .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
         review.increaseReviewCnt();
         return ReviewDetailResponse.from(review);
     }
