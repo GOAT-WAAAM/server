@@ -66,10 +66,8 @@ public class NotificationService {
 
     public List<Notification> getUnreadNotifications(Long userId) {
 
-            log.info("[NotificationService.getNotReadNotifications]");
+            log.info("[NotificationService.getNotReadNotifications] userId: {}", userId);
 
-            User user = userService.findUser(userId);
-
-            return notificationRepository.findAllByUserAndIsRead(user, false);
+            return notificationRepository.findAllByUserIdAndIsRead(userId, false);
     }
 }
