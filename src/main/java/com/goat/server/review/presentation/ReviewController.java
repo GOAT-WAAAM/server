@@ -5,7 +5,10 @@ import com.goat.server.review.application.ReviewService;
 import com.goat.server.review.dto.request.ReviewMoveRequest;
 import com.goat.server.review.dto.request.ReviewUpdateRequest;
 import com.goat.server.review.dto.request.ReviewUploadRequest;
-import com.goat.server.review.dto.response.*;
+import com.goat.server.review.dto.response.ReviewHomeResponseList;
+import com.goat.server.review.dto.response.ReviewDetailResponse;
+import com.goat.server.review.dto.response.RandomReviewsResponse;
+import com.goat.server.review.dto.response.MissedReviewResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Optional;
-
 
 @Tag(name = "ReviewController", description = "ReviewController 관련 API")
 @Slf4j

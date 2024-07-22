@@ -39,6 +39,4 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRep
             "AND r.directory.title != 'trash_directory' " +
             "AND r.reviewEndDate >= CURRENT_DATE")
     List<Review> findActiveReviewsByUserId(@Param("userId") Long userId);
-
-    List<Review> findAllByUser(User user);
 }

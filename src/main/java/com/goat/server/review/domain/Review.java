@@ -18,9 +18,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -118,11 +116,6 @@ public class Review extends BaseTimeEntity {
             List<Date> newReviewDates = reviewUpdateRequest.reviewDates().stream()
                     .map(Date::valueOf)
                     .toList();
-
-            log.info("newReviewDates log start");
-            for (Date newReviewDate : newReviewDates) {
-                log.info("reviewDate: {}", newReviewDate);
-            }
 
             // 기존 reviewDates에서 삭제해야 할 날짜 제거
             this.reviewDates.removeIf(existingReviewDate -> !newReviewDates.contains(existingReviewDate.getDate()));

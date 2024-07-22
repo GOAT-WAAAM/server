@@ -1,6 +1,5 @@
 package com.goat.server.review.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.goat.server.directory.domain.Directory;
 import com.goat.server.mypage.domain.User;
 import com.goat.server.review.domain.Review;
@@ -39,7 +38,7 @@ public record ReviewUploadRequest(
                 .reviewEndDate(reviewEndDate)
                 .build();
 
-        if (reviewDates != null && !reviewDates.isEmpty()) {
+        if (!autoRepeat && reviewDates != null && !reviewDates.isEmpty()) {
             List<ReviewDate> dates = reviewDates.stream()
                     .map(date -> ReviewDate.builder()
                             .date(Date.valueOf(date.toUpperCase())) // Convert string to enum
