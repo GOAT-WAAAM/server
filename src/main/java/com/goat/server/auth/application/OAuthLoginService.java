@@ -1,6 +1,7 @@
 package com.goat.server.auth.application;
 
 import com.goat.server.auth.dto.request.KakaoLoginParams;
+import com.goat.server.auth.dto.request.NaverLoginParams;
 import com.goat.server.auth.dto.request.OAuthLoginParams;
 import com.goat.server.auth.dto.response.OAuthInfoResponse;
 import com.goat.server.global.util.jwt.JwtUserDetails;
@@ -50,7 +51,7 @@ public class OAuthLoginService {
         }
 
         if (provider.equals("NAVER")) {
-//            return new NaverLoginParams(accessToken);
+            return new NaverLoginParams(accessToken);
         }
 
         throw new IllegalArgumentException("Invalid provider: " + provider);

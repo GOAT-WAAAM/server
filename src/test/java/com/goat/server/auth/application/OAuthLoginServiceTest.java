@@ -28,7 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 @AutoConfigureWireMock(port = 0)
 @TestPropertySource(properties = {
-        "oauth.kakao.service.api_url=http://localhost:${wiremock.server.port}"
+        "oauth.kakao.service.api_url=http://localhost:${wiremock.server.port}",
+        "oauth.naver.service.api_url=http://localhost:${wiremock.server.port}"
 })
 @DisplayName("OAuth 로그인 테스트")
 class OAuthLoginServiceTest {
@@ -64,7 +65,7 @@ class OAuthLoginServiceTest {
 
     @Test
     @DisplayName("카카오_소셜로그인_테스트")
-    void socialLoginTest() throws JsonProcessingException {
+    void KakaoSocialLoginTest() throws JsonProcessingException {
         //given
         final String oauthProvider = "KAKAO";
         final String kakaoAccessToken = "thisIsmockAccessToken";
@@ -96,6 +97,40 @@ class OAuthLoginServiceTest {
         assertNotNull(userRepository.findBySocialId(String.valueOf(1231241)));
         assertThat(directoryRepository.findTrashDirectoryByUser(1L).get().getTitle()).isEqualTo("trash_directory");
         assertThat(directoryRepository.findStorageDirectoryByUser(1L).get().getTitle()).isEqualTo("storage_directory");
+    }
+
+    @Test
+    @DisplayName("네이버_소셜로그인_테스트")
+    void naverSocialLoginTest() throws JsonProcessingException {
+        //given
+        final String oauthProvider = "NAVER";
+        final String naverAccessToken = "thisIsmockAccessToken";
+        final String expectedResponse = objectMapper.writeValueAsString(
+                Map.of(
+                        "resultCode", "00",
+                        "message", "success",
+                        "response", Map.of(
+                                "id", "1203443",
+                                "nickname", "nickname",
+                                "profile_image", "http://example.com/profile.jpg"
+                        )
+                )
+        );
+
+        //wireMock 사용
+        stubFor(get(urlEqualTo("/v1/nid/me"))
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.OK.value())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(expectedResponse))
+        );
+
+
+        //when
+        OAuthLoginService.socialLogin(oauthProvider, naverAccessToken);
+
+        //then
+        assertNotNull(userRepository.findBySocialId("1203443"));
     }
 
 }
