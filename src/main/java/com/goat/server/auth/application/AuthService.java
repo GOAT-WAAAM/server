@@ -2,11 +2,13 @@ package com.goat.server.auth.application;
 
 import com.goat.server.auth.dto.request.OnBoardingRequest;
 import com.goat.server.auth.dto.response.ReIssueSuccessResponse;
+import com.goat.server.auth.dto.response.SignUpSuccessResponse;
 import com.goat.server.auth.dto.response.UserInfoResponse;
 import com.goat.server.global.application.S3Uploader;
 import com.goat.server.global.util.jwt.JwtUserDetails;
 import com.goat.server.global.util.jwt.JwtTokenProvider;
 import com.goat.server.mypage.domain.User;
+import com.goat.server.mypage.domain.type.Role;
 import com.goat.server.mypage.exception.UserNotFoundException;
 import com.goat.server.mypage.repository.UserRepository;
 import com.goat.server.review.repository.ReviewRepository;
@@ -73,5 +75,22 @@ public class AuthService {
         s3Uploader.deleteImage(user.getImageInfo());
 
         userRepository.deleteById(userId);
+    }
+
+    /**
+     * 소셜을 거치지 않은 일반 회원가입
+     */
+    public SignUpSuccessResponse signUp() {
+
+            log.info("[AuthService.signUp]");
+
+            User user = User.builder()
+                    .nickname("temporaryUser")
+                    .role(Role.GUEST)
+                    .build();
+
+            userRepository.save(user);
+
+            return SignUpSuccessResponse.of(jwtTokenProvider.generateToken(getJwtUserDetails(user.getUserId())), user, 0L);
     }
 }

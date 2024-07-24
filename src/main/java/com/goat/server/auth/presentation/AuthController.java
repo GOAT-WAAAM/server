@@ -42,6 +42,22 @@ public class AuthController {
 
     }
 
+    /**
+     * 일반 회원 가입
+     */
+    @Operation(summary = "소셜 로그인 없는 회원가입", description = "일반 회원가입")
+    @GetMapping("/signup")
+    public ResponseEntity<ResponseTemplate<Object>> signUp() {
+
+        log.info("[AuthController.signUp]");
+
+        SignUpSuccessResponse response = authService.signUp();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ResponseTemplate.from(response));
+    }
+
     @Operation(summary = "회원탈퇴", description = "회원탈퇴")
     @DeleteMapping("/withdraw")
     public ResponseEntity<ResponseTemplate<Object>> withdraw(@AuthenticationPrincipal Long userId) {
