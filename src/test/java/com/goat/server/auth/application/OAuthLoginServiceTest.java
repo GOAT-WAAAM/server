@@ -3,6 +3,7 @@ package com.goat.server.auth.application;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.goat.server.auth.domain.type.OAuthProvider;
 import com.goat.server.directory.repository.DirectoryRepository;
 import com.goat.server.mypage.repository.UserRepository;
 import com.goat.server.notification.application.FcmServiceImpl;
@@ -95,6 +96,7 @@ class OAuthLoginServiceTest {
 
         //then
         assertNotNull(userRepository.findBySocialId(String.valueOf(1231241)));
+        assertThat(userRepository.findBySocialId(String.valueOf(1231241)).get().getProvider()).isEqualTo(OAuthProvider.KAKAO);
         assertThat(directoryRepository.findTrashDirectoryByUser(1L).get().getTitle()).isEqualTo("trash_directory");
         assertThat(directoryRepository.findStorageDirectoryByUser(1L).get().getTitle()).isEqualTo("storage_directory");
     }
@@ -131,6 +133,7 @@ class OAuthLoginServiceTest {
 
         //then
         assertNotNull(userRepository.findBySocialId("1203443"));
+        assertThat(userRepository.findBySocialId("1203443").get().getProvider()).isEqualTo(OAuthProvider.NAVER);
     }
 
 }

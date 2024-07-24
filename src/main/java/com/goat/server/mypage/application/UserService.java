@@ -40,6 +40,7 @@ public class UserService {
         User user = User.builder()
                 .socialId(userResponse.getId().toString())
                 .nickname(userResponse.getNickname())
+                .provider(userResponse.getOAuthProvider())
                 .role(Role.GUEST)
                 .build();
 
