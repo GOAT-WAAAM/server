@@ -33,7 +33,7 @@ public class UserService {
     private final ReviewRepository reviewRepository;
 
     /**
-     * 유저 회원가입
+     * 소셜 유저 회원가입
      */
     @Transactional
     public User createUser(final OAuthInfoResponse userResponse) {
@@ -74,6 +74,43 @@ public class UserService {
     public User findUser(final Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(MypageErrorCode.USER_NOT_FOUND));
+    }
+
+    /**
+     * 일반 회원 가입
+     */
+    @Transactional
+    public User createUser() {
+        User user = User.builder()
+                .nickname("temporalUser")
+                .role(Role.GUEST)
+                .build();
+
+        Directory trashDirectory = Directory.builder()
+                .user(user)
+                .title("trash_directory")
+                .depth(1L)
+                .build();
+
+        Directory storageDirectory = Directory.builder()
+                .user(user)
+                .title("storage_directory")
+                .depth(1L)
+                .build();
+
+        NotificationSetting notificationSetting = NotificationSetting.builder()
+                .user(user)
+                .isCommentNoti(false)
+                .isPostNoti(false)
+                .isReviewNoti(false)
+                .build();
+
+
+        notificationSettingRepository.save(notificationSetting);
+        directoryRepository.save(trashDirectory);
+        directoryRepository.save(storageDirectory);
+
+        return userRepository.save(user);
     }
 
     /**
