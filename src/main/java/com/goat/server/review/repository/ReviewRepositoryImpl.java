@@ -28,7 +28,8 @@ public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
                         review.id,
                         review.title,
                         review.imageInfo.imageUrl,
-                        review.reviewCnt))
+                        review.reviewCnt,
+                        review.isStar))
                 .from(review)
                 .where(review.user.userId.eq(userId), searchExpression(parentDirectoryId, search))
                 .orderBy(sortExpression(sort))
