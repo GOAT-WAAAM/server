@@ -61,6 +61,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .user(user)
                     .directory(dummyTrashDirectory) //휴지통 리뷰
                     .reviewCnt(0L)
+                    .isStar(true)
                     .build();
 
             Review DUMMY_REVIEW2 = Review.builder()
@@ -79,6 +80,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .user(user)
                     .directory(dummyParentDirectory)
                     .reviewCnt(1L)
+                    .isStar(true)
                     .build();
 
             Review DUMMY_REVIEW3 = Review.builder()
@@ -97,6 +99,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .user(user)
                     .directory(dummyParentDirectory)
                     .reviewCnt(2L)
+                    .isStar(true)
                     .build();
 
             Review DUMMY_REVIEW4 = Review.builder()
@@ -115,6 +118,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .user(user)
                     .directory(dummyParentDirectory)
                     .reviewCnt(4L)
+                    .isStar(true)
                     .build();
 
             Review DUMMY_REVIEW5 = Review.builder()
@@ -133,6 +137,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .user(user)
                     .directory(dummyChildDirectory)
                     .reviewCnt(3L)
+                    .isStar(true)
                     .build();
 
             Review DUMMY_REVIEW6 = Review.builder()
@@ -151,6 +156,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .user(user)
                     .directory(dummyChildDirectory)
                     .reviewCnt(6L)
+                    .isStar(true)
                     .build();
 
             Review DUMMY_REVIEW7 = Review.builder()
@@ -164,6 +170,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .user(user)
                     .directory(dummyChildDirectory)
                     .reviewCnt(8L)
+                    .isStar(false)
                     .build();
 
             Review DUMMY_REVIEW8 = Review.builder()
@@ -177,6 +184,7 @@ public class ReviewInitializer implements ApplicationRunner {
                     .user(user)
                     .directory(dummyChildDirectory)
                     .reviewCnt(9L)
+                    .isStar(false)
                     .build();
 
             Review DUMMY_REVIEW9 = Review.builder()
@@ -192,6 +200,7 @@ public class ReviewInitializer implements ApplicationRunner {
                             .imageUrl("https://team-goat-bucket.s3.ap-northeast-2.amazonaws.com/goat/bee.jpg")
                             .build())
                     .reviewCnt(10L)
+                    .isStar(true)
                     .build();
 
             reviewList.add(DUMMY_REVIEW1);

@@ -24,10 +24,9 @@ public class StarReviewController {
     @Operation(summary = "즐겨찾기 추가 또는 제거하기", description = "즐겨찾기 추가 또는 제거하기")
     @PostMapping("/{reviewId}")
     public ResponseEntity<ResponseTemplate<Object>> manageFavorite(
-            @AuthenticationPrincipal Long userId,
             @PathVariable Long reviewId) {
 
-        starReviewService.manageFavorite(userId, reviewId);
+        starReviewService.manageFavorite(reviewId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

@@ -21,11 +21,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRep
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Review> findByIdAndUser_UserId(Long reviewId, Long userId);
 
-    @Query("SELECT r " +
-            "FROM Review r JOIN FETCH StarReview sr ON r.id = sr.review.id " +
-            "WHERE sr.user.userId = :userId")
-    Page<Review> findAllStarReviewByUserId(@Param("userId") Long userId, Pageable pageable);
-
     @Query("SELECT r FROM Review r WHERE r.user.userId = :userId AND r.imageInfo.imageUrl IS NOT NULL")
     Page<Review> findAllReviewImageByUserId(@Param("userId") Long userId, Pageable pageable);
 
@@ -39,4 +34,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRep
             "AND r.directory.title != 'trash_directory' " +
             "AND r.reviewEndDate >= CURRENT_DATE")
     List<Review> findActiveReviewsByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT r FROM Review r WHERE r.user.userId = :userId AND r.isStar = true")
+    Page<Review> findStarReviewsByUserId(@Param("userId") Long userId, Pageable pageable);
 }

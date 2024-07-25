@@ -48,9 +48,6 @@ public class Review extends BaseTimeEntity {
     @OneToMany(mappedBy = "review", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<ReviewDate> reviewDates = new ArrayList<>();
 
-    @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE)
-    private List<StarReview> starReviews = new ArrayList<>();
-
     @Column(name = "remind_time")
     private LocalTime remindTime;
 
@@ -71,10 +68,13 @@ public class Review extends BaseTimeEntity {
     @Column(name = "review_cnt")
     private Long reviewCnt;
 
+    @Column(name = "is_star")
+    private Boolean isStar;
+
     @Builder
     public Review(ImageInfo imageInfo, String title, String content, Boolean isRepeatable,
                   Boolean isAutoRepeat, LocalTime remindTime, LocalDate reviewStartDate, LocalDate reviewEndDate,
-                  Directory directory, User user, Long reviewCnt) {
+                  Directory directory, User user, Long reviewCnt, Boolean isStar) {
         this.imageInfo = imageInfo;
         this.title = title;
         this.content = content;
@@ -86,6 +86,7 @@ public class Review extends BaseTimeEntity {
         this.directory = directory;
         this.user = user;
         this.reviewCnt = (reviewCnt != null) ? reviewCnt : 0L;
+        this.isStar = isStar;
     }
 
     public void setImageInfo(ImageInfo imageInfo){
@@ -153,5 +154,9 @@ public class Review extends BaseTimeEntity {
 
     public void increaseReviewCnt() {
         this.reviewCnt++;
+    }
+
+    public void updateIsStar(Boolean isStar) {
+        this.isStar = isStar;
     }
 }
