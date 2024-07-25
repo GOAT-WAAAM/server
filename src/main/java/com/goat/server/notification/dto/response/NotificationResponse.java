@@ -4,6 +4,7 @@ import com.goat.server.notification.domain.Notification;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -33,12 +34,13 @@ public record NotificationResponse(
         }
 
         private static String calculateWhenItPushed(Notification notification) {
-            LocalDate currentDate = LocalDate.now();
-            LocalDate createdDate = notification.getCreatedDate().toLocalDate();
-            long daysBetween = ChronoUnit.DAYS.between(createdDate, currentDate);
-            long hoursBetween = ChronoUnit.HOURS.between(createdDate, currentDate);
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            LocalDateTime createdDateTime = notification.getCreatedDate();
+            long hoursBetween = ChronoUnit.HOURS.between(createdDateTime, currentDateTime);
+            long daysBetween = ChronoUnit.DAYS.between(createdDateTime.toLocalDate(), currentDateTime.toLocalDate());
 
             String whenItPushed = null;
+
             if (daysBetween == 0) {
                 if(hoursBetween == 0) {
                     whenItPushed = "방금 전";
