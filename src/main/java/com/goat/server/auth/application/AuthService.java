@@ -84,11 +84,9 @@ public class AuthService {
      */
     public SignUpSuccessResponse signUp() {
 
-            log.info("[AuthService.signUp]");
-
             User user = userService.createUser();
 
-            userRepository.save(user);
+            log.info("[AuthService.signUp] userId: {}", user.getUserId());
 
             return SignUpSuccessResponse.of(jwtTokenProvider.generateToken(getJwtUserDetails(user.getUserId())), user, 0L);
     }
