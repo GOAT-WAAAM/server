@@ -7,6 +7,7 @@ import com.goat.server.auth.dto.response.UserInfoResponse;
 import com.goat.server.global.application.S3Uploader;
 import com.goat.server.global.util.jwt.JwtUserDetails;
 import com.goat.server.global.util.jwt.JwtTokenProvider;
+import com.goat.server.mypage.application.UserService;
 import com.goat.server.mypage.domain.User;
 import com.goat.server.mypage.domain.type.Role;
 import com.goat.server.mypage.exception.UserNotFoundException;
@@ -25,6 +26,7 @@ import static com.goat.server.mypage.exception.errorcode.MypageErrorCode.USER_NO
 public class AuthService {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserService userService;
     private final UserRepository userRepository;
     private final S3Uploader s3Uploader;
 
@@ -84,10 +86,7 @@ public class AuthService {
 
             log.info("[AuthService.signUp]");
 
-            User user = User.builder()
-                    .nickname("temporaryUser")
-                    .role(Role.GUEST)
-                    .build();
+            User user = userService.createUser();
 
             userRepository.save(user);
 
