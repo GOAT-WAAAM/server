@@ -82,9 +82,7 @@ public class UserService {
     @Transactional
     public User createUser() {
         User user = User.builder()
-                .socialId(null)
                 .nickname("temporalUser")
-                .provider(null)
                 .role(Role.GUEST)
                 .build();
 
