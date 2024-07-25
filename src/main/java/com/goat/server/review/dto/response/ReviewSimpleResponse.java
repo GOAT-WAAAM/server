@@ -6,9 +6,11 @@ public record ReviewSimpleResponse(
         Long reviewId,
         String imageTitle,
         String imageUrl,
-        Long reviewCnt
+        Long reviewCnt,
+        Boolean isStar
 ) {
-        public static ReviewSimpleResponse from(Review review) {
-            return new ReviewSimpleResponse(review.getId(), review.getTitle(), review.getImageUrl(), review.getReviewCnt());
-        }
+    public static ReviewSimpleResponse from(Review review) {
+        return new ReviewSimpleResponse(
+                review.getId(), review.getTitle(), review.getImageUrl(), review.getReviewCnt(), review.getIsStar());
+    }
 }
