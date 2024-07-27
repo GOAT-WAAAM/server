@@ -17,6 +17,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import static com.goat.server.mypage.exception.errorcode.MypageErrorCode.USER_NOT_FOUND;
 
@@ -58,7 +59,7 @@ public class AuthService {
 
         user.updateOnBoardingInfo(onBoardingRequest.nickname(), onBoardingRequest.goal());
 
-        if(!onBoardingRequest.fcmToken().isBlank()) {
+        if(StringUtils.hasText(onBoardingRequest.fcmToken())) {
             user.updateFcmToken(onBoardingRequest.fcmToken());
         }
 
